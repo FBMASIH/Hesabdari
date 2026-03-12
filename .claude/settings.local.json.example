@@ -1,0 +1,6 @@
+{
+  "_comment": "Copy this to settings.local.json for personal overrides. Do NOT commit settings.local.json.",
+  "permissions": {
+    "allow": []
+  }
+}

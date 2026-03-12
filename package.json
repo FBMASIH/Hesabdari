@@ -1,0 +1,55 @@
+{
+  "name": "hesabdari",
+  "private": true,
+  "packageManager": "pnpm@10.6.0",
+  "engines": {
+    "node": ">=24.0.0",
+    "pnpm": ">=10.0.0"
+  },
+  "scripts": {
+    "dev": "turbo run dev",
+    "build": "turbo run build",
+    "lint": "turbo run lint",
+    "lint:fix": "turbo run lint:fix",
+    "typecheck": "turbo run typecheck",
+    "test": "turbo run test",
+    "test:e2e": "turbo run test:e2e",
+    "format": "prettier --write \"**/*.{ts,tsx,js,jsx,json,md,css}\"",
+    "format:check": "prettier --check \"**/*.{ts,tsx,js,jsx,json,md,css}\"",
+    "clean": "turbo run clean",
+    "db:generate": "turbo run db:generate --filter=@hesabdari/db",
+    "db:migrate": "turbo run db:migrate --filter=@hesabdari/db",
+    "db:seed": "turbo run db:seed --filter=@hesabdari/db",
+    "prepare": "husky"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "@prisma/engines",
+      "prisma",
+      "esbuild",
+      "sharp",
+      "@nestjs/core"
+    ]
+  },
+  "lint-staged": {
+    "*.{ts,tsx,js,jsx}": [
+      "prettier --write",
+      "eslint --fix --no-warn-ignored"
+    ],
+    "*.{json,md,css,yml,yaml,prisma}": [
+      "prettier --write"
+    ]
+  },
+  "devDependencies": {
+    "@commitlint/cli": "^20.4.4",
+    "@commitlint/config-conventional": "^20.4.4",
+    "@hesabdari/config-eslint": "workspace:*",
+    "@hesabdari/config-prettier": "workspace:*",
+    "eslint": "^9.0.0",
+    "husky": "^9.1.7",
+    "lint-staged": "^16.3.3",
+    "prettier": "^3.5.0",
+    "turbo": "^2.4.0",
+    "typescript": "^5.9.0"
+  }
+}
