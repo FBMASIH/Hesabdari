@@ -1,0 +1,10 @@
+{
+  "extends": "../config/typescript/library.json",
+  "compilerOptions": {
+    "outDir": "./dist",
+    "rootDir": "./src",
+    "jsx": "react-jsx",
+    "lib": ["DOM", "DOM.Iterable", "ES2024"]
+  },
+  "include": ["src"]
+}

@@ -1,0 +1,29 @@
+{
+  "name": "@hesabdari/design-tokens",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./tailwind-preset": {
+      "types": "./dist/tailwind-preset.d.ts",
+      "import": "./dist/tailwind-preset.js"
+    },
+    "./css": "./dist/variables.css"
+  },
+  "scripts": {
+    "build": "tsc && node --import tsx/esm scripts/generate-css.ts",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint src/",
+    "clean": "rm -rf dist"
+  },
+  "devDependencies": {
+    "tsx": "^4.0.0",
+    "typescript": "^5.9.0"
+  }
+}
