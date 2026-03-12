@@ -1,0 +1,68 @@
+# Dependencies
+node_modules/
+.pnpm-store/
+
+# Build
+dist/
+.next/
+.turbo/
+out/
+*.tsbuildinfo
+
+# Environment — NEVER commit secrets
+.env
+.env.local
+.env.*.local
+!.env.example
+!apps/*/.env.example
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*.sublime-*
+
+# OS
+.DS_Store
+Thumbs.db
+Desktop.ini
+ehthumbs.db
+
+# Testing
+coverage/
+playwright-report/
+test-results/
+.nyc_output/
+
+# Prisma
+packages/db/prisma/*.db
+packages/db/prisma/*.db-journal
+
+# Logs
+*.log
+npm-debug.log*
+pnpm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Generated
+packages/api-client/src/generated/
+
+# Docker volumes
+docker-data/
+postgres-data/
+
+# Temporary files
+*.tmp
+*.temp
+*.bak
+*.orig
+
+# Claude Code local session artifacts
+.claude/settings.local.json
+.claude/todos/
+.claude/*.jsonl
+
+# Tauri / Desktop build artifacts (future)
+src-tauri/target/

@@ -1,0 +1,20 @@
+# Default — require review on all changes
+* @hesabdari/core-team
+
+# Backend modules
+apps/api/ @hesabdari/backend
+packages/db/ @hesabdari/backend
+packages/contracts/ @hesabdari/backend
+
+# Frontend
+apps/web/ @hesabdari/frontend
+packages/ui/ @hesabdari/frontend
+packages/design-tokens/ @hesabdari/frontend
+
+# Shared packages
+packages/shared/ @hesabdari/core-team
+packages/api-client/ @hesabdari/core-team
+
+# Infrastructure & CI
+.github/ @hesabdari/core-team
+docker-compose.yml @hesabdari/core-team
