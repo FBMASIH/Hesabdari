@@ -1,0 +1,9 @@
+{
+  "extends": "../config/typescript/library.json",
+  "compilerOptions": {
+    "outDir": "./dist",
+    "rootDir": "./src",
+    "lib": ["DOM", "DOM.Iterable", "ES2024"]
+  },
+  "include": ["src"]
+}
