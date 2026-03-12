@@ -1,0 +1,53 @@
+import { Injectable } from '@nestjs/common';
+import { WarehouseRepository } from '../../infrastructure/repositories/warehouse.repository';
+import { NotFoundError, ConflictError } from '@/platform/errors';
+import type {
+  CreateWarehouseDto,
+  UpdateWarehouseDto,
+  WarehouseQueryDto,
+} from '@hesabdari/contracts';
+
+@Injectable()
+export class WarehouseService {
+  constructor(private readonly warehouseRepository: WarehouseRepository) {}
+
+  async findByOrganization(organizationId: string, query: WarehouseQueryDto) {
+    return this.warehouseRepository.findByOrganization(organizationId, {
+      isActive: query.isActive,
+      page: query.page ?? 1,
+      pageSize: query.pageSize ?? 25,
+    });
+  }
+
+  async findById(id: string) {
+    const warehouse = await this.warehouseRepository.findById(id);
+    if (!warehouse) throw new NotFoundError('Warehouse', id);
+    return warehouse;
+  }
+
+  async create(organizationId: string, data: CreateWarehouseDto) {
+    const existing = await this.warehouseRepository.findByCode(organizationId, data.code);
+    if (existing) throw new ConflictError(`Warehouse with code ${data.code} already exists`);
+    return this.warehouseRepository.create({
+      organizationId,
+      code: data.code,
+      name: data.name,
+      address: data.address ?? null,
+      isActive: data.isActive ?? true,
+    });
+  }
+
+  async update(id: string, data: Omit<UpdateWarehouseDto, 'id'>) {
+    const warehouse = await this.findById(id);
+    if (data.code) {
+      const existing = await this.warehouseRepository.findByCode(
+        warehouse.organizationId,
+        data.code,
+      );
+      if (existing && existing.id !== id) {
+        throw new ConflictError(`Warehouse with code ${data.code} already exists`);
+      }
+    }
+    return this.warehouseRepository.update(id, data);
+  }
+}

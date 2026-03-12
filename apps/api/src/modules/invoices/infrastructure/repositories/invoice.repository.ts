@@ -1,0 +1,148 @@
+import { Injectable } from '@nestjs/common';
+import { PrismaService } from '@/platform/database/prisma.service';
+import type { DocumentType, InvoiceStatus } from '@hesabdari/db';
+
+@Injectable()
+export class InvoiceRepository {
+  constructor(private readonly prisma: PrismaService) {}
+
+  async findByOrganization(
+    organizationId: string,
+    opts: {
+      type?: string;
+      status?: string;
+      customerId?: string;
+      vendorId?: string;
+      fromDate?: Date;
+      toDate?: Date;
+      page: number;
+      pageSize: number;
+    },
+  ) {
+    const where: any = { organizationId };
+    if (opts.type) where.documentType = opts.type;
+    if (opts.status) where.status = opts.status;
+    if (opts.customerId) where.customerId = opts.customerId;
+    if (opts.vendorId) where.vendorId = opts.vendorId;
+    if (opts.fromDate || opts.toDate) {
+      where.invoiceDate = {};
+      if (opts.fromDate) where.invoiceDate.gte = opts.fromDate;
+      if (opts.toDate) where.invoiceDate.lte = opts.toDate;
+    }
+
+    const [data, total] = await Promise.all([
+      this.prisma.invoice.findMany({
+        where,
+        include: { customer: true, vendor: true, currency: true },
+        orderBy: { invoiceDate: 'desc' },
+        skip: (opts.page - 1) * opts.pageSize,
+        take: opts.pageSize,
+      }),
+      this.prisma.invoice.count({ where }),
+    ]);
+    return { data, total, page: opts.page, pageSize: opts.pageSize };
+  }
+
+  async findById(id: string) {
+    return this.prisma.invoice.findUnique({
+      where: { id },
+      include: {
+        lines: { include: { product: true, warehouse: true }, orderBy: { createdAt: 'asc' } },
+        customer: true,
+        vendor: true,
+        currency: true,
+      },
+    });
+  }
+
+  async findByNumber(organizationId: string, documentType: string, invoiceNumber: string) {
+    return this.prisma.invoice.findFirst({
+      where: { organizationId, documentType: documentType as DocumentType, invoiceNumber },
+    });
+  }
+
+  async createWithLines(data: {
+    organizationId: string;
+    documentType: string;
+    invoiceNumber: string;
+    invoiceDate: Date;
+    dueDate?: Date | null;
+    description?: string | null;
+    customerId?: string | null;
+    vendorId?: string | null;
+    currencyId: string;
+    totalAmount: bigint;
+    lines: Array<{
+      productId: string;
+      warehouseId?: string | null;
+      description?: string | null;
+      quantity: number;
+      unitPrice: bigint;
+      discount: bigint;
+      tax: bigint;
+      totalPrice: bigint;
+    }>;
+  }) {
+    const { lines, ...invoiceData } = data;
+    return this.prisma.$transaction(async (tx) => {
+      const invoice = await tx.invoice.create({
+        data: {
+          ...invoiceData,
+          documentType: invoiceData.documentType as DocumentType,
+          status: 'DRAFT' as InvoiceStatus,
+        },
+      });
+      await tx.invoiceLine.createMany({
+        data: lines.map((line, index) => ({
+          ...line,
+          invoiceId: invoice.id,
+          lineNumber: index + 1,
+        })),
+      });
+      return this.findById(invoice.id);
+    });
+  }
+
+  async updateWithLines(
+    id: string,
+    data: {
+      invoiceDate?: Date;
+      dueDate?: Date | null;
+      description?: string | null;
+      totalAmount?: bigint;
+    },
+    lines?: Array<{
+      productId: string;
+      warehouseId?: string | null;
+      description?: string | null;
+      quantity: number;
+      unitPrice: bigint;
+      discount: bigint;
+      tax: bigint;
+      totalPrice: bigint;
+    }>,
+    organizationId?: string,
+  ) {
+    return this.prisma.$transaction(async (tx) => {
+      await tx.invoice.update({ where: { id }, data });
+      if (lines && organizationId) {
+        await tx.invoiceLine.deleteMany({ where: { invoiceId: id } });
+        await tx.invoiceLine.createMany({
+          data: lines.map((line, index) => ({
+            ...line,
+            invoiceId: id,
+            lineNumber: index + 1,
+          })),
+        });
+      }
+      return this.findById(id);
+    });
+  }
+
+  async updateStatus(id: string, status: string) {
+    return this.prisma.invoice.update({
+      where: { id },
+      data: { status: status as InvoiceStatus },
+    });
+  }
+}
