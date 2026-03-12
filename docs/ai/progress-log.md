@@ -3,48 +3,47 @@
 ## Completed
 
 ### Phase 0: Scaffold (2026-03-11)
-- 247 files scaffolded across 10 phases
-- All module boundaries, platform infrastructure, design tokens, UI components, Docker, CI, docs
-- Both apps build and run (API hangs at DB connect — expected, no PostgreSQL)
-- Next.js serves on localhost:3000
+
+247 files, both apps build and serve.
 
 ### Phase 1: Schema + Contracts + Backend (2026-03-12)
-- **Schema:** Prisma schema rewritten with 30 models, 9 enums, all relations, indexes, unique constraints
-- **Prisma generate:** Client generated successfully
-- **DB exports:** Updated with all new types and enums
-- **Contracts:** 12 new Zod contract files (currency, bank, bank-account, cashbox, expense, warehouse, product, customer, vendor, invoice, opening-balance, cheque)
-- **Backend modules:** 6 modules fully implemented (accounting+currency+expense, customers, vendors, treasury, inventory, invoices)
-- **Opening balances:** 4 types implemented (customer, vendor, bank, cashbox) with currency consistency validation
-- **Cheques:** Received and paid cheques with full state machine transitions
-- **Invoices:** Transactional create/update, discriminated union validation, status transitions
-- **Build:** Full monorepo 8/8 tasks pass (6 packages + API + Web)
 
-### File counts (Phase 1)
-- Repositories: 17 new
-- Services: 14 new
-- Controllers: 14 new
-- Contracts: 12 new + 1 updated
-- Module registrations: 5 updated
-- ~65 files total
+30 Prisma models, 15 Zod contracts, 6 modules fully implemented. Build 8/8.
 
-## In Progress
-- Nothing actively in progress
+### Phase 1.5: Type safety pass (2026-03-12)
+
+Removed all `any` from backend. Aligned Product (3 sale prices), Warehouse (costingMethod), Account (connect syntax).
+
+### Phase 2: Runtime safety hardening (2026-03-12)
+
+- BigInt serialization: global interceptor, BigInt→number in all responses
+- Auth: JwtAuthGuard as APP_GUARD (deny-by-default), @Public() on health/auth
+- Error handling: GlobalExceptionFilter with ZodError support, consistent error shape
+- Logging: global LoggingInterceptor
+
+### Phase 2.5: Test hardening (2026-03-12)
+
+- 45 tests across 6 files, all passing
+- BigInt serializer: 7 tests (nested, arrays, dates, realistic Prisma shapes)
+- Exception filter: 9 tests (all error types, shape consistency, no detail leakage)
+- Cheque state machines: 23 tests (received/paid/invoice transitions, terminal states)
+- Journal balancing: 4 tests (existing, fixed assertions)
+- Placeholder tests: 2 (auth, org — need service-level tests)
 
 ## Remaining
-1. Database migrations (requires PostgreSQL)
-2. Seed data (IRR currency, Iranian banks)
-3. Unit/integration tests for all new modules
-4. Auth guards on business endpoints
-5. Error filter (Zod/ApplicationError → HTTP responses)
-6. Frontend pages (intentionally deferred)
-7. Reports module implementation
-8. Notifications module implementation
-9. Files/upload module implementation
-10. Per-record audit fields (createdByUserId)
 
-## Last Build Result
+1. **Commit** all changes
+2. **Database migrations** (requires PostgreSQL)
+3. **Seed data** (IRR, 22 banks)
+4. **Integration tests** (service-level with mocked repos)
+5. **Organization membership validation** in auth flow
+6. **Reports / Notifications / Files** module implementation
+7. **Frontend pages** (intentionally deferred)
+8. **Per-record audit fields** (D013)
+
+## Last Build/Test
+
 ```
-pnpm run build — 8 successful, 8 total, 4 cached
-API: webpack compiled successfully
-Web: 11 static pages generated
+pnpm build — 8/8 successful
+pnpm --filter @hesabdari/api test — 6 files, 45 tests, all passed
 ```

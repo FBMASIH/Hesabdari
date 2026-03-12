@@ -1,67 +1,51 @@
 # Decision Log — Hesabdari
 
-## D001 — Currency storage strategy (2026-03-12)
-**Decision:** Single-currency default (IRR) with multi-currency-ready schema.
-**Why:** Reduces complexity now. Currency table + FK on every monetary entity allows future multi-currency without migration.
-**Alternatives:** Full multi-currency now (rejected — premature), hardcoded IRR (rejected — no extensibility).
-**Impact:** All monetary entities have `currencyId` FK. Seed includes IRR only.
+## D001 — Currency: single-currency default (IRR), multi-currency-ready schema (2026-03-12)
 
-## D002 — Money type: BigInt in Rial (2026-03-12)
-**Decision:** All monetary values stored as `BigInt` in Rial (IRR), decimalPlaces=0.
-**Why:** Integer-safe. No floating-point rounding. Rial is the legal unit. Toman (÷10) is display-only.
-**Impact:** Zod contracts accept `z.number().int()` at API boundary; services convert to `BigInt`.
+## D002 — Money: BigInt in Rial, decimalPlaces=0 (2026-03-12)
 
-## D003 — Quantity type: Int only (2026-03-12)
-**Decision:** All quantities are `Int`. Fractional quantities deferred.
-**Why:** Simpler schema and validation. Most Iranian accounting uses whole-number quantities. Migration to `Decimal` later if needed.
-**Impact:** `InvoiceLine.quantity`, `ProductWarehouseStock.quantity` are `Int`.
+## D003 — Quantities: Int only, fractional deferred (2026-03-12)
 
-## D004 — Invoice party exclusivity (2026-03-12)
-**Decision:** SALES/SALES_RETURN/PROFORMA require `customerId`, forbid `vendorId`. PURCHASE/PURCHASE_RETURN require `vendorId`, forbid `customerId`.
-**Why:** Accounting correctness. A sales invoice must have a customer, never a vendor.
-**Impact:** Enforced via Zod discriminated union + service-level validation.
+## D004 — Invoice party exclusivity: customer/vendor enforced by type (2026-03-12)
 
-## D005 — Cheque state machines (2026-03-12)
-**Decision:** Forward-only transitions (except RETURNED→OPEN for re-deposit). Terminal states: CASHED, BOUNCED, CANCELLED (received); CLEARED, CANCELLED (paid).
-**Why:** Accounting audit trail. Cheques cannot go backward arbitrarily.
-**Impact:** `VALID_TRANSITIONS` lookup in cheque services.
+## D005 — Cheque state machines: forward-only, defined terminal states (2026-03-12)
 
-## D006 — Opening balance uniqueness (2026-03-12)
-**Decision:** Customer/vendor opening balances: one per entity per currency (enforced in service). Bank/cashbox: multiple entries allowed.
-**Why:** Customer/vendor balances represent a single opening position. Bank deposits accumulate.
-**Impact:** Service-level uniqueness check + DB `@@unique` on customer/vendor opening balances.
+## D006 — Opening balance uniqueness: one per customer/vendor per currency (2026-03-12)
 
-## D007 — Currency consistency rules (2026-03-12)
-**Decision:** BankOpeningBalance.currencyId must match BankAccount.currencyId. Same for cashbox. PaidCheque.currencyId must match BankAccount.currencyId. ReceivedCheque deposit must match.
-**Why:** Prevents cross-currency accounting errors.
-**Impact:** Service-level validation in treasury module.
+## D007 — Currency consistency: bank/cashbox/cheque currency must match account (2026-03-12)
 
-## D008 — Schema conventions (2026-03-12)
-**Decision:** UUID IDs (`@default(uuid()) @db.Uuid`), snake_case mapping, `onDelete: Cascade` for org children, `Restrict` for critical business refs.
-**Why:** Consistency. PostgreSQL-friendly. Prevents accidental data loss.
-**Impact:** All 30 models follow this convention.
+## D008 — Schema conventions: UUID IDs, snake_case mapping, Cascade/Restrict (2026-03-12)
 
-## D009 — Prisma 7 ESM compatibility (2026-03-11)
-**Decision:** `packages/db/package.json` has `"type": "module"`. Required because Prisma 7 generated client uses `import.meta.url`.
-**Why:** Without it, tsc outputs CJS which can't handle `import.meta.url`.
-**Impact:** All imports from db package use `.js` extensions.
+## D009 — Prisma 7 ESM: packages/db uses `"type": "module"` (2026-03-11)
 
-## D010 — NestJS webpack builder (2026-03-11)
-**Decision:** API uses webpack builder (nest-cli.json `"builder": "webpack"`).
-**Why:** Handles ESM/CJS interop between NestJS (CJS) and Prisma 7 (ESM).
-**Impact:** Requires `ts-loader` + `webpack` devDependencies.
+## D010 — NestJS webpack builder for ESM/CJS interop (2026-03-11)
 
-## D011 — Warehouse requirement on invoice lines (2026-03-12)
-**Decision:** PROFORMA: warehouseId optional. All other invoice types: warehouseId REQUIRED on every line.
-**Why:** Inventory-affecting documents must have warehouse context for stock tracking.
-**Impact:** Validated in Zod contract `.superRefine()`.
+## D011 — Warehouse required on non-PROFORMA invoice lines (2026-03-12)
 
-## D012 — Paid cheque sayadi validation (2026-03-12)
-**Decision:** PaidCheque.sayadiNumber uniqueness enforced at service level (not DB) when provided and non-empty.
-**Why:** Nullable partial-unique is awkward in Prisma. Service validation is sufficient.
-**Impact:** Service checks on create/update.
+## D012 — Paid cheque sayadi uniqueness at service level (2026-03-12)
 
 ## D013 — Per-record audit fields deferred (2026-03-12)
-**Decision:** `createdByUserId`/`updatedByUserId` on business records deferred.
-**Why:** Auth/request user context not yet injected into service methods. AuditLog table provides event-level tracking.
-**Impact:** Future phase will wire request user through NestJS DI chain.
+
+## D014 — No `any` in backend code; use Prisma typed inputs (2026-03-12)
+
+## D015 — CostingMethod on Warehouse, not Product (2026-03-12)
+
+## D016 — BigInt serialized as number in API responses (2026-03-12)
+
+**Decision:** Global `BigIntSerializerInterceptor` converts all BigInt values to `number` in HTTP responses.
+**Why:** `JSON.stringify` cannot handle BigInt. IRR amounts fit safely within `Number.MAX_SAFE_INTEGER` (~9e15).
+**Alternatives:** String serialization (rejected — would break contract `z.number().int()` symmetry), per-DTO conversion (rejected — too scattered).
+**Impact:** All monetary fields in responses are JavaScript numbers. No manual conversion needed in controllers.
+
+## D017 — Deny-by-default auth via APP_GUARD (2026-03-12)
+
+**Decision:** `JwtAuthGuard` registered as global `APP_GUARD`. All endpoints require JWT unless decorated `@Public()`.
+**Why:** CLAUDE.md mandates deny-by-default. Per-controller guards risk accidental omission on accounting endpoints.
+**Alternatives:** Per-controller `@UseGuards()` (rejected — too fragile for 21 controllers).
+**Impact:** Health and auth endpoints marked `@Public()`. All business endpoints automatically protected. No RBAC yet (org membership check deferred).
+
+## D018 — Structured error response shape (2026-03-12)
+
+**Decision:** All API errors return `{ error: { code: string, message: string, details?: unknown } }`. ZodError→400, ApplicationError→statusCode, DomainError→422, HttpException→status, unknown→500.
+**Why:** Consistent error shape for frontend consumption. No internal detail leakage on 500s.
+**Impact:** Global `GlobalExceptionFilter` registered in `main.ts`. Controllers don't need try/catch for Zod parsing.

@@ -1,45 +1,62 @@
 # Change Log — Hesabdari
 
-## 2026-03-12 — Domain schema + contracts + backend implementation
+## 2026-03-12 (Session 5) — Runtime safety hardening + tests
 
-### Schema
+### BigInt serialization (OQ-006 resolved)
 
-- Rewrote `packages/db/prisma/schema.prisma` with 30 models, 9 enums
-- Added: Currency, Bank, Expense, BankAccount, Cashbox, Customer, Vendor, Warehouse, Product, ProductWarehouseStock, Invoice, InvoiceLine, ReceivedCheque, PaidCheque, CustomerOpeningBalance, VendorOpeningBalance, BankOpeningBalance, CashboxOpeningBalance
-- Added enums: CostingMethod, DocumentType, InvoiceStatus, BalanceType, ChequeStatus, PaidChequeStatus
-- Updated Organization model with 15+ relation arrays
+- Created `platform/interceptors/bigint-serializer.interceptor.ts` — recursive BigInt→number conversion
+- Registered globally in `main.ts`
+- 7 unit tests covering nested objects, arrays, dates, primitives, realistic Prisma shapes
 
-### DB Package
+### Auth guard (OQ-004 resolved)
 
-- Updated `packages/db/src/index.ts` — exports all new types and enums
-- Ran `prisma generate` successfully
+- Registered `JwtAuthGuard` as `APP_GUARD` in `app.module.ts` — deny-by-default
+- Added `@Public()` to `HealthController` (health + readiness endpoints)
+- Auth endpoints already had `@Public()` — no changes needed
 
-### Contracts
+### Global error filter (OQ-005 resolved)
 
-- Created 12 new files in `packages/contracts/src/`: currency, bank, bank-account, cashbox, expense, warehouse, product, customer, vendor, invoice, opening-balance, cheque
-- Updated `packages/contracts/src/index.ts` barrel export
-- Fixed cheque contracts: aligned field names to schema (`date` not `issueDate`, removed non-schema fields)
+- Rewrote `platform/filters/global-exception.filter.ts`:
+  - Added ZodError handling (400, VALIDATION_ERROR, issues as details)
+  - Fixed `Record<string, any>` → `Record<string, unknown>`
+  - Extracted `resolve()` method for cleaner flow
+  - Added typed `ErrorResponse` interface
+- Registered globally in `main.ts`
+- 9 unit tests covering all error types + consistency
 
-### Backend Modules
+### Logging interceptor
 
-- **accounting:** Added CurrencyRepository, CurrencyService, CurrenciesController, ExpenseRepository, ExpenseService, ExpensesController. Updated module registration.
-- **customers:** Rewrote repository/service/controller with full CRUD + search + pagination. Added CustomerOpeningBalance repository/service/controller. Updated module.
-- **vendors:** Same pattern as customers. Added VendorOpeningBalance. Updated module.
-- **treasury:** Created from scratch: Bank, BankAccount, Cashbox repos/services/controllers. Added ReceivedCheque, PaidCheque repos/services/controllers. Added BankOpeningBalance, CashboxOpeningBalance repos/services/controllers. Full module with 7 controllers, 7 services, 7 repositories.
-- **inventory:** Created from scratch: Warehouse, Product, ProductWarehouseStock repos/services/controllers. Updated module.
-- **invoices:** Rewrote repository (transactional create/update with lineNumber), service (status transitions, party handling), controller (full CRUD + confirm/cancel).
+- Fixed `Observable<any>` → `Observable<unknown>` in return type
+- Registered globally in `main.ts`
 
-### Bug Fixes During Implementation
+### State machine tests
 
-- Fixed InvoiceLine: added `lineNumber` (required by schema)
-- Fixed InvoiceLine: removed `organizationId` (not in schema)
-- Fixed cheque contracts: `date` instead of `issueDate`, removed `bankId`/`branch`/`drawerName`/`payeeName` (not in schema)
-- Fixed ReceivedCheque includes: removed `bank` (not a relation)
-- Fixed BanksController: removed unused `Query` and `bankQuerySchema` imports
-- Fixed opening-balance contract: `balanceDate` → `date` to match schema
-- Fixed bank/cashbox opening balance repos/services: `balanceDate` → `date`, `Date | null` → `Date | undefined` (schema has `@default(now())`)
+- Created `treasury/tests/cheque-state-machines.spec.ts` — 23 tests
+  - Received cheque: valid transitions, terminal states, rejection of invalid paths
+  - Paid cheque: valid transitions, terminal states
+  - Invoice status: DRAFT→CONFIRMED→CANCELLED, rejection of reversal
 
-### Memory system bootstrap (2026-03-12)
+### Pre-existing test fix
 
-- Created `docs/ai/` directory with 9 memory files
-- Populated from full project state: working-memory, decision-log (13 decisions), progress-log, change-log, test-log, open-questions (8 items), conventions, requirement-checklist, prompt-history
+- Fixed `journal-balancing.spec.ts`: matched on error message text, not error code
+
+### Files touched
+
+- New: 3 (bigint interceptor, bigint tests, cheque tests, filter tests)
+- Modified: 6 (main.ts, app.module.ts, health controller, exception filter, logging interceptor, interceptors index, journal-balancing test)
+
+---
+
+## 2026-03-12 (Session 4) — Type safety + schema alignment
+
+- Removed `any` from all repos/services/platform → Prisma typed inputs
+- Product: salePrice→salePrice1/2/3, Warehouse: address→costingMethod
+- New `account.ts` contract, DB `Prisma` namespace export
+- 21 files, build 8/8
+
+---
+
+## 2026-03-12 (Sessions 1-3) — Initial scaffold + backend implementation
+
+- 247 scaffolded files, 30 Prisma models, 14 contracts, 65+ backend files
+- 6 modules fully implemented, memory system bootstrapped

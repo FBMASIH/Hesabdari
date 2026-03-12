@@ -7,74 +7,78 @@
 - **Field mapping:** Every camelCase field gets `@map("snake_case")`
 - **Table mapping:** Every model gets `@@map("table_name")`
 - **Timestamps:** `createdAt DateTime @default(now()) @map("created_at")`, `updatedAt DateTime @updatedAt @map("updated_at")`
-- **Booleans:** `@map("snake_case")` (e.g., `isActive @map("is_active")`)
-- **onDelete:** `Cascade` for org-child relations. `Restrict` for critical business FKs. `SetNull` for optional FKs.
-- **Money:** `BigInt` type. Always in IRR (Rial). Integer-only.
-- **Quantities:** `Int` type. Whole numbers only.
+- **onDelete:** `Cascade` for org-child. `Restrict` for critical business FKs. `SetNull` for optional.
+- **Money:** `BigInt`, always IRR, integer-only
+- **Quantities:** `Int`, whole numbers only
+
+## DB Package
+
+- Exports: `PrismaClient`, `Prisma` namespace, `PrismaPg`, all model/enum types
+- `Prisma` namespace: `Prisma.*CreateInput`, `Prisma.*UpdateInput`, `Prisma.*WhereInput`
 
 ## Contract Conventions
 
 - File per entity in `packages/contracts/src/`
-- `create*Schema` — required fields for creation
-- `update*Schema` — `create.partial().extend({ id: z.string().uuid() })`
-- `*QuerySchema` — `paginationSchema.extend({ ...filters })`
-- Money at API boundary: `z.number().int()` (converted to BigInt in service)
+- `create*Schema`, `update*Schema` (partial + id), `*QuerySchema` (pagination + filters)
+- Money: `z.number().int()` at API boundary → `BigInt()` in service
 - Dates: `z.coerce.date()`
-- Barrel export in `index.ts` with `.js` extensions (ESM)
-
-## Service Conventions
-
-- One service per entity (or closely related group)
-- Constructor injection of repository (and cross-repo when needed)
-- `findById()` throws `NotFoundError` if not found
-- `create()` checks code uniqueness via `findByCode()`, throws `ConflictError`
-- `update()` re-checks uniqueness if code changed
-- `softDelete()` sets `isActive: false`
-- Money conversion: `BigInt(data.amount)` at service boundary
-- State transitions: `VALID_TRANSITIONS` Record lookup, throw `ApplicationError` on invalid
+- Barrel export in `index.ts` with `.js` extensions
 
 ## Repository Conventions
 
-- One repository per Prisma model
-- Constructor injection of `PrismaService`
-- Paginated list: returns `{ data, total, page, pageSize }`
-- Search: `findMany` with `contains` + `mode: 'insensitive'`, `take: 20`
-- `findByCode`: returns first match for org-scoped uniqueness check
-- `create`/`update`: accept plain data objects, return Prisma result
+- One per Prisma model, constructor-injected `PrismaService`
+- Typed parameters: `Prisma.*Input` types — never `any`
+- Paginated: `{ data, total, page, pageSize }`
+- Date ranges: `{ ...(fromDate ? { gte } : {}), ...(toDate ? { lte } : {}) }`
+
+## Service Conventions
+
+- One per entity, constructor-injected repository
+- `findById()` → `NotFoundError`, `create()` → `ConflictError` on duplicate code
+- Money: `BigInt(data.amount)` at service boundary
+- State transitions: `VALID_TRANSITIONS` Record, `ApplicationError` on invalid
+- Relations: `{ connect: { id } }` / `{ disconnect: true }` syntax
 
 ## Controller Conventions
 
-- Thin controllers — parse Zod, delegate to service
-- `@Body() body: unknown` — parse via Zod schema in method body
-- `@Query() query: unknown` — same pattern
-- `@Param('orgId') orgId: string` for org-scoped routes
-- Route pattern: `organizations/:orgId/<entity>` (org-scoped) or `<entity>` (global)
-- Swagger: `@ApiTags`, `@ApiBearerAuth()`, `@ApiOperation({ summary })` on each method
-- Update pattern: `parse({ ...body, id })` then destructure `{ id: _id, ...rest }`
+- Thin: `@Body() body: unknown` → `schema.parse(body)` → delegate to service
+- Route: `organizations/:orgId/<entity>` (org-scoped)
+- Swagger: `@ApiTags`, `@ApiBearerAuth()`, `@ApiOperation`
 
-## Module Conventions
+## Auth Convention (D017)
 
-- One module file per business domain
-- Registers: controllers, providers (services + repositories), exports (services)
-- Cross-module dependencies via NestJS DI (services injected across modules when needed)
+- `JwtAuthGuard` is global `APP_GUARD` — all endpoints require JWT by default
+- `@Public()` for unauthenticated endpoints (health, auth)
+- No per-controller `@UseGuards()` needed
 
-## Naming
+## Error Response Convention (D018)
 
-- Files: `kebab-case.ts`
-- Classes: `PascalCase`
-- Services: `EntityService`
-- Repositories: `EntityRepository`
-- Controllers: `EntitiesController` (plural)
-- Modules: `EntitiesModule` (plural, matches directory)
+```json
+{ "error": { "code": "ERROR_CODE", "message": "Human-readable", "details": [...] } }
+```
 
-## Transaction Pattern
+- ZodError → 400, VALIDATION_ERROR, issues as details
+- ApplicationError → statusCode, code, message
+- DomainError → 422, code, message
+- HttpException → status, HTTP_ERROR
+- Unknown → 500, INTERNAL_ERROR, generic message (no leak)
 
-- Invoice create/update: `prisma.$transaction(async (tx) => { ... })`
-- Delete + recreate lines atomically
-- Line numbers auto-assigned: `index + 1`
+## BigInt Serialization Convention (D016)
 
-## Validation Pattern
+- Global `BigIntSerializerInterceptor` converts BigInt→number in all responses
+- No manual conversion in controllers or services
+- Safe for IRR (amounts << Number.MAX_SAFE_INTEGER)
 
-- Zod at API boundary (controller)
-- Business rules in service (uniqueness, state transitions, currency consistency)
-- Prisma constraints as last line of defense (unique indexes, FK constraints)
+## Type Safety (D014)
+
+- No `any` in repos, services, platform code
+- Import `type { Prisma }` from `@hesabdari/db` for input types
+- Import enums directly: `import { CostingMethod } from '@hesabdari/db'`
+
+## Test Conventions
+
+- Vitest, `src/**/*.spec.ts`
+- `@` alias resolves to `apps/api/src`
+- State machine tests: duplicate `VALID_TRANSITIONS` in test, test valid/invalid/terminal
+- Error filter tests: mock `ArgumentsHost` with `{ switchToHttp → getResponse → { status, send } }`
+- Interceptor tests: mock `CallHandler` with `{ handle: () => of(data) }`

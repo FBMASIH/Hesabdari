@@ -1,22 +1,24 @@
 # Working Memory — Hesabdari
 
-**Last updated:** 2026-03-12
+**Last updated:** 2026-03-12 (Session 5)
 
 ## Current Phase
-Domain-first / backend-first implementation. Schema + contracts + backend modules complete. No migrations run yet (no live DB). Frontend is scaffolded but intentionally untouched.
+
+Backend stabilization complete. Runtime safety hardening done: BigInt serialization, global auth guard, structured error handling. 45 unit tests passing. Frontend scaffolded but untouched.
 
 ## Project Truth
-- **Type:** Enterprise Persian accounting platform — pnpm monorepo, modular monolith, clean architecture
-- **Stack:** NestJS 11.1 + Fastify (API), Next.js 16.1 (Web), Prisma 7, PostgreSQL 18, Zod contracts
-- **Build:** Turborepo, webpack for API (nest-cli), Turbopack for Web. Full build: 8/8 tasks pass.
-- **DB package:** `"type": "module"` (ESM) — required for Prisma 7 generated code using `import.meta.url`
+
+- **Stack:** NestJS 11.1 + Fastify, Next.js 16.1, Prisma 7, PostgreSQL 18, Zod contracts
+- **Build:** 8/8 tasks pass. Tests: 6 files, 45 tests all pass.
+- **DB package:** ESM (`"type": "module"`), exports `PrismaClient` + `Prisma` namespace
 
 ## Architecture Snapshot
+
 ```
 apps/api/          NestJS backend (webpack builder)
 apps/web/          Next.js 16.1 frontend (scaffolded, minimal)
 packages/db/       Prisma 7 schema (30 models, 9 enums) + generated client
-packages/contracts/ Zod schemas (14 files) — API boundary validation
+packages/contracts/ Zod schemas (15 files)
 packages/shared/   Shared types/utils
 packages/ui/       Radix-based UI components (11)
 packages/design-tokens/ Tailwind theme tokens
@@ -24,31 +26,44 @@ packages/api-client/    Typed HTTP client (stub)
 packages/config/        TS/ESLint/Prettier configs
 ```
 
-## Active Backend Modules (implemented)
-| Module | Entities | Status |
-|--------|----------|--------|
-| identity | User, Session, Role, Permission | scaffolded (auth flow) |
-| organizations | Organization, OrganizationMember | scaffolded (CRUD) |
-| accounting | Account, Period, JournalEntry, Currency, Expense | full CRUD |
-| customers | Customer, CustomerOpeningBalance | full CRUD + search + opening balances |
-| vendors | Vendor, VendorOpeningBalance | full CRUD + search + opening balances |
-| treasury | Bank, BankAccount, Cashbox, ReceivedCheque, PaidCheque, BankOpeningBalance, CashboxOpeningBalance | full CRUD + state machines |
-| inventory | Warehouse, Product, ProductWarehouseStock | full CRUD + search + stock upsert |
-| invoices | Invoice, InvoiceLine | full CRUD + transactional + status transitions |
-| audit | AuditLog | scaffolded |
-| reports | — | empty module |
-| notifications | — | empty module |
-| files | — | empty module |
+## Runtime Safety (new in Session 5)
+
+- **BigInt serialization:** `BigIntSerializerInterceptor` — global, converts BigInt→number in all responses
+- **Auth:** `JwtAuthGuard` registered as `APP_GUARD` — deny-by-default. Only `@Public()` endpoints skip auth.
+- **Error handling:** `GlobalExceptionFilter` — ZodError→400, ApplicationError→statusCode, DomainError→422, HttpException→status, unknown→500. Consistent `{ error: { code, message, details? } }` shape.
+- **Logging:** `LoggingInterceptor` — global, logs `METHOD URL - Xms` for every request.
+
+## Active Backend Modules
+
+| Module                                  | Status                                                              |
+| --------------------------------------- | ------------------------------------------------------------------- |
+| identity                                | Auth flow (JWT, sessions, register/login)                           |
+| organizations                           | CRUD                                                                |
+| accounting                              | Full CRUD (Account, Period, JournalEntry, Currency, Expense), typed |
+| customers                               | Full CRUD + search + opening balances                               |
+| vendors                                 | Full CRUD + search + opening balances                               |
+| treasury                                | Full CRUD + state machines (cheques), typed                         |
+| inventory                               | Full CRUD + stock upsert, typed                                     |
+| invoices                                | Full CRUD + transactional + status transitions, typed               |
+| audit / reports / notifications / files | Stubs                                                               |
+
+## Public Endpoints
+
+- `POST /api/v1/auth/register`, `/login`, `/refresh` — @Public()
+- `GET /api/v1/health`, `/health/ready` — @Public()
+- All other endpoints require JWT
 
 ## Current Priorities
-1. No database migrations have been run (no PostgreSQL available during dev)
-2. No unit/integration tests written for new modules yet
-3. Frontend pages are scaffold-only — intentionally deferred
-4. Seed data (currencies, banks) not yet implemented
+
+1. Commit all changes (type-safety + runtime hardening + tests)
+2. Database migrations (requires PostgreSQL)
+3. Seed data (IRR currency, 22 Iranian banks)
+4. Integration tests (service-level with mocked repos)
+5. Organization membership validation in guards
 
 ## Active Constraints
-- All money stored as BigInt in IRR (Rial). Toman display is presentation-only.
-- Integer-only quantities (fractional deferred)
-- Multi-currency schema exists but single-currency (IRR) default behavior
-- Per-record audit fields (createdByUserId) deferred — AuditLog table provides event tracking
-- No auth guards wired to business endpoints yet
+
+- All money: BigInt in IRR, serialized as number in API responses
+- Integer-only quantities
+- No auth guards validate org membership yet (JWT auth only, no RBAC)
+- Per-record audit fields deferred (D013)
