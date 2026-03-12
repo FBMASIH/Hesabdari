@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
-import { BankOpeningBalanceRepository } from '../../infrastructure/repositories/bank-opening-balance.repository';
-import { BankAccountRepository } from '../../infrastructure/repositories/bank-account.repository';
+import type { BankOpeningBalanceRepository } from '../../infrastructure/repositories/bank-opening-balance.repository';
+import type { BankAccountRepository } from '../../infrastructure/repositories/bank-account.repository';
 import { NotFoundError, ApplicationError } from '@/platform/errors';
 import type { CreateBankOpeningBalanceDto } from '@hesabdari/contracts';
 
@@ -31,7 +31,7 @@ export class BankOpeningBalanceService {
       bankAccountId: data.bankAccountId,
       currencyId: data.currencyId,
       amount: BigInt(data.amount),
-      balanceDate: data.balanceDate ?? null,
+      date: data.date ?? undefined,
       description: data.description ?? null,
     });
   }

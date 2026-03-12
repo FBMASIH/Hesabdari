@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
-import { CashboxOpeningBalanceRepository } from '../../infrastructure/repositories/cashbox-opening-balance.repository';
-import { CashboxRepository } from '../../infrastructure/repositories/cashbox.repository';
+import type { CashboxOpeningBalanceRepository } from '../../infrastructure/repositories/cashbox-opening-balance.repository';
+import type { CashboxRepository } from '../../infrastructure/repositories/cashbox.repository';
 import { NotFoundError, ApplicationError } from '@/platform/errors';
 import type { CreateCashboxOpeningBalanceDto } from '@hesabdari/contracts';
 
@@ -31,7 +31,7 @@ export class CashboxOpeningBalanceService {
       cashboxId: data.cashboxId,
       currencyId: data.currencyId,
       amount: BigInt(data.amount),
-      balanceDate: data.balanceDate ?? null,
+      date: data.date ?? undefined,
       description: data.description ?? null,
     });
   }

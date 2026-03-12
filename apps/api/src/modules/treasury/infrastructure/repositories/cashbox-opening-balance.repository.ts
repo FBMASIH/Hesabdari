@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { PrismaService } from '@/platform/database/prisma.service';
+import type { PrismaService } from '@/platform/database/prisma.service';
 
 @Injectable()
 export class CashboxOpeningBalanceRepository {
@@ -25,7 +25,7 @@ export class CashboxOpeningBalanceRepository {
     cashboxId: string;
     currencyId: string;
     amount: bigint;
-    balanceDate?: Date | null;
+    date?: Date;
     description?: string | null;
   }) {
     return this.prisma.cashboxOpeningBalance.create({ data });

@@ -34,7 +34,7 @@ export const createBankOpeningBalanceSchema = z.object({
   bankAccountId: z.string().uuid(),
   currencyId: z.string().uuid(),
   amount: z.number().int().positive(),
-  balanceDate: z.coerce.date().optional(),
+  date: z.coerce.date().optional(),
   description: z.string().max(500).optional(),
 });
 
@@ -47,7 +47,7 @@ export const createCashboxOpeningBalanceSchema = z.object({
   cashboxId: z.string().uuid(),
   currencyId: z.string().uuid(),
   amount: z.number().int().positive(),
-  balanceDate: z.coerce.date().optional(),
+  date: z.coerce.date().optional(),
   description: z.string().max(500).optional(),
 });
 
