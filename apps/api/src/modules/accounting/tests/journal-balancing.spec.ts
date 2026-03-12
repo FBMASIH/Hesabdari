@@ -15,11 +15,11 @@ describe('Journal Balancing Rules', () => {
       { debitAmount: 10000n, creditAmount: 0n },
       { debitAmount: 0n, creditAmount: 5000n },
     ];
-    expect(() => assertJournalBalances(lines)).toThrow('JOURNAL_NOT_BALANCED');
+    expect(() => assertJournalBalances(lines)).toThrow('not balanced');
   });
 
   it('should throw when fewer than 2 lines', () => {
-    expect(() => assertMinimumLines([{}])).toThrow('INSUFFICIENT_JOURNAL_LINES');
+    expect(() => assertMinimumLines([{}])).toThrow('at least 2 lines');
   });
 
   it('should pass with 2 or more lines', () => {

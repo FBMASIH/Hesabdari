@@ -1,9 +1,12 @@
 import { NestFactory } from '@nestjs/core';
-import { FastifyAdapter, NestFastifyApplication } from '@nestjs/platform-fastify';
+import type { NestFastifyApplication } from '@nestjs/platform-fastify';
+import { FastifyAdapter } from '@nestjs/platform-fastify';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { Logger, ValidationPipe } from '@nestjs/common';
 import { AppModule } from './app.module';
 import { AppConfig } from './config/app.config';
+import { GlobalExceptionFilter } from './platform/filters';
+import { LoggingInterceptor, BigIntSerializerInterceptor } from './platform/interceptors';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestFastifyApplication>(
@@ -22,6 +25,12 @@ async function bootstrap() {
       transformOptions: { enableImplicitConversion: true },
     }),
   );
+
+  // Global exception filter — structured error responses
+  app.useGlobalFilters(new GlobalExceptionFilter());
+
+  // Global interceptors — logging + BigInt serialization
+  app.useGlobalInterceptors(new LoggingInterceptor(), new BigIntSerializerInterceptor());
 
   // CORS
   app.enableCors({
