@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
-import { PrismaService } from '@/platform/database/prisma.service';
+import type { PrismaService } from '@/platform/database/prisma.service';
+import type { Prisma } from '@hesabdari/db';
 
 @Injectable()
 export class ProductRepository {
@@ -9,7 +10,7 @@ export class ProductRepository {
     organizationId: string,
     opts: { isActive?: boolean; page: number; pageSize: number },
   ) {
-    const where = {
+    const where: Prisma.ProductWhereInput = {
       organizationId,
       ...(opts.isActive !== undefined ? { isActive: opts.isActive } : {}),
     };
@@ -58,14 +59,15 @@ export class ProductRepository {
     majorUnit?: string | null;
     minorUnit?: string | null;
     quantityInMajorUnit?: number | null;
-    salePrice: bigint;
-    costingMethod: string;
+    salePrice1: bigint;
+    salePrice2: bigint;
+    salePrice3: bigint;
     isActive: boolean;
   }) {
-    return this.prisma.product.create({ data: data as any });
+    return this.prisma.product.create({ data });
   }
 
-  async update(id: string, data: any) {
+  async update(id: string, data: Prisma.ProductUpdateInput) {
     return this.prisma.product.update({ where: { id }, data });
   }
 }

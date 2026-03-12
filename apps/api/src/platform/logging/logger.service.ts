@@ -1,4 +1,5 @@
-import { Injectable, LoggerService, Scope } from '@nestjs/common';
+import type { LoggerService } from '@nestjs/common';
+import { Injectable, Scope } from '@nestjs/common';
 import pino from 'pino';
 
 @Injectable({ scope: Scope.TRANSIENT })
@@ -19,29 +20,30 @@ export class AppLoggerService implements LoggerService {
     this.context = context;
   }
 
-  log(message: string, ...args: any[]) {
+  log(message: string, ...args: unknown[]) {
     this.logger.info({ context: this.context, ...this.formatArgs(args) }, message);
   }
 
-  error(message: string, ...args: any[]) {
+  error(message: string, ...args: unknown[]) {
     this.logger.error({ context: this.context, ...this.formatArgs(args) }, message);
   }
 
-  warn(message: string, ...args: any[]) {
+  warn(message: string, ...args: unknown[]) {
     this.logger.warn({ context: this.context, ...this.formatArgs(args) }, message);
   }
 
-  debug(message: string, ...args: any[]) {
+  debug(message: string, ...args: unknown[]) {
     this.logger.debug({ context: this.context, ...this.formatArgs(args) }, message);
   }
 
-  verbose(message: string, ...args: any[]) {
+  verbose(message: string, ...args: unknown[]) {
     this.logger.trace({ context: this.context, ...this.formatArgs(args) }, message);
   }
 
-  private formatArgs(args: any[]): Record<string, any> {
+  private formatArgs(args: unknown[]): Record<string, unknown> {
     if (args.length === 0) return {};
-    if (args.length === 1 && typeof args[0] === 'object') return args[0];
+    if (args.length === 1 && typeof args[0] === 'object' && args[0] !== null)
+      return args[0] as Record<string, unknown>;
     return { args };
   }
 }

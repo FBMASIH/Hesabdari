@@ -1,8 +1,6 @@
 import { z } from 'zod';
 import { paginationSchema } from './common.js';
 
-const costingMethodEnum = z.enum(['FIFO', 'LIFO', 'AVERAGE']);
-
 export const createProductSchema = z.object({
   code: z.string().min(1).max(50),
   name: z.string().min(1).max(200),
@@ -11,8 +9,9 @@ export const createProductSchema = z.object({
   majorUnit: z.string().max(50).optional(),
   minorUnit: z.string().max(50).optional(),
   quantityInMajorUnit: z.number().int().positive().optional(),
-  salePrice: z.number().int().min(0).default(0),
-  costingMethod: costingMethodEnum.default('FIFO'),
+  salePrice1: z.number().int().min(0).default(0),
+  salePrice2: z.number().int().min(0).default(0),
+  salePrice3: z.number().int().min(0).default(0),
   isActive: z.boolean().default(true),
 });
 

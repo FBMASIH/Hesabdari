@@ -1,10 +1,12 @@
 import { z } from 'zod';
 import { paginationSchema } from './common.js';
 
+const costingMethodEnum = z.enum(['FIFO', 'LIFO', 'AVERAGE']);
+
 export const createWarehouseSchema = z.object({
   code: z.string().min(1).max(50),
   name: z.string().min(1).max(200),
-  address: z.string().max(500).optional(),
+  costingMethod: costingMethodEnum.default('FIFO'),
   isActive: z.boolean().default(true),
 });
 

@@ -1,7 +1,8 @@
 import { Injectable } from '@nestjs/common';
-import { ProductRepository } from '../../infrastructure/repositories/product.repository';
-import { ProductWarehouseStockRepository } from '../../infrastructure/repositories/product-warehouse-stock.repository';
+import type { ProductRepository } from '../../infrastructure/repositories/product.repository';
+import type { ProductWarehouseStockRepository } from '../../infrastructure/repositories/product-warehouse-stock.repository';
 import { NotFoundError, ConflictError } from '@/platform/errors';
+import type { Prisma } from '@hesabdari/db';
 import type {
   CreateProductDto,
   UpdateProductDto,
@@ -46,8 +47,9 @@ export class ProductService {
       majorUnit: data.majorUnit ?? null,
       minorUnit: data.minorUnit ?? null,
       quantityInMajorUnit: data.quantityInMajorUnit ?? null,
-      salePrice: BigInt(data.salePrice ?? 0),
-      costingMethod: data.costingMethod ?? 'FIFO',
+      salePrice1: BigInt(data.salePrice1 ?? 0),
+      salePrice2: BigInt(data.salePrice2 ?? 0),
+      salePrice3: BigInt(data.salePrice3 ?? 0),
       isActive: data.isActive ?? true,
     });
   }
@@ -60,11 +62,12 @@ export class ProductService {
         throw new ConflictError(`Product with code ${data.code} already exists`);
       }
     }
-    const updateData: any = { ...data };
-    if (data.salePrice !== undefined) {
-      updateData.salePrice = BigInt(data.salePrice);
-    }
-    return this.productRepository.update(id, updateData);
+    const { salePrice1, salePrice2, salePrice3, ...rest } = data;
+    const updateData: Record<string, unknown> = { ...rest };
+    if (salePrice1 !== undefined) updateData.salePrice1 = BigInt(salePrice1);
+    if (salePrice2 !== undefined) updateData.salePrice2 = BigInt(salePrice2);
+    if (salePrice3 !== undefined) updateData.salePrice3 = BigInt(salePrice3);
+    return this.productRepository.update(id, updateData as Prisma.ProductUpdateInput);
   }
 
   async softDelete(id: string) {

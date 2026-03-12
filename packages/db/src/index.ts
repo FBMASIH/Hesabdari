@@ -1,4 +1,4 @@
-export { PrismaClient } from './generated/prisma/client.js';
+export { PrismaClient, Prisma } from './generated/prisma/client.js';
 export { PrismaPg } from '@prisma/adapter-pg';
 export type {
   // Identity & Auth

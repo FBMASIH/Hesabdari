@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
-import { WarehouseRepository } from '../../infrastructure/repositories/warehouse.repository';
+import type { WarehouseRepository } from '../../infrastructure/repositories/warehouse.repository';
 import { NotFoundError, ConflictError } from '@/platform/errors';
+import type { CostingMethod } from '@hesabdari/db';
 import type {
   CreateWarehouseDto,
   UpdateWarehouseDto,
@@ -32,7 +33,7 @@ export class WarehouseService {
       organizationId,
       code: data.code,
       name: data.name,
-      address: data.address ?? null,
+      costingMethod: (data.costingMethod ?? 'FIFO') as CostingMethod,
       isActive: data.isActive ?? true,
     });
   }
@@ -48,6 +49,10 @@ export class WarehouseService {
         throw new ConflictError(`Warehouse with code ${data.code} already exists`);
       }
     }
-    return this.warehouseRepository.update(id, data);
+    const { costingMethod, ...rest } = data;
+    return this.warehouseRepository.update(id, {
+      ...rest,
+      ...(costingMethod ? { costingMethod: costingMethod as CostingMethod } : {}),
+    });
   }
 }

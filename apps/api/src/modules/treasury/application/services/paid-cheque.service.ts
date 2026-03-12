@@ -1,7 +1,8 @@
 import { Injectable } from '@nestjs/common';
-import { PaidChequeRepository } from '../../infrastructure/repositories/paid-cheque.repository';
-import { BankAccountRepository } from '../../infrastructure/repositories/bank-account.repository';
+import type { PaidChequeRepository } from '../../infrastructure/repositories/paid-cheque.repository';
+import type { BankAccountRepository } from '../../infrastructure/repositories/bank-account.repository';
 import { NotFoundError, ConflictError, ApplicationError } from '@/platform/errors';
+import type { Prisma } from '@hesabdari/db';
 import type {
   CreatePaidChequeDto,
   UpdatePaidChequeDto,
@@ -95,9 +96,10 @@ export class PaidChequeService {
       }
     }
 
-    const updateData: any = { ...data };
-    if (data.amount !== undefined) updateData.amount = BigInt(data.amount);
-    return this.chequeRepository.update(id, updateData);
+    const { amount, ...rest } = data;
+    const updateData: Record<string, unknown> = { ...rest };
+    if (amount !== undefined) updateData.amount = BigInt(amount);
+    return this.chequeRepository.update(id, updateData as Prisma.PaidChequeUpdateInput);
   }
 
   async changeStatus(id: string, data: PaidChequeStatusDto) {

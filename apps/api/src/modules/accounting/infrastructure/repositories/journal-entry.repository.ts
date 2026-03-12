@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
-import { PrismaService } from '@/platform/database/prisma.service';
+import type { PrismaService } from '@/platform/database/prisma.service';
+import type { JournalEntryStatus } from '@hesabdari/db';
 
 @Injectable()
 export class JournalEntryRepository {
@@ -19,7 +20,7 @@ export class JournalEntryRepository {
     });
   }
 
-  async updateStatus(id: string, status: any, postedAt?: Date, postedBy?: string) {
+  async updateStatus(id: string, status: JournalEntryStatus, postedAt?: Date, postedBy?: string) {
     return this.prisma.journalEntry.update({
       where: { id },
       data: { status, postedAt, postedBy },

@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
-import { AccountRepository } from '../../infrastructure/repositories/account.repository';
+import type { AccountRepository } from '../../infrastructure/repositories/account.repository';
 import { NotFoundError, ConflictError } from '@/platform/errors';
+import type { AccountType } from '@hesabdari/db';
 
 @Injectable()
 export class AccountService {
@@ -28,9 +29,12 @@ export class AccountService {
       throw new ConflictError(`Account with code ${data.code} already exists`);
     }
     return this.accountRepository.create({
-      ...data,
-      parentId: data.parentId ?? null,
+      organization: { connect: { id: data.organizationId } },
+      code: data.code,
+      name: data.name,
+      type: data.type as AccountType,
+      parent: data.parentId ? { connect: { id: data.parentId } } : undefined,
       isActive: true,
-    } as any);
+    });
   }
 }

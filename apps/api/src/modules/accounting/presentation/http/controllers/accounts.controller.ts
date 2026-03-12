@@ -1,6 +1,7 @@
 import { Controller, Get, Post, Body, Param } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
-import { AccountService } from '../../../application/services/account.service';
+import type { AccountService } from '../../../application/services/account.service';
+import { createAccountSchema } from '@hesabdari/contracts';
 
 @ApiTags('Accounts')
 @ApiBearerAuth()
@@ -22,10 +23,8 @@ export class AccountsController {
 
   @Post()
   @ApiOperation({ summary: 'Create a new account' })
-  async create(
-    @Param('orgId') orgId: string,
-    @Body() body: { code: string; name: string; type: string; parentId?: string },
-  ) {
-    return this.accountService.create({ organizationId: orgId, ...body });
+  async create(@Param('orgId') orgId: string, @Body() body: unknown) {
+    const data = createAccountSchema.parse(body);
+    return this.accountService.create({ organizationId: orgId, ...data });
   }
 }

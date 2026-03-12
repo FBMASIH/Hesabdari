@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
-import { PrismaService } from '@/platform/database/prisma.service';
+import type { PrismaService } from '@/platform/database/prisma.service';
+import type { CostingMethod } from '@hesabdari/db';
 
 @Injectable()
 export class WarehouseRepository {
@@ -37,7 +38,7 @@ export class WarehouseRepository {
     organizationId: string;
     code: string;
     name: string;
-    address?: string | null;
+    costingMethod: CostingMethod;
     isActive: boolean;
   }) {
     return this.prisma.warehouse.create({ data });
@@ -45,7 +46,12 @@ export class WarehouseRepository {
 
   async update(
     id: string,
-    data: Partial<{ code: string; name: string; address: string | null; isActive: boolean }>,
+    data: Partial<{
+      code: string;
+      name: string;
+      costingMethod: CostingMethod;
+      isActive: boolean;
+    }>,
   ) {
     return this.prisma.warehouse.update({ where: { id }, data });
   }

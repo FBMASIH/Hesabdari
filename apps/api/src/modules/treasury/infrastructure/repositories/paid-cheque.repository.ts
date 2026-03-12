@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
-import { PrismaService } from '@/platform/database/prisma.service';
+import type { PrismaService } from '@/platform/database/prisma.service';
+import type { Prisma } from '@hesabdari/db';
 import type { PaidChequeStatus } from '@hesabdari/db';
 
 @Injectable()
@@ -18,14 +19,15 @@ export class PaidChequeRepository {
       pageSize: number;
     },
   ) {
-    const where: any = { organizationId };
-    if (opts.status) where.status = opts.status;
+    const where: Prisma.PaidChequeWhereInput = { organizationId };
+    if (opts.status) where.status = opts.status as PaidChequeStatus;
     if (opts.vendorId) where.vendorId = opts.vendorId;
     if (opts.bankAccountId) where.bankAccountId = opts.bankAccountId;
     if (opts.fromDueDate || opts.toDueDate) {
-      where.dueDate = {};
-      if (opts.fromDueDate) where.dueDate.gte = opts.fromDueDate;
-      if (opts.toDueDate) where.dueDate.lte = opts.toDueDate;
+      where.dueDate = {
+        ...(opts.fromDueDate ? { gte: opts.fromDueDate } : {}),
+        ...(opts.toDueDate ? { lte: opts.toDueDate } : {}),
+      };
     }
 
     const [data, total] = await Promise.all([
@@ -71,7 +73,7 @@ export class PaidChequeRepository {
     });
   }
 
-  async update(id: string, data: any) {
+  async update(id: string, data: Prisma.PaidChequeUpdateInput) {
     return this.prisma.paidCheque.update({ where: { id }, data });
   }
 

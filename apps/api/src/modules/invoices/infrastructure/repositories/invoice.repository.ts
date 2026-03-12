@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
-import { PrismaService } from '@/platform/database/prisma.service';
+import type { PrismaService } from '@/platform/database/prisma.service';
+import type { Prisma } from '@hesabdari/db';
 import type { DocumentType, InvoiceStatus } from '@hesabdari/db';
 
 @Injectable()
@@ -19,15 +20,16 @@ export class InvoiceRepository {
       pageSize: number;
     },
   ) {
-    const where: any = { organizationId };
-    if (opts.type) where.documentType = opts.type;
-    if (opts.status) where.status = opts.status;
+    const where: Prisma.InvoiceWhereInput = { organizationId };
+    if (opts.type) where.documentType = opts.type as DocumentType;
+    if (opts.status) where.status = opts.status as InvoiceStatus;
     if (opts.customerId) where.customerId = opts.customerId;
     if (opts.vendorId) where.vendorId = opts.vendorId;
     if (opts.fromDate || opts.toDate) {
-      where.invoiceDate = {};
-      if (opts.fromDate) where.invoiceDate.gte = opts.fromDate;
-      if (opts.toDate) where.invoiceDate.lte = opts.toDate;
+      where.invoiceDate = {
+        ...(opts.fromDate ? { gte: opts.fromDate } : {}),
+        ...(opts.toDate ? { lte: opts.toDate } : {}),
+      };
     }
 
     const [data, total] = await Promise.all([

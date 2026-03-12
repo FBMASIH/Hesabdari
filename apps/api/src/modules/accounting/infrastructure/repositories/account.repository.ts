@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
-import { PrismaService } from '@/platform/database/prisma.service';
+import type { PrismaService } from '@/platform/database/prisma.service';
+import type { Prisma } from '@hesabdari/db';
 
 @Injectable()
 export class AccountRepository {
@@ -22,7 +23,7 @@ export class AccountRepository {
     });
   }
 
-  async create(data: any) {
+  async create(data: Prisma.AccountCreateInput) {
     return this.prisma.account.create({ data });
   }
 }

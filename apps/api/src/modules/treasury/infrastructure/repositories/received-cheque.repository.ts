@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
-import { PrismaService } from '@/platform/database/prisma.service';
+import type { PrismaService } from '@/platform/database/prisma.service';
+import type { Prisma } from '@hesabdari/db';
 import type { ChequeStatus } from '@hesabdari/db';
 
 @Injectable()
@@ -17,13 +18,14 @@ export class ReceivedChequeRepository {
       pageSize: number;
     },
   ) {
-    const where: any = { organizationId };
-    if (opts.status) where.status = opts.status;
+    const where: Prisma.ReceivedChequeWhereInput = { organizationId };
+    if (opts.status) where.status = opts.status as ChequeStatus;
     if (opts.customerId) where.customerId = opts.customerId;
     if (opts.fromDueDate || opts.toDueDate) {
-      where.dueDate = {};
-      if (opts.fromDueDate) where.dueDate.gte = opts.fromDueDate;
-      if (opts.toDueDate) where.dueDate.lte = opts.toDueDate;
+      where.dueDate = {
+        ...(opts.fromDueDate ? { gte: opts.fromDueDate } : {}),
+        ...(opts.toDueDate ? { lte: opts.toDueDate } : {}),
+      };
     }
 
     const [data, total] = await Promise.all([
@@ -68,14 +70,16 @@ export class ReceivedChequeRepository {
     });
   }
 
-  async update(id: string, data: any) {
+  async update(id: string, data: Prisma.ReceivedChequeUpdateInput) {
     return this.prisma.receivedCheque.update({ where: { id }, data });
   }
 
   async updateStatus(id: string, status: string, depositBankAccountId?: string | null) {
-    const updateData: any = { status: status as ChequeStatus };
+    const updateData: Prisma.ReceivedChequeUpdateInput = { status: status as ChequeStatus };
     if (depositBankAccountId !== undefined) {
-      updateData.depositBankAccountId = depositBankAccountId;
+      updateData.depositBankAccount = depositBankAccountId
+        ? { connect: { id: depositBankAccountId } }
+        : { disconnect: true };
     }
     return this.prisma.receivedCheque.update({ where: { id }, data: updateData });
   }

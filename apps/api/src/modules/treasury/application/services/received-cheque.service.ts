@@ -1,7 +1,8 @@
 import { Injectable } from '@nestjs/common';
-import { ReceivedChequeRepository } from '../../infrastructure/repositories/received-cheque.repository';
-import { BankAccountRepository } from '../../infrastructure/repositories/bank-account.repository';
+import type { ReceivedChequeRepository } from '../../infrastructure/repositories/received-cheque.repository';
+import type { BankAccountRepository } from '../../infrastructure/repositories/bank-account.repository';
 import { NotFoundError, ConflictError, ApplicationError } from '@/platform/errors';
+import type { Prisma } from '@hesabdari/db';
 import type {
   CreateReceivedChequeDto,
   UpdateReceivedChequeDto,
@@ -86,9 +87,10 @@ export class ReceivedChequeService {
       }
     }
 
-    const updateData: any = { ...data };
-    if (data.amount !== undefined) updateData.amount = BigInt(data.amount);
-    return this.chequeRepository.update(id, updateData);
+    const { amount, ...rest } = data;
+    const updateData: Record<string, unknown> = { ...rest };
+    if (amount !== undefined) updateData.amount = BigInt(amount);
+    return this.chequeRepository.update(id, updateData as Prisma.ReceivedChequeUpdateInput);
   }
 
   async changeStatus(id: string, data: ReceivedChequeStatusDto) {
