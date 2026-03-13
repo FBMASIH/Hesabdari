@@ -17,8 +17,10 @@ import {
 } from '@hesabdari/ui';
 import { useAuthStore } from '@/shared/hooks/use-auth';
 import { apiClient } from '@/shared/lib/api';
+import { t } from '@/shared/lib/i18n';
 
 export function LoginForm() {
+  const auth = t('auth');
   const { setTokens } = useAuthStore();
   const {
     register,
@@ -44,23 +46,37 @@ export function LoginForm() {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Sign In</CardTitle>
-        <CardDescription>Enter your credentials to access your account</CardDescription>
+        <CardTitle>{auth.signInTitle}</CardTitle>
+        <CardDescription>{auth.signInDescription}</CardDescription>
       </CardHeader>
       <form onSubmit={handleSubmit(onSubmit)}>
         <CardContent className="space-y-4">
           <FormField error={errors.email?.message}>
-            <FormLabel htmlFor="email">Email</FormLabel>
-            <Input id="email" type="email" placeholder="you@company.com" {...register('email')} />
+            <FormLabel htmlFor="email">{auth.email}</FormLabel>
+            <Input
+              id="email"
+              type="email"
+              placeholder={auth.emailPlaceholder}
+              className="ltr-text"
+              dir="ltr"
+              {...register('email')}
+            />
           </FormField>
           <FormField error={errors.password?.message}>
-            <FormLabel htmlFor="password">Password</FormLabel>
-            <Input id="password" type="password" placeholder="********" {...register('password')} />
+            <FormLabel htmlFor="password">{auth.password}</FormLabel>
+            <Input
+              id="password"
+              type="password"
+              placeholder={auth.passwordPlaceholder}
+              className="ltr-text"
+              dir="ltr"
+              {...register('password')}
+            />
           </FormField>
         </CardContent>
         <CardFooter>
           <Button type="submit" className="w-full" disabled={isSubmitting}>
-            {isSubmitting ? 'Signing in...' : 'Sign In'}
+            {isSubmitting ? auth.signingIn : auth.signIn}
           </Button>
         </CardFooter>
       </form>

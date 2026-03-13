@@ -2,7 +2,7 @@ import type { TypographyToken } from './types';
 
 export const typography: TypographyToken = {
   fontFamily: {
-    sans: '"Inter", "Segoe UI", system-ui, -apple-system, sans-serif',
+    sans: '"Vazirmatn", "Inter", "Segoe UI", system-ui, -apple-system, sans-serif',
     mono: '"JetBrains Mono", "Fira Code", "Cascadia Code", monospace',
   },
   fontSize: {
@@ -26,8 +26,8 @@ export const typography: TypographyToken = {
     none: '1',
     tight: '1.25',
     snug: '1.375',
-    normal: '1.5',
-    relaxed: '1.625',
+    normal: '1.6',
+    relaxed: '1.75',
     loose: '2',
   },
   letterSpacing: {

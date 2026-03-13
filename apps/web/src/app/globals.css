@@ -37,7 +37,8 @@
   --color-info-hover: #2563eb;
   --color-info-subtle: #eff6ff;
   --color-info-fg: #ffffff;
-  --font-family-sans: 'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif;
+  --font-family-sans:
+    var(--font-vazirmatn), 'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif;
   --font-family-mono: 'JetBrains Mono', 'Fira Code', monospace;
 }
 
@@ -86,4 +87,17 @@ body {
   color: var(--color-fg-primary);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  line-height: 1.6;
+  font-feature-settings: 'ss01', 'ss02';
+}
+
+/* Tabular numbers for financial data */
+.tabular-nums {
+  font-variant-numeric: tabular-nums;
+}
+
+/* Force LTR for technical identifiers */
+.ltr-text {
+  direction: ltr;
+  unicode-bidi: isolate;
 }

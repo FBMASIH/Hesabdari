@@ -66,7 +66,14 @@ export const hesabdariPreset = {
         },
       },
       fontFamily: {
-        sans: [theme.typography.fontFamily.sans],
+        sans: [
+          'var(--font-vazirmatn)',
+          'Inter',
+          'Segoe UI',
+          'system-ui',
+          '-apple-system',
+          'sans-serif',
+        ],
         mono: [theme.typography.fontFamily.mono],
       },
       fontSize: theme.typography.fontSize,

@@ -44,7 +44,7 @@ export const DialogContent = forwardRef<
       {...props}
     >
       {children}
-      <DialogPrimitive.Close className="absolute right-4 top-4 rounded-sm opacity-70 transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-border-focus">
+      <DialogPrimitive.Close className="absolute end-4 top-4 rounded-sm opacity-70 transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-border-focus">
         <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path
             strokeLinecap="round"
@@ -53,7 +53,7 @@ export const DialogContent = forwardRef<
             d="M6 18L18 6M6 6l12 12"
           />
         </svg>
-        <span className="sr-only">Close</span>
+        <span className="sr-only">بستن</span>
       </DialogPrimitive.Close>
     </DialogPrimitive.Content>
   </DialogPrimitive.Portal>
@@ -63,7 +63,7 @@ DialogContent.displayName = DialogPrimitive.Content.displayName;
 export function DialogHeader({ className, ...props }: HTMLAttributes<HTMLDivElement>) {
   return (
     <div
-      className={cn('flex flex-col space-y-1.5 text-center sm:text-left', className)}
+      className={cn('flex flex-col space-y-1.5 text-center sm:text-start', className)}
       {...props}
     />
   );
@@ -85,7 +85,7 @@ export function DialogDescription({ className, ...props }: HTMLAttributes<HTMLPa
 export function DialogFooter({ className, ...props }: HTMLAttributes<HTMLDivElement>) {
   return (
     <div
-      className={cn('flex flex-col-reverse sm:flex-row sm:justify-end sm:space-x-2', className)}
+      className={cn('flex flex-col-reverse sm:flex-row sm:justify-end sm:gap-2', className)}
       {...props}
     />
   );

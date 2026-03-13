@@ -2,6 +2,7 @@
 
 import { Button } from '@hesabdari/ui';
 import { useTheme } from '@/providers/theme-provider';
+import { t } from '@/shared/lib/i18n';
 
 export function Topbar() {
   const { resolvedTheme, setTheme } = useTheme();
@@ -14,11 +15,11 @@ export function Topbar() {
           variant="ghost"
           size="icon"
           onClick={() => setTheme(resolvedTheme === 'dark' ? 'light' : 'dark')}
-          aria-label="Toggle theme"
+          aria-label={t('settings').toggleTheme}
         >
           {resolvedTheme === 'dark' ? '\u2600' : '\u263E'}
         </Button>
-        <div className="h-8 w-8 rounded-full bg-primary flex items-center justify-center text-xs text-primary-fg font-semibold">
+        <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary text-xs font-semibold text-primary-fg">
           U
         </div>
       </div>

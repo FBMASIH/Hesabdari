@@ -13,7 +13,7 @@ export const ToastViewport = forwardRef<
   <ToastPrimitive.Viewport
     ref={ref}
     className={cn(
-      'fixed top-0 z-toast flex max-h-screen w-full flex-col-reverse p-4 sm:bottom-0 sm:right-0 sm:top-auto sm:flex-col md:max-w-[420px]',
+      'fixed top-0 z-toast flex max-h-screen w-full flex-col-reverse p-4 sm:bottom-0 sm:start-auto sm:end-0 sm:top-auto sm:flex-col md:max-w-[420px]',
       className,
     )}
     {...props}
@@ -28,7 +28,7 @@ export const Toast = forwardRef<
   <ToastPrimitive.Root
     ref={ref}
     className={cn(
-      'group pointer-events-auto relative flex w-full items-center justify-between space-x-4 overflow-hidden rounded-md border border-border-primary bg-bg-primary p-4 shadow-lg transition-all',
+      'group pointer-events-auto relative flex w-full items-center justify-between gap-4 overflow-hidden rounded-md border border-border-primary bg-bg-primary p-4 shadow-lg transition-all',
       className,
     )}
     {...props}
