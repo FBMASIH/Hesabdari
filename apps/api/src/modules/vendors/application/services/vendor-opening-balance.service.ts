@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { VendorOpeningBalanceRepository } from '../../infrastructure/repositories/vendor-opening-balance.repository';
+import type { VendorOpeningBalanceRepository } from '../../infrastructure/repositories/vendor-opening-balance.repository';
 import { NotFoundError, ConflictError } from '@/platform/errors';
 import type { CreateVendorOpeningBalanceDto } from '@hesabdari/contracts';
 
@@ -31,8 +31,8 @@ export class VendorOpeningBalanceService {
     });
   }
 
-  async delete(id: string) {
-    const balance = await this.repository.findById(id);
+  async delete(id: string, organizationId: string) {
+    const balance = await this.repository.findById(id, organizationId);
     if (!balance) throw new NotFoundError('VendorOpeningBalance', id);
     return this.repository.delete(id);
   }

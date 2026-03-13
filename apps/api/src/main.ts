@@ -38,6 +38,9 @@ async function bootstrap() {
     credentials: true,
   });
 
+  // Global prefix — must be set before Swagger setup
+  app.setGlobalPrefix('api/v1');
+
   // OpenAPI / Swagger (non-production only)
   if (config.nodeEnv !== 'production') {
     const swaggerConfig = new DocumentBuilder()
@@ -51,9 +54,6 @@ async function bootstrap() {
     SwaggerModule.setup('api/docs', app, document);
   }
 
-  // Global prefix
-  app.setGlobalPrefix('api/v1');
-
   await app.listen(config.port, config.host);
 
   const logger = new Logger('Bootstrap');
@@ -63,4 +63,8 @@ async function bootstrap() {
   }
 }
 
-bootstrap();
+bootstrap().catch((err) => {
+  const logger = new Logger('Bootstrap');
+  logger.error('Failed to start application', err instanceof Error ? err.stack : String(err));
+  process.exit(1);
+});

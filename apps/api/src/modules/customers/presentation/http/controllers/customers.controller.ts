@@ -1,6 +1,6 @@
 import { Controller, Get, Post, Put, Delete, Body, Param, Query } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
-import { CustomerService } from '../../../application/services/customer.service';
+import type { CustomerService } from '../../../application/services/customer.service';
 import {
   createCustomerSchema,
   updateCustomerSchema,
@@ -30,8 +30,8 @@ export class CustomersController {
 
   @Get(':id')
   @ApiOperation({ summary: 'Get customer by ID' })
-  async findById(@Param('id') id: string) {
-    return this.customerService.findById(id);
+  async findById(@Param('orgId') orgId: string, @Param('id') id: string) {
+    return this.customerService.findById(id, orgId);
   }
 
   @Post()
@@ -43,15 +43,15 @@ export class CustomersController {
 
   @Put(':id')
   @ApiOperation({ summary: 'Update a customer' })
-  async update(@Param('id') id: string, @Body() body: unknown) {
+  async update(@Param('orgId') orgId: string, @Param('id') id: string, @Body() body: unknown) {
     const data = updateCustomerSchema.parse({ ...(body as object), id });
     const { id: _id, ...rest } = data;
-    return this.customerService.update(id, rest);
+    return this.customerService.update(id, orgId, rest);
   }
 
   @Delete(':id')
   @ApiOperation({ summary: 'Soft delete a customer' })
-  async remove(@Param('id') id: string) {
-    return this.customerService.softDelete(id);
+  async remove(@Param('orgId') orgId: string, @Param('id') id: string) {
+    return this.customerService.softDelete(id, orgId);
   }
 }

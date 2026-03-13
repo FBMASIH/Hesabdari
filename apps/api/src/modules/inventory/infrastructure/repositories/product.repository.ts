@@ -42,8 +42,8 @@ export class ProductRepository {
     });
   }
 
-  async findById(id: string) {
-    return this.prisma.product.findUnique({ where: { id } });
+  async findById(id: string, organizationId: string) {
+    return this.prisma.product.findFirst({ where: { id, organizationId } });
   }
 
   async findByCode(organizationId: string, code: string) {

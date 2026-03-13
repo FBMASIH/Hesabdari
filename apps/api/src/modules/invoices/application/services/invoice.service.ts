@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { InvoiceRepository } from '../../infrastructure/repositories/invoice.repository';
+import type { InvoiceRepository } from '../../infrastructure/repositories/invoice.repository';
 import { NotFoundError, ConflictError, ApplicationError } from '@/platform/errors';
 import type { CreateInvoiceDto, UpdateInvoiceDto, InvoiceQueryDto } from '@hesabdari/contracts';
 
@@ -26,8 +26,8 @@ export class InvoiceService {
     });
   }
 
-  async findById(id: string) {
-    const invoice = await this.invoiceRepository.findById(id);
+  async findById(id: string, organizationId: string) {
+    const invoice = await this.invoiceRepository.findById(id, organizationId);
     if (!invoice) throw new NotFoundError('Invoice', id);
     return invoice;
   }
@@ -74,8 +74,8 @@ export class InvoiceService {
     });
   }
 
-  async update(id: string, data: UpdateInvoiceDto) {
-    const invoice = await this.findById(id);
+  async update(id: string, organizationId: string, data: UpdateInvoiceDto) {
+    const invoice = await this.findById(id, organizationId);
     if (invoice.status !== 'DRAFT') {
       throw new ApplicationError(
         'INVALID_STATUS',
@@ -113,6 +113,7 @@ export class InvoiceService {
 
     return this.invoiceRepository.updateWithLines(
       id,
+      invoice.organizationId,
       {
         invoiceDate: data.invoiceDate,
         dueDate: data.dueDate,
@@ -120,22 +121,21 @@ export class InvoiceService {
         totalAmount,
       },
       mappedLines,
-      invoice.organizationId,
     );
   }
 
-  async confirm(id: string) {
-    const invoice = await this.findById(id);
+  async confirm(id: string, organizationId: string) {
+    const invoice = await this.findById(id, organizationId);
     this.validateTransition(invoice.status, 'CONFIRMED');
     await this.invoiceRepository.updateStatus(id, 'CONFIRMED');
-    return this.findById(id);
+    return this.findById(id, organizationId);
   }
 
-  async cancel(id: string) {
-    const invoice = await this.findById(id);
+  async cancel(id: string, organizationId: string) {
+    const invoice = await this.findById(id, organizationId);
     this.validateTransition(invoice.status, 'CANCELLED');
     await this.invoiceRepository.updateStatus(id, 'CANCELLED');
-    return this.findById(id);
+    return this.findById(id, organizationId);
   }
 
   private validateTransition(currentStatus: string, targetStatus: string) {

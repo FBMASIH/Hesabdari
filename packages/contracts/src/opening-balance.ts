@@ -7,8 +7,9 @@ const balanceTypeEnum = z.enum(['DEBIT', 'CREDIT']);
 export const createCustomerOpeningBalanceSchema = z.object({
   customerId: z.string().uuid(),
   currencyId: z.string().uuid(),
-  amount: z.number().int().positive(),
+  amount: z.string().regex(/^\d+$/, 'must be a positive integer string'),
   balanceType: balanceTypeEnum,
+  date: z.coerce.date().optional(),
   description: z.string().max(500).optional(),
 });
 
@@ -20,8 +21,9 @@ export const customerOpeningBalanceQuerySchema = paginationSchema.extend({
 export const createVendorOpeningBalanceSchema = z.object({
   vendorId: z.string().uuid(),
   currencyId: z.string().uuid(),
-  amount: z.number().int().positive(),
+  amount: z.string().regex(/^\d+$/, 'must be a positive integer string'),
   balanceType: balanceTypeEnum,
+  date: z.coerce.date().optional(),
   description: z.string().max(500).optional(),
 });
 
@@ -33,7 +35,7 @@ export const vendorOpeningBalanceQuerySchema = paginationSchema.extend({
 export const createBankOpeningBalanceSchema = z.object({
   bankAccountId: z.string().uuid(),
   currencyId: z.string().uuid(),
-  amount: z.number().int().positive(),
+  amount: z.string().regex(/^\d+$/, 'must be a positive integer string'),
   date: z.coerce.date().optional(),
   description: z.string().max(500).optional(),
 });
@@ -46,7 +48,7 @@ export const bankOpeningBalanceQuerySchema = paginationSchema.extend({
 export const createCashboxOpeningBalanceSchema = z.object({
   cashboxId: z.string().uuid(),
   currencyId: z.string().uuid(),
-  amount: z.number().int().positive(),
+  amount: z.string().regex(/^\d+$/, 'must be a positive integer string'),
   date: z.coerce.date().optional(),
   description: z.string().max(500).optional(),
 });

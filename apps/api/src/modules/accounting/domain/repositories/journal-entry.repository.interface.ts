@@ -1,7 +1,10 @@
 import type { JournalEntryEntity, JournalLineEntity } from '../entities/journal-entry.entity';
 
 export interface IJournalEntryRepository {
-  findById(id: string): Promise<(JournalEntryEntity & { lines: JournalLineEntity[] }) | null>;
+  findById(
+    id: string,
+    organizationId: string,
+  ): Promise<(JournalEntryEntity & { lines: JournalLineEntity[] }) | null>;
   findByOrganizationId(
     organizationId: string,
     options?: { status?: string },

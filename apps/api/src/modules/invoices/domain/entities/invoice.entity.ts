@@ -1,4 +1,4 @@
-export type InvoiceStatus = 'DRAFT' | 'APPROVED' | 'SENT' | 'PAID' | 'CANCELLED';
+export type InvoiceStatus = 'DRAFT' | 'CONFIRMED' | 'CANCELLED';
 
 export interface InvoiceEntity {
   id: string;

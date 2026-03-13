@@ -6,8 +6,8 @@ import type { Prisma } from '@hesabdari/db';
 export class AccountRepository {
   constructor(private readonly prisma: PrismaService) {}
 
-  async findById(id: string) {
-    return this.prisma.account.findUnique({ where: { id } });
+  async findById(id: string, organizationId: string) {
+    return this.prisma.account.findFirst({ where: { id, organizationId } });
   }
 
   async findByOrganizationId(organizationId: string) {

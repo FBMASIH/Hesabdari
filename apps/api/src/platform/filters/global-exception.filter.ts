@@ -27,14 +27,18 @@ export class GlobalExceptionFilter implements ExceptionFilter {
   }
 
   private resolve(exception: unknown): { status: number; body: ErrorResponse } {
-    if (exception instanceof ZodError) {
+    if (
+      exception instanceof ZodError ||
+      (exception instanceof Error && exception.name === 'ZodError' && 'issues' in exception)
+    ) {
+      const zodErr = exception as ZodError;
       return {
         status: 400,
         body: {
           error: {
             code: 'VALIDATION_ERROR',
             message: 'Request validation failed',
-            details: exception.issues.map((i) => ({
+            details: zodErr.issues.map((i) => ({
               path: i.path,
               message: i.message,
             })),

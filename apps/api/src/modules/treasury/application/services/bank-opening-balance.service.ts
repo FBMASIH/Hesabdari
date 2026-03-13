@@ -17,7 +17,10 @@ export class BankOpeningBalanceService {
 
   async create(organizationId: string, data: CreateBankOpeningBalanceDto) {
     // Currency consistency: must match bank account's currency
-    const bankAccount = await this.bankAccountRepository.findById(data.bankAccountId);
+    const bankAccount = await this.bankAccountRepository.findById(
+      data.bankAccountId,
+      organizationId,
+    );
     if (!bankAccount) throw new NotFoundError('BankAccount', data.bankAccountId);
     if (bankAccount.currencyId !== data.currencyId) {
       throw new ApplicationError(
@@ -36,8 +39,8 @@ export class BankOpeningBalanceService {
     });
   }
 
-  async delete(id: string) {
-    const balance = await this.repository.findById(id);
+  async delete(id: string, organizationId: string) {
+    const balance = await this.repository.findById(id, organizationId);
     if (!balance) throw new NotFoundError('BankOpeningBalance', id);
     return this.repository.delete(id);
   }

@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { CashboxRepository } from '../../infrastructure/repositories/cashbox.repository';
+import type { CashboxRepository } from '../../infrastructure/repositories/cashbox.repository';
 import { NotFoundError, ConflictError } from '@/platform/errors';
 import type { CreateCashboxDto, UpdateCashboxDto, CashboxQueryDto } from '@hesabdari/contracts';
 
@@ -15,8 +15,8 @@ export class CashboxService {
     });
   }
 
-  async findById(id: string) {
-    const cashbox = await this.cashboxRepository.findById(id);
+  async findById(id: string, organizationId: string) {
+    const cashbox = await this.cashboxRepository.findById(id, organizationId);
     if (!cashbox) throw new NotFoundError('Cashbox', id);
     return cashbox;
   }
@@ -33,8 +33,8 @@ export class CashboxService {
     });
   }
 
-  async update(id: string, data: Omit<UpdateCashboxDto, 'id'>) {
-    const cashbox = await this.findById(id);
+  async update(id: string, organizationId: string, data: Omit<UpdateCashboxDto, 'id'>) {
+    const cashbox = await this.findById(id, organizationId);
     if (data.code) {
       const existing = await this.cashboxRepository.findByCode(cashbox.organizationId, data.code);
       if (existing && existing.id !== id) {
@@ -44,8 +44,8 @@ export class CashboxService {
     return this.cashboxRepository.update(id, data);
   }
 
-  async softDelete(id: string) {
-    await this.findById(id);
+  async softDelete(id: string, organizationId: string) {
+    await this.findById(id, organizationId);
     return this.cashboxRepository.update(id, { isActive: false });
   }
 }

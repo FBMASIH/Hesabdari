@@ -29,8 +29,8 @@ export class ProductService {
     return this.productRepository.search(organizationId, q);
   }
 
-  async findById(id: string) {
-    const product = await this.productRepository.findById(id);
+  async findById(id: string, organizationId: string) {
+    const product = await this.productRepository.findById(id, organizationId);
     if (!product) throw new NotFoundError('Product', id);
     return product;
   }
@@ -47,15 +47,15 @@ export class ProductService {
       majorUnit: data.majorUnit ?? null,
       minorUnit: data.minorUnit ?? null,
       quantityInMajorUnit: data.quantityInMajorUnit ?? null,
-      salePrice1: BigInt(data.salePrice1 ?? 0),
-      salePrice2: BigInt(data.salePrice2 ?? 0),
-      salePrice3: BigInt(data.salePrice3 ?? 0),
+      salePrice1: BigInt(data.salePrice1 ?? '0'),
+      salePrice2: BigInt(data.salePrice2 ?? '0'),
+      salePrice3: BigInt(data.salePrice3 ?? '0'),
       isActive: data.isActive ?? true,
     });
   }
 
-  async update(id: string, data: Omit<UpdateProductDto, 'id'>) {
-    const product = await this.findById(id);
+  async update(id: string, organizationId: string, data: Omit<UpdateProductDto, 'id'>) {
+    const product = await this.findById(id, organizationId);
     if (data.code) {
       const existing = await this.productRepository.findByCode(product.organizationId, data.code);
       if (existing && existing.id !== id) {
@@ -70,14 +70,14 @@ export class ProductService {
     return this.productRepository.update(id, updateData as Prisma.ProductUpdateInput);
   }
 
-  async softDelete(id: string) {
-    await this.findById(id);
+  async softDelete(id: string, organizationId: string) {
+    await this.findById(id, organizationId);
     return this.productRepository.update(id, { isActive: false });
   }
 
   // Warehouse stock methods
-  async getWarehouseStocks(productId: string) {
-    await this.findById(productId);
+  async getWarehouseStocks(productId: string, organizationId: string) {
+    await this.findById(productId, organizationId);
     return this.stockRepository.findByProduct(productId);
   }
 
@@ -86,7 +86,7 @@ export class ProductService {
     productId: string,
     data: CreateProductWarehouseStockDto,
   ) {
-    await this.findById(productId);
+    await this.findById(productId, organizationId);
     return this.stockRepository.upsert({
       organizationId,
       productId,
@@ -97,8 +97,8 @@ export class ProductService {
     });
   }
 
-  async deleteWarehouseStock(stockId: string) {
-    const stock = await this.stockRepository.findById(stockId);
+  async deleteWarehouseStock(stockId: string, organizationId: string) {
+    const stock = await this.stockRepository.findById(stockId, organizationId);
     if (!stock) throw new NotFoundError('ProductWarehouseStock', stockId);
     return this.stockRepository.delete(stockId);
   }

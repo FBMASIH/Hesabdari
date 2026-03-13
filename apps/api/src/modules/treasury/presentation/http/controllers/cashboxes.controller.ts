@@ -1,6 +1,6 @@
 import { Controller, Get, Post, Put, Delete, Body, Param, Query } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
-import { CashboxService } from '../../../application/services/cashbox.service';
+import type { CashboxService } from '../../../application/services/cashbox.service';
 import { createCashboxSchema, updateCashboxSchema, cashboxQuerySchema } from '@hesabdari/contracts';
 
 @ApiTags('Cashboxes')
@@ -18,8 +18,8 @@ export class CashboxesController {
 
   @Get(':id')
   @ApiOperation({ summary: 'Get cashbox by ID' })
-  async findById(@Param('id') id: string) {
-    return this.cashboxService.findById(id);
+  async findById(@Param('orgId') orgId: string, @Param('id') id: string) {
+    return this.cashboxService.findById(id, orgId);
   }
 
   @Post()
@@ -31,15 +31,15 @@ export class CashboxesController {
 
   @Put(':id')
   @ApiOperation({ summary: 'Update a cashbox' })
-  async update(@Param('id') id: string, @Body() body: unknown) {
+  async update(@Param('orgId') orgId: string, @Param('id') id: string, @Body() body: unknown) {
     const data = updateCashboxSchema.parse({ ...(body as object), id });
     const { id: _id, ...rest } = data;
-    return this.cashboxService.update(id, rest);
+    return this.cashboxService.update(id, orgId, rest);
   }
 
   @Delete(':id')
   @ApiOperation({ summary: 'Soft delete a cashbox' })
-  async remove(@Param('id') id: string) {
-    return this.cashboxService.softDelete(id);
+  async remove(@Param('orgId') orgId: string, @Param('id') id: string) {
+    return this.cashboxService.softDelete(id, orgId);
   }
 }

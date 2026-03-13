@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { PrismaService } from '@/platform/database/prisma.service';
+import type { PrismaService } from '@/platform/database/prisma.service';
 import type { BalanceType } from '@hesabdari/db';
 
 @Injectable()
@@ -17,8 +17,8 @@ export class CustomerOpeningBalanceRepository {
     });
   }
 
-  async findById(id: string) {
-    return this.prisma.customerOpeningBalance.findUnique({ where: { id } });
+  async findById(id: string, organizationId: string) {
+    return this.prisma.customerOpeningBalance.findFirst({ where: { id, organizationId } });
   }
 
   async findUnique(organizationId: string, customerId: string, currencyId: string) {

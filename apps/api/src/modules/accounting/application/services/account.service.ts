@@ -11,8 +11,8 @@ export class AccountService {
     return this.accountRepository.findByOrganizationId(organizationId);
   }
 
-  async findById(id: string) {
-    const account = await this.accountRepository.findById(id);
+  async findById(id: string, organizationId: string) {
+    const account = await this.accountRepository.findById(id, organizationId);
     if (!account) throw new NotFoundError('Account', id);
     return account;
   }

@@ -45,9 +45,9 @@ export class InvoiceRepository {
     return { data, total, page: opts.page, pageSize: opts.pageSize };
   }
 
-  async findById(id: string) {
-    return this.prisma.invoice.findUnique({
-      where: { id },
+  async findById(id: string, organizationId: string) {
+    return this.prisma.invoice.findFirst({
+      where: { id, organizationId },
       include: {
         lines: { include: { product: true, warehouse: true }, orderBy: { createdAt: 'asc' } },
         customer: true,
@@ -101,12 +101,13 @@ export class InvoiceRepository {
           lineNumber: index + 1,
         })),
       });
-      return this.findById(invoice.id);
+      return this.findById(invoice.id, data.organizationId);
     });
   }
 
   async updateWithLines(
     id: string,
+    organizationId: string,
     data: {
       invoiceDate?: Date;
       dueDate?: Date | null;
@@ -123,11 +124,10 @@ export class InvoiceRepository {
       tax: bigint;
       totalPrice: bigint;
     }>,
-    organizationId?: string,
   ) {
     return this.prisma.$transaction(async (tx) => {
       await tx.invoice.update({ where: { id }, data });
-      if (lines && organizationId) {
+      if (lines) {
         await tx.invoiceLine.deleteMany({ where: { invoiceId: id } });
         await tx.invoiceLine.createMany({
           data: lines.map((line, index) => ({
@@ -137,7 +137,7 @@ export class InvoiceRepository {
           })),
         });
       }
-      return this.findById(id);
+      return this.findById(id, organizationId);
     });
   }
 

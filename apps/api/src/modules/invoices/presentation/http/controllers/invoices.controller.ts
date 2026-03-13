@@ -1,6 +1,6 @@
 import { Controller, Get, Post, Put, Body, Param, Query } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
-import { InvoiceService } from '../../../application/services/invoice.service';
+import type { InvoiceService } from '../../../application/services/invoice.service';
 import { createInvoiceSchema, updateInvoiceSchema, invoiceQuerySchema } from '@hesabdari/contracts';
 
 @ApiTags('Invoices')
@@ -18,8 +18,8 @@ export class InvoicesController {
 
   @Get(':id')
   @ApiOperation({ summary: 'Get invoice with lines' })
-  async findById(@Param('id') id: string) {
-    return this.invoiceService.findById(id);
+  async findById(@Param('orgId') orgId: string, @Param('id') id: string) {
+    return this.invoiceService.findById(id, orgId);
   }
 
   @Post()
@@ -31,20 +31,20 @@ export class InvoicesController {
 
   @Put(':id')
   @ApiOperation({ summary: 'Update invoice with lines (transactional, DRAFT only)' })
-  async update(@Param('id') id: string, @Body() body: unknown) {
+  async update(@Param('orgId') orgId: string, @Param('id') id: string, @Body() body: unknown) {
     const data = updateInvoiceSchema.parse({ ...(body as object), id });
-    return this.invoiceService.update(id, data);
+    return this.invoiceService.update(id, orgId, data);
   }
 
   @Post(':id/confirm')
   @ApiOperation({ summary: 'Confirm invoice (DRAFT → CONFIRMED)' })
-  async confirm(@Param('id') id: string) {
-    return this.invoiceService.confirm(id);
+  async confirm(@Param('orgId') orgId: string, @Param('id') id: string) {
+    return this.invoiceService.confirm(id, orgId);
   }
 
   @Post(':id/cancel')
   @ApiOperation({ summary: 'Cancel invoice' })
-  async cancel(@Param('id') id: string) {
-    return this.invoiceService.cancel(id);
+  async cancel(@Param('orgId') orgId: string, @Param('id') id: string) {
+    return this.invoiceService.cancel(id, orgId);
   }
 }

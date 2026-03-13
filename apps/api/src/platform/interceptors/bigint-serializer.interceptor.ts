@@ -19,15 +19,17 @@ export class BigIntSerializerInterceptor implements NestInterceptor {
     return next.handle().pipe(map((data) => this.serialize(data)));
   }
 
-  private serialize(value: unknown): unknown {
+  private serialize(value: unknown, seen = new WeakSet<object>()): unknown {
     if (value === null || value === undefined) return value;
     if (typeof value === 'bigint') return Number(value);
     if (value instanceof Date) return value;
-    if (Array.isArray(value)) return value.map((item) => this.serialize(item));
     if (typeof value === 'object') {
+      if (seen.has(value)) return undefined;
+      seen.add(value);
+      if (Array.isArray(value)) return value.map((item) => this.serialize(item, seen));
       const result: Record<string, unknown> = {};
       for (const [key, val] of Object.entries(value)) {
-        result[key] = this.serialize(val);
+        result[key] = this.serialize(val, seen);
       }
       return result;
     }

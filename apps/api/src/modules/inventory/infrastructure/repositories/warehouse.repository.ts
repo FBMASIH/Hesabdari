@@ -26,8 +26,8 @@ export class WarehouseRepository {
     return { data, total, page: opts.page, pageSize: opts.pageSize };
   }
 
-  async findById(id: string) {
-    return this.prisma.warehouse.findUnique({ where: { id } });
+  async findById(id: string, organizationId: string) {
+    return this.prisma.warehouse.findFirst({ where: { id, organizationId } });
   }
 
   async findByCode(organizationId: string, code: string) {

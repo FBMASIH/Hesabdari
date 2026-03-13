@@ -1,6 +1,6 @@
 import { Controller, Get, Post, Param } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
-import { PeriodService } from '../../../application/services/period.service';
+import type { PeriodService } from '../../../application/services/period.service';
 import { CurrentUser, type RequestUser } from '@/platform/decorators';
 
 @ApiTags('Accounting Periods')
@@ -17,7 +17,11 @@ export class PeriodsController {
 
   @Post(':id/close')
   @ApiOperation({ summary: 'Close an accounting period' })
-  async close(@Param('id') id: string, @CurrentUser() user: RequestUser) {
-    return this.periodService.close(id, user.userId);
+  async close(
+    @Param('orgId') orgId: string,
+    @Param('id') id: string,
+    @CurrentUser() user: RequestUser,
+  ) {
+    return this.periodService.close(id, orgId, user.userId);
   }
 }

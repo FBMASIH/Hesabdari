@@ -16,8 +16,8 @@ export class CashboxOpeningBalanceRepository {
     });
   }
 
-  async findById(id: string) {
-    return this.prisma.cashboxOpeningBalance.findUnique({ where: { id } });
+  async findById(id: string, organizationId: string) {
+    return this.prisma.cashboxOpeningBalance.findFirst({ where: { id, organizationId } });
   }
 
   async create(data: {

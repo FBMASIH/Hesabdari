@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { PrismaService } from '@/platform/database/prisma.service';
+import type { PrismaService } from '@/platform/database/prisma.service';
 
 @Injectable()
 export class ExpenseRepository {
@@ -15,8 +15,8 @@ export class ExpenseRepository {
     });
   }
 
-  async findById(id: string) {
-    return this.prisma.expense.findUnique({ where: { id } });
+  async findById(id: string, organizationId: string) {
+    return this.prisma.expense.findFirst({ where: { id, organizationId } });
   }
 
   async findByCode(organizationId: string, code: string) {

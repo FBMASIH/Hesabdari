@@ -1,6 +1,6 @@
 import { Controller, Get, Post, Delete, Body, Param, Query } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
-import { CashboxOpeningBalanceService } from '../../../application/services/cashbox-opening-balance.service';
+import type { CashboxOpeningBalanceService } from '../../../application/services/cashbox-opening-balance.service';
 import {
   createCashboxOpeningBalanceSchema,
   cashboxOpeningBalanceQuerySchema,
@@ -28,7 +28,7 @@ export class CashboxOpeningBalancesController {
 
   @Delete(':id')
   @ApiOperation({ summary: 'Delete cashbox opening balance' })
-  async remove(@Param('id') id: string) {
-    return this.service.delete(id);
+  async remove(@Param('orgId') orgId: string, @Param('id') id: string) {
+    return this.service.delete(id, orgId);
   }
 }

@@ -17,7 +17,7 @@ export class CashboxOpeningBalanceService {
 
   async create(organizationId: string, data: CreateCashboxOpeningBalanceDto) {
     // Currency consistency: must match cashbox's currency
-    const cashbox = await this.cashboxRepository.findById(data.cashboxId);
+    const cashbox = await this.cashboxRepository.findById(data.cashboxId, organizationId);
     if (!cashbox) throw new NotFoundError('Cashbox', data.cashboxId);
     if (cashbox.currencyId !== data.currencyId) {
       throw new ApplicationError(
@@ -36,8 +36,8 @@ export class CashboxOpeningBalanceService {
     });
   }
 
-  async delete(id: string) {
-    const balance = await this.repository.findById(id);
+  async delete(id: string, organizationId: string) {
+    const balance = await this.repository.findById(id, organizationId);
     if (!balance) throw new NotFoundError('CashboxOpeningBalance', id);
     return this.repository.delete(id);
   }

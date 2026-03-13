@@ -1,6 +1,6 @@
 import { Controller, Get, Post, Put, Delete, Body, Param, Query } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
-import { BankAccountService } from '../../../application/services/bank-account.service';
+import type { BankAccountService } from '../../../application/services/bank-account.service';
 import {
   createBankAccountSchema,
   updateBankAccountSchema,
@@ -22,8 +22,8 @@ export class BankAccountsController {
 
   @Get(':id')
   @ApiOperation({ summary: 'Get bank account by ID' })
-  async findById(@Param('id') id: string) {
-    return this.bankAccountService.findById(id);
+  async findById(@Param('orgId') orgId: string, @Param('id') id: string) {
+    return this.bankAccountService.findById(id, orgId);
   }
 
   @Post()
@@ -35,15 +35,15 @@ export class BankAccountsController {
 
   @Put(':id')
   @ApiOperation({ summary: 'Update a bank account' })
-  async update(@Param('id') id: string, @Body() body: unknown) {
+  async update(@Param('orgId') orgId: string, @Param('id') id: string, @Body() body: unknown) {
     const data = updateBankAccountSchema.parse({ ...(body as object), id });
     const { id: _id, ...rest } = data;
-    return this.bankAccountService.update(id, rest);
+    return this.bankAccountService.update(id, orgId, rest);
   }
 
   @Delete(':id')
   @ApiOperation({ summary: 'Soft delete a bank account' })
-  async remove(@Param('id') id: string) {
-    return this.bankAccountService.softDelete(id);
+  async remove(@Param('orgId') orgId: string, @Param('id') id: string) {
+    return this.bankAccountService.softDelete(id, orgId);
   }
 }

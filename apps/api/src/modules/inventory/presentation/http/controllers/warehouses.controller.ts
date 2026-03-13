@@ -1,6 +1,6 @@
 import { Controller, Get, Post, Put, Body, Param, Query } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
-import { WarehouseService } from '../../../application/services/warehouse.service';
+import type { WarehouseService } from '../../../application/services/warehouse.service';
 import {
   createWarehouseSchema,
   updateWarehouseSchema,
@@ -22,8 +22,8 @@ export class WarehousesController {
 
   @Get(':id')
   @ApiOperation({ summary: 'Get warehouse by ID' })
-  async findById(@Param('id') id: string) {
-    return this.warehouseService.findById(id);
+  async findById(@Param('orgId') orgId: string, @Param('id') id: string) {
+    return this.warehouseService.findById(id, orgId);
   }
 
   @Post()
@@ -35,9 +35,9 @@ export class WarehousesController {
 
   @Put(':id')
   @ApiOperation({ summary: 'Update a warehouse' })
-  async update(@Param('id') id: string, @Body() body: unknown) {
+  async update(@Param('orgId') orgId: string, @Param('id') id: string, @Body() body: unknown) {
     const data = updateWarehouseSchema.parse({ ...(body as object), id });
     const { id: _id, ...rest } = data;
-    return this.warehouseService.update(id, rest);
+    return this.warehouseService.update(id, orgId, rest);
   }
 }

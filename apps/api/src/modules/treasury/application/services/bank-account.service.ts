@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { BankAccountRepository } from '../../infrastructure/repositories/bank-account.repository';
+import type { BankAccountRepository } from '../../infrastructure/repositories/bank-account.repository';
 import { NotFoundError, ConflictError } from '@/platform/errors';
 import type {
   CreateBankAccountDto,
@@ -20,8 +20,8 @@ export class BankAccountService {
     });
   }
 
-  async findById(id: string) {
-    const account = await this.bankAccountRepository.findById(id);
+  async findById(id: string, organizationId: string) {
+    const account = await this.bankAccountRepository.findById(id, organizationId);
     if (!account) throw new NotFoundError('BankAccount', id);
     return account;
   }
@@ -34,16 +34,15 @@ export class BankAccountService {
       code: data.code,
       name: data.name,
       accountNumber: data.accountNumber,
-      iban: data.iban ?? null,
-      cardNumber: data.cardNumber ?? null,
+      branch: data.branch ?? '',
       bankId: data.bankId,
       currencyId: data.currencyId,
       isActive: data.isActive ?? true,
     });
   }
 
-  async update(id: string, data: Omit<UpdateBankAccountDto, 'id'>) {
-    const account = await this.findById(id);
+  async update(id: string, organizationId: string, data: Omit<UpdateBankAccountDto, 'id'>) {
+    const account = await this.findById(id, organizationId);
     if (data.code) {
       const existing = await this.bankAccountRepository.findByCode(
         account.organizationId,
@@ -56,8 +55,8 @@ export class BankAccountService {
     return this.bankAccountRepository.update(id, data);
   }
 
-  async softDelete(id: string) {
-    await this.findById(id);
+  async softDelete(id: string, organizationId: string) {
+    await this.findById(id, organizationId);
     return this.bankAccountRepository.update(id, { isActive: false });
   }
 }

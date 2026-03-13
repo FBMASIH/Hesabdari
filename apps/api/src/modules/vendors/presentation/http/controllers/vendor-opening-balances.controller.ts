@@ -1,6 +1,6 @@
 import { Controller, Get, Post, Delete, Body, Param, Query } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
-import { VendorOpeningBalanceService } from '../../../application/services/vendor-opening-balance.service';
+import type { VendorOpeningBalanceService } from '../../../application/services/vendor-opening-balance.service';
 import {
   createVendorOpeningBalanceSchema,
   vendorOpeningBalanceQuerySchema,
@@ -28,7 +28,7 @@ export class VendorOpeningBalancesController {
 
   @Delete(':id')
   @ApiOperation({ summary: 'Delete vendor opening balance' })
-  async remove(@Param('id') id: string) {
-    return this.service.delete(id);
+  async remove(@Param('orgId') orgId: string, @Param('id') id: string) {
+    return this.service.delete(id, orgId);
   }
 }

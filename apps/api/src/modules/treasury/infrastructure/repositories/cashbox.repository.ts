@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { PrismaService } from '@/platform/database/prisma.service';
+import type { PrismaService } from '@/platform/database/prisma.service';
 
 @Injectable()
 export class CashboxRepository {
@@ -26,9 +26,9 @@ export class CashboxRepository {
     return { data, total, page: opts.page, pageSize: opts.pageSize };
   }
 
-  async findById(id: string) {
-    return this.prisma.cashbox.findUnique({
-      where: { id },
+  async findById(id: string, organizationId: string) {
+    return this.prisma.cashbox.findFirst({
+      where: { id, organizationId },
       include: { currency: true },
     });
   }

@@ -15,10 +15,10 @@ const createInvoiceLineSchema = z.object({
   warehouseId: z.string().uuid().optional(),
   description: z.string().max(500).optional(),
   quantity: z.number().int().positive(),
-  unitPrice: z.number().int().min(0),
-  discount: z.number().int().min(0).default(0),
-  tax: z.number().int().min(0).default(0),
-  totalPrice: z.number().int().min(0),
+  unitPrice: z.string().regex(/^\d+$/, 'must be a non-negative integer string'),
+  discount: z.string().regex(/^\d+$/, 'must be a non-negative integer string').default('0'),
+  tax: z.string().regex(/^\d+$/, 'must be a non-negative integer string').default('0'),
+  totalPrice: z.string().regex(/^\d+$/, 'must be a non-negative integer string'),
 });
 
 // Base invoice schema without party fields — refined per document type

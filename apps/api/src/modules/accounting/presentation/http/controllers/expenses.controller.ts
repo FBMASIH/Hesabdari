@@ -1,6 +1,6 @@
 import { Controller, Get, Post, Put, Body, Param, Query } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
-import { ExpenseService } from '../../../application/services/expense.service';
+import type { ExpenseService } from '../../../application/services/expense.service';
 import { createExpenseSchema, updateExpenseSchema, expenseQuerySchema } from '@hesabdari/contracts';
 
 @ApiTags('Expenses')
@@ -25,9 +25,9 @@ export class ExpensesController {
 
   @Put(':id')
   @ApiOperation({ summary: 'Update an expense' })
-  async update(@Param('id') id: string, @Body() body: unknown) {
+  async update(@Param('orgId') orgId: string, @Param('id') id: string, @Body() body: unknown) {
     const data = updateExpenseSchema.parse({ ...(body as object), id });
     const { id: _id, ...rest } = data;
-    return this.expenseService.update(id, rest);
+    return this.expenseService.update(id, orgId, rest);
   }
 }

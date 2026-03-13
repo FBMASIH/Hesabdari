@@ -9,9 +9,9 @@ export const createProductSchema = z.object({
   majorUnit: z.string().max(50).optional(),
   minorUnit: z.string().max(50).optional(),
   quantityInMajorUnit: z.number().int().positive().optional(),
-  salePrice1: z.number().int().min(0).default(0),
-  salePrice2: z.number().int().min(0).default(0),
-  salePrice3: z.number().int().min(0).default(0),
+  salePrice1: z.string().regex(/^\d+$/, 'must be a non-negative integer string').default('0'),
+  salePrice2: z.string().regex(/^\d+$/, 'must be a non-negative integer string').default('0'),
+  salePrice3: z.string().regex(/^\d+$/, 'must be a non-negative integer string').default('0'),
   isActive: z.boolean().default(true),
 });
 
@@ -32,8 +32,8 @@ export const productSearchSchema = z.object({
 export const createProductWarehouseStockSchema = z.object({
   warehouseId: z.string().uuid(),
   quantity: z.number().int().min(0),
-  purchasePrice: z.number().int().min(0),
-  totalPrice: z.number().int().min(0),
+  purchasePrice: z.string().regex(/^\d+$/, 'must be a non-negative integer string'),
+  totalPrice: z.string().regex(/^\d+$/, 'must be a non-negative integer string'),
 });
 
 export const updateProductWarehouseStockSchema = createProductWarehouseStockSchema

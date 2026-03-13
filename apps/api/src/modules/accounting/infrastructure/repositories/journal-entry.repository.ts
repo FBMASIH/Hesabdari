@@ -6,9 +6,9 @@ import type { JournalEntryStatus } from '@hesabdari/db';
 export class JournalEntryRepository {
   constructor(private readonly prisma: PrismaService) {}
 
-  async findById(id: string) {
-    return this.prisma.journalEntry.findUnique({
-      where: { id },
+  async findById(id: string, organizationId: string) {
+    return this.prisma.journalEntry.findFirst({
+      where: { id, organizationId },
       include: { lines: true },
     });
   }

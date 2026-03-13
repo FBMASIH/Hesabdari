@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
-import { PrismaService } from '@/platform/database/prisma.service';
+import type { PrismaService } from '@/platform/database/prisma.service';
+import type { Prisma } from '@hesabdari/db';
 
 @Injectable()
 export class CustomerRepository {
@@ -40,37 +41,19 @@ export class CustomerRepository {
     });
   }
 
-  async findById(id: string) {
-    return this.prisma.customer.findUnique({ where: { id } });
+  async findById(id: string, organizationId: string) {
+    return this.prisma.customer.findFirst({ where: { id, organizationId } });
   }
 
   async findByCode(organizationId: string, code: string) {
     return this.prisma.customer.findFirst({ where: { organizationId, code } });
   }
 
-  async create(data: {
-    organizationId: string;
-    code: string;
-    name: string;
-    phone?: string | null;
-    address?: string | null;
-    taxId?: string | null;
-    isActive: boolean;
-  }) {
+  async create(data: Prisma.CustomerUncheckedCreateInput) {
     return this.prisma.customer.create({ data });
   }
 
-  async update(
-    id: string,
-    data: Partial<{
-      code: string;
-      name: string;
-      phone: string | null;
-      address: string | null;
-      taxId: string | null;
-      isActive: boolean;
-    }>,
-  ) {
+  async update(id: string, data: Prisma.CustomerUncheckedUpdateInput) {
     return this.prisma.customer.update({ where: { id }, data });
   }
 }

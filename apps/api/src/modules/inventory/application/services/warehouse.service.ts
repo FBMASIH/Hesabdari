@@ -20,8 +20,8 @@ export class WarehouseService {
     });
   }
 
-  async findById(id: string) {
-    const warehouse = await this.warehouseRepository.findById(id);
+  async findById(id: string, organizationId: string) {
+    const warehouse = await this.warehouseRepository.findById(id, organizationId);
     if (!warehouse) throw new NotFoundError('Warehouse', id);
     return warehouse;
   }
@@ -38,8 +38,8 @@ export class WarehouseService {
     });
   }
 
-  async update(id: string, data: Omit<UpdateWarehouseDto, 'id'>) {
-    const warehouse = await this.findById(id);
+  async update(id: string, organizationId: string, data: Omit<UpdateWarehouseDto, 'id'>) {
+    const warehouse = await this.findById(id, organizationId);
     if (data.code) {
       const existing = await this.warehouseRepository.findByCode(
         warehouse.organizationId,

@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
-import { PrismaService } from '@/platform/database/prisma.service';
+import type { PrismaService } from '@/platform/database/prisma.service';
+import type { Prisma } from '@hesabdari/db';
 
 @Injectable()
 export class VendorRepository {
@@ -40,37 +41,19 @@ export class VendorRepository {
     });
   }
 
-  async findById(id: string) {
-    return this.prisma.vendor.findUnique({ where: { id } });
+  async findById(id: string, organizationId: string) {
+    return this.prisma.vendor.findFirst({ where: { id, organizationId } });
   }
 
   async findByCode(organizationId: string, code: string) {
     return this.prisma.vendor.findFirst({ where: { organizationId, code } });
   }
 
-  async create(data: {
-    organizationId: string;
-    code: string;
-    name: string;
-    phone?: string | null;
-    address?: string | null;
-    taxId?: string | null;
-    isActive: boolean;
-  }) {
+  async create(data: Prisma.VendorUncheckedCreateInput) {
     return this.prisma.vendor.create({ data });
   }
 
-  async update(
-    id: string,
-    data: Partial<{
-      code: string;
-      name: string;
-      phone: string | null;
-      address: string | null;
-      taxId: string | null;
-      isActive: boolean;
-    }>,
-  ) {
+  async update(id: string, data: Prisma.VendorUncheckedUpdateInput) {
     return this.prisma.vendor.update({ where: { id }, data });
   }
 }

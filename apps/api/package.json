@@ -17,6 +17,7 @@
     "clean": "rm -rf dist"
   },
   "dependencies": {
+    "@fastify/static": "^9.0.0",
     "@hesabdari/contracts": "workspace:*",
     "@hesabdari/db": "workspace:*",
     "@hesabdari/shared": "workspace:*",

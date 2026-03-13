@@ -17,8 +17,8 @@ export class AccountsController {
 
   @Get(':id')
   @ApiOperation({ summary: 'Get account by ID' })
-  async findById(@Param('id') id: string) {
-    return this.accountService.findById(id);
+  async findById(@Param('orgId') orgId: string, @Param('id') id: string) {
+    return this.accountService.findById(id, orgId);
   }
 
   @Post()

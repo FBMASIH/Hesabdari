@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { PrismaService } from '@/platform/database/prisma.service';
+import type { PrismaService } from '@/platform/database/prisma.service';
 
 @Injectable()
 export class ProductWarehouseStockRepository {
@@ -13,9 +13,9 @@ export class ProductWarehouseStockRepository {
     });
   }
 
-  async findById(id: string) {
-    return this.prisma.productWarehouseStock.findUnique({
-      where: { id },
+  async findById(id: string, organizationId: string) {
+    return this.prisma.productWarehouseStock.findFirst({
+      where: { id, organizationId },
       include: { warehouse: true },
     });
   }

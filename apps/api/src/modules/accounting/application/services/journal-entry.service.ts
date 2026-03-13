@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
-import { JournalEntryRepository } from '../../infrastructure/repositories/journal-entry.repository';
-import { PeriodRepository } from '../../infrastructure/repositories/period.repository';
+import type { JournalEntryRepository } from '../../infrastructure/repositories/journal-entry.repository';
+import type { PeriodRepository } from '../../infrastructure/repositories/period.repository';
 import {
   assertJournalBalances,
   assertMinimumLines,
@@ -15,8 +15,8 @@ export class JournalEntryService {
     private readonly periodRepository: PeriodRepository,
   ) {}
 
-  async findById(id: string) {
-    const entry = await this.journalEntryRepository.findById(id);
+  async findById(id: string, organizationId: string) {
+    const entry = await this.journalEntryRepository.findById(id, organizationId);
     if (!entry) throw new NotFoundError('JournalEntry', id);
     return entry;
   }
@@ -25,10 +25,10 @@ export class JournalEntryService {
     return this.journalEntryRepository.findByOrganizationId(organizationId);
   }
 
-  async post(id: string, postedBy: string) {
-    const entry = await this.findById(id);
+  async post(id: string, organizationId: string, postedBy: string) {
+    const entry = await this.findById(id, organizationId);
 
-    const period = await this.periodRepository.findById(entry.periodId);
+    const period = await this.periodRepository.findById(entry.periodId, organizationId);
     if (!period) throw new NotFoundError('AccountingPeriod', entry.periodId);
 
     assertPeriodOpen(period.status);

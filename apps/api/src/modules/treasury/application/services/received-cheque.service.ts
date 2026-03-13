@@ -37,8 +37,8 @@ export class ReceivedChequeService {
     });
   }
 
-  async findById(id: string) {
-    const cheque = await this.chequeRepository.findById(id);
+  async findById(id: string, organizationId: string) {
+    const cheque = await this.chequeRepository.findById(id, organizationId);
     if (!cheque) throw new NotFoundError('ReceivedCheque', id);
     return cheque;
   }
@@ -69,8 +69,8 @@ export class ReceivedChequeService {
     });
   }
 
-  async update(id: string, data: Omit<UpdateReceivedChequeDto, 'id'>) {
-    const cheque = await this.findById(id);
+  async update(id: string, organizationId: string, data: Omit<UpdateReceivedChequeDto, 'id'>) {
+    const cheque = await this.findById(id, organizationId);
     if (cheque.status !== 'OPEN') {
       throw new ApplicationError('INVALID_STATUS', 'Can only update cheques in OPEN status');
     }
@@ -93,8 +93,8 @@ export class ReceivedChequeService {
     return this.chequeRepository.update(id, updateData as Prisma.ReceivedChequeUpdateInput);
   }
 
-  async changeStatus(id: string, data: ReceivedChequeStatusDto) {
-    const cheque = await this.findById(id);
+  async changeStatus(id: string, organizationId: string, data: ReceivedChequeStatusDto) {
+    const cheque = await this.findById(id, organizationId);
     const allowed = VALID_TRANSITIONS[cheque.status] ?? [];
     if (!allowed.includes(data.status)) {
       throw new ApplicationError(
@@ -104,7 +104,10 @@ export class ReceivedChequeService {
     }
 
     if (data.status === 'DEPOSITED' && data.depositBankAccountId) {
-      const bankAccount = await this.bankAccountRepository.findById(data.depositBankAccountId);
+      const bankAccount = await this.bankAccountRepository.findById(
+        data.depositBankAccountId,
+        organizationId,
+      );
       if (!bankAccount) {
         throw new NotFoundError('BankAccount', data.depositBankAccountId);
       }

@@ -1,12 +1,12 @@
 import { Injectable } from '@nestjs/common';
-import { PrismaService } from '@/platform/database/prisma.service';
+import type { PrismaService } from '@/platform/database/prisma.service';
 
 @Injectable()
 export class PeriodRepository {
   constructor(private readonly prisma: PrismaService) {}
 
-  async findById(id: string) {
-    return this.prisma.accountingPeriod.findUnique({ where: { id } });
+  async findById(id: string, organizationId: string) {
+    return this.prisma.accountingPeriod.findFirst({ where: { id, organizationId } });
   }
 
   async findByOrganizationId(organizationId: string) {

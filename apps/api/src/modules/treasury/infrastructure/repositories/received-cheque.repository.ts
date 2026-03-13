@@ -41,9 +41,9 @@ export class ReceivedChequeRepository {
     return { data, total, page: opts.page, pageSize: opts.pageSize };
   }
 
-  async findById(id: string) {
-    return this.prisma.receivedCheque.findUnique({
-      where: { id },
+  async findById(id: string, organizationId: string) {
+    return this.prisma.receivedCheque.findFirst({
+      where: { id, organizationId },
       include: { customer: true, currency: true, depositBankAccount: true },
     });
   }

@@ -4,9 +4,24 @@ import { paginationSchema } from './common.js';
 export const createVendorSchema = z.object({
   code: z.string().min(1).max(50),
   name: z.string().min(1).max(200),
-  phone: z.string().max(20).optional(),
+  referrer: z.string().max(200).optional(),
+  title: z.string().max(200).optional(),
+  phone1: z.string().max(20).optional(),
+  phone2: z.string().max(20).optional(),
+  phone3: z.string().max(20).optional(),
   address: z.string().max(500).optional(),
-  taxId: z.string().max(20).optional(),
+  creditLimit: z.string().regex(/^\d+$/).optional(),
+  nationalId: z.string().max(20).optional(),
+  economicCode: z.string().max(20).optional(),
+  postalCode: z.string().max(20).optional(),
+  bankAccount1: z.string().max(50).optional(),
+  bankAccount2: z.string().max(50).optional(),
+  bankAccount3: z.string().max(50).optional(),
+  birthDate: z
+    .string()
+    .regex(/^\d{4}-\d{2}-\d{2}$/, 'must be ISO 8601 date (YYYY-MM-DD)')
+    .optional(),
+  description: z.string().max(1000).optional(),
   isActive: z.boolean().default(true),
 });
 

@@ -15,7 +15,7 @@ const paidChequeStatusEnum = z.enum(['OPEN', 'CLEARED', 'RETURNED', 'CANCELLED']
 export const createReceivedChequeSchema = z.object({
   chequeNumber: z.string().min(1).max(50),
   sayadiNumber: z.string().max(50).optional(),
-  amount: z.number().int().positive(),
+  amount: z.string().regex(/^\d+$/, 'must be a positive integer string'),
   currencyId: z.string().uuid(),
   customerId: z.string().uuid(),
   date: z.coerce.date(),
@@ -48,7 +48,7 @@ export const receivedChequeQuerySchema = paginationSchema.extend({
 export const createPaidChequeSchema = z.object({
   chequeNumber: z.string().min(1).max(50),
   sayadiNumber: z.string().max(50).optional(),
-  amount: z.number().int().positive(),
+  amount: z.string().regex(/^\d+$/, 'must be a positive integer string'),
   currencyId: z.string().uuid(),
   bankAccountId: z.string().uuid(),
   vendorId: z.string().uuid().optional(),

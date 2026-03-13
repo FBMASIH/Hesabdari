@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { ExpenseRepository } from '../../infrastructure/repositories/expense.repository';
+import type { ExpenseRepository } from '../../infrastructure/repositories/expense.repository';
 import { NotFoundError, ConflictError } from '@/platform/errors';
 import type { CreateExpenseDto, UpdateExpenseDto } from '@hesabdari/contracts';
 
@@ -11,8 +11,8 @@ export class ExpenseService {
     return this.expenseRepository.findByOrganization(organizationId, isActive);
   }
 
-  async findById(id: string) {
-    const expense = await this.expenseRepository.findById(id);
+  async findById(id: string, organizationId: string) {
+    const expense = await this.expenseRepository.findById(id, organizationId);
     if (!expense) throw new NotFoundError('Expense', id);
     return expense;
   }
@@ -28,8 +28,8 @@ export class ExpenseService {
     });
   }
 
-  async update(id: string, data: Omit<UpdateExpenseDto, 'id'>) {
-    const expense = await this.findById(id);
+  async update(id: string, organizationId: string, data: Omit<UpdateExpenseDto, 'id'>) {
+    const expense = await this.findById(id, organizationId);
     if (data.code) {
       const existing = await this.expenseRepository.findByCode(expense.organizationId, data.code);
       if (existing && existing.id !== id) {

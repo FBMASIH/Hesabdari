@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { PrismaService } from '@/platform/database/prisma.service';
+import type { PrismaService } from '@/platform/database/prisma.service';
 
 @Injectable()
 export class BankAccountRepository {
@@ -27,9 +27,9 @@ export class BankAccountRepository {
     return { data, total, page: opts.page, pageSize: opts.pageSize };
   }
 
-  async findById(id: string) {
-    return this.prisma.bankAccount.findUnique({
-      where: { id },
+  async findById(id: string, organizationId: string) {
+    return this.prisma.bankAccount.findFirst({
+      where: { id, organizationId },
       include: { bank: true, currency: true },
     });
   }
@@ -43,8 +43,7 @@ export class BankAccountRepository {
     code: string;
     name: string;
     accountNumber: string;
-    iban?: string | null;
-    cardNumber?: string | null;
+    branch?: string;
     bankId: string;
     currencyId: string;
     isActive: boolean;
@@ -58,8 +57,7 @@ export class BankAccountRepository {
       code: string;
       name: string;
       accountNumber: string;
-      iban: string | null;
-      cardNumber: string | null;
+      branch: string;
       bankId: string;
       currencyId: string;
       isActive: boolean;

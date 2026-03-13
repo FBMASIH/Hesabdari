@@ -1,6 +1,6 @@
 import { Controller, Get, Post, Param } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
-import { JournalEntryService } from '../../../application/services/journal-entry.service';
+import type { JournalEntryService } from '../../../application/services/journal-entry.service';
 import { CurrentUser, type RequestUser } from '@/platform/decorators';
 
 @ApiTags('Journal Entries')
@@ -17,13 +17,17 @@ export class JournalEntriesController {
 
   @Get(':id')
   @ApiOperation({ summary: 'Get journal entry by ID' })
-  async findById(@Param('id') id: string) {
-    return this.journalEntryService.findById(id);
+  async findById(@Param('orgId') orgId: string, @Param('id') id: string) {
+    return this.journalEntryService.findById(id, orgId);
   }
 
   @Post(':id/post')
   @ApiOperation({ summary: 'Post a draft journal entry' })
-  async post(@Param('id') id: string, @CurrentUser() user: RequestUser) {
-    return this.journalEntryService.post(id, user.userId);
+  async post(
+    @Param('orgId') orgId: string,
+    @Param('id') id: string,
+    @CurrentUser() user: RequestUser,
+  ) {
+    return this.journalEntryService.post(id, orgId, user.userId);
   }
 }
