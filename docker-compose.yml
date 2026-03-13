@@ -4,49 +4,122 @@ services:
   postgres:
     image: postgres:18-alpine
     container_name: hesabdari-postgres
+    restart: unless-stopped
     environment:
       POSTGRES_USER: hesabdari
       POSTGRES_PASSWORD: hesabdari
       POSTGRES_DB: hesabdari
+      # Performance tuning for dev (64GB server)
+      POSTGRES_INITDB_ARGS: '--data-checksums'
     ports:
-      - '5432:5432'
+      - '127.0.0.1:5432:5432'
     volumes:
       - postgres_data:/var/lib/postgresql/data
+    command:
+      - postgres
+      - -c
+      - shared_buffers=256MB
+      - -c
+      - work_mem=16MB
+      - -c
+      - maintenance_work_mem=128MB
+      - -c
+      - effective_cache_size=1GB
+      - -c
+      - random_page_cost=1.1
+      - -c
+      - max_connections=100
+      - -c
+      - log_min_duration_statement=500
+      - -c
+      - log_statement=none
+    deploy:
+      resources:
+        limits:
+          memory: 1G
+          cpus: '2'
+        reservations:
+          memory: 256M
     healthcheck:
       test: ['CMD-SHELL', 'pg_isready -U hesabdari']
-      interval: 5s
+      interval: 10s
       timeout: 5s
       retries: 5
+      start_period: 10s
+    logging:
+      driver: json-file
+      options:
+        max-size: '10m'
+        max-file: '3'
 
   valkey:
     image: valkey/valkey:8-alpine
     container_name: hesabdari-valkey
+    restart: unless-stopped
     ports:
-      - '6379:6379'
+      - '127.0.0.1:6379:6379'
     volumes:
       - valkey_data:/data
+    command:
+      - valkey-server
+      - --maxmemory
+      - 128mb
+      - --maxmemory-policy
+      - allkeys-lru
+      - --save
+      - '60'
+      - '1000'
+      - --appendonly
+      - 'no'
+    deploy:
+      resources:
+        limits:
+          memory: 256M
+          cpus: '1'
+        reservations:
+          memory: 64M
     healthcheck:
       test: ['CMD', 'valkey-cli', 'ping']
-      interval: 5s
+      interval: 10s
       timeout: 5s
       retries: 5
+      start_period: 5s
+    logging:
+      driver: json-file
+      options:
+        max-size: '10m'
+        max-file: '3'
 
   rabbitmq:
     image: rabbitmq:4.2-management-alpine
     container_name: hesabdari-rabbitmq
+    restart: unless-stopped
     environment:
       RABBITMQ_DEFAULT_USER: hesabdari
       RABBITMQ_DEFAULT_PASS: hesabdari
     ports:
-      - '5672:5672'
-      - '15672:15672'
+      - '127.0.0.1:5672:5672'
+      - '127.0.0.1:15672:15672'
     volumes:
       - rabbitmq_data:/var/lib/rabbitmq
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+          cpus: '1'
+        reservations:
+          memory: 128M
     healthcheck:
       test: ['CMD', 'rabbitmq-diagnostics', '-q', 'ping']
-      interval: 10s
+      interval: 15s
       timeout: 10s
       retries: 5
+      start_period: 30s
+    logging:
+      driver: json-file
+      options:
+        max-size: '10m'
+        max-file: '3'
 
 volumes:
   postgres_data:

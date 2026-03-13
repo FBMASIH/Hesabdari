@@ -1,0 +1,473 @@
+{
+  "summary": {
+    "total": 66,
+    "passed": 66,
+    "failed": 0,
+    "warned": 0,
+    "timestamp": "2026-03-13T09:29:30.743Z"
+  },
+  "results": [
+    {
+      "module": "Health",
+      "test": "GET /health — liveness check",
+      "status": "PASS",
+      "httpCode": 200,
+      "detail": ""
+    },
+    {
+      "module": "Health",
+      "test": "GET /health/ready — readiness check",
+      "status": "PASS",
+      "httpCode": 200,
+      "detail": ""
+    },
+    {
+      "module": "Identity",
+      "test": "POST /auth/register — create user",
+      "status": "PASS",
+      "httpCode": 201,
+      "detail": ""
+    },
+    {
+      "module": "Identity",
+      "test": "POST /auth/login — authenticate",
+      "status": "PASS",
+      "httpCode": 200,
+      "detail": ""
+    },
+    {
+      "module": "Identity",
+      "test": "POST /auth/refresh — refresh token",
+      "status": "PASS",
+      "httpCode": 200,
+      "detail": ""
+    },
+    {
+      "module": "Identity",
+      "test": "POST /auth/login — short password → 400",
+      "status": "PASS",
+      "httpCode": 400,
+      "detail": ""
+    },
+    {
+      "module": "Identity",
+      "test": "POST /auth/login — wrong creds → 401",
+      "status": "PASS",
+      "httpCode": 401,
+      "detail": ""
+    },
+    {
+      "module": "Identity",
+      "test": "POST /auth/register — validation → 400",
+      "status": "PASS",
+      "httpCode": 400,
+      "detail": ""
+    },
+    {
+      "module": "Identity",
+      "test": "POST /auth/register — duplicate email → 409",
+      "status": "PASS",
+      "httpCode": 409,
+      "detail": ""
+    },
+    {
+      "module": "Organizations",
+      "test": "POST /organizations — create org",
+      "status": "PASS",
+      "httpCode": 201,
+      "detail": ""
+    },
+    {
+      "module": "Organizations",
+      "test": "GET /organizations/:id — read org",
+      "status": "PASS",
+      "httpCode": 200,
+      "detail": ""
+    },
+    {
+      "module": "Organizations",
+      "test": "GET /organizations/:id — not found → 404",
+      "status": "PASS",
+      "httpCode": 404,
+      "detail": ""
+    },
+    {
+      "module": "Accounting",
+      "test": "GET /currencies — list currencies",
+      "status": "PASS",
+      "httpCode": 200,
+      "detail": ""
+    },
+    {
+      "module": "Accounting",
+      "test": "POST /currencies — create currency",
+      "status": "PASS",
+      "httpCode": 201,
+      "detail": ""
+    },
+    {
+      "module": "Accounting",
+      "test": "GET /accounts — list chart of accounts",
+      "status": "PASS",
+      "httpCode": 200,
+      "detail": ""
+    },
+    {
+      "module": "Accounting",
+      "test": "POST /accounts — create account",
+      "status": "PASS",
+      "httpCode": 201,
+      "detail": ""
+    },
+    {
+      "module": "Accounting",
+      "test": "GET /accounts/:id — read account",
+      "status": "PASS",
+      "httpCode": 200,
+      "detail": ""
+    },
+    {
+      "module": "Accounting",
+      "test": "GET /periods — list accounting periods",
+      "status": "PASS",
+      "httpCode": 200,
+      "detail": ""
+    },
+    {
+      "module": "Accounting",
+      "test": "GET /journal-entries — list journal entries",
+      "status": "PASS",
+      "httpCode": 200,
+      "detail": ""
+    },
+    {
+      "module": "Accounting",
+      "test": "GET /expenses — list expenses",
+      "status": "PASS",
+      "httpCode": 200,
+      "detail": ""
+    },
+    {
+      "module": "Customers",
+      "test": "GET /customers — list (paginated)",
+      "status": "PASS",
+      "httpCode": 200,
+      "detail": ""
+    },
+    {
+      "module": "Customers",
+      "test": "POST /customers — create customer",
+      "status": "PASS",
+      "httpCode": 201,
+      "detail": ""
+    },
+    {
+      "module": "Customers",
+      "test": "GET /customers/:id — read customer",
+      "status": "PASS",
+      "httpCode": 200,
+      "detail": ""
+    },
+    {
+      "module": "Customers",
+      "test": "PUT /customers/:id — update customer",
+      "status": "PASS",
+      "httpCode": 200,
+      "detail": ""
+    },
+    {
+      "module": "Customers",
+      "test": "GET /customers/search — search by name",
+      "status": "PASS",
+      "httpCode": 200,
+      "detail": ""
+    },
+    {
+      "module": "Customers",
+      "test": "DELETE /customers/:id — soft delete",
+      "status": "PASS",
+      "httpCode": 200,
+      "detail": ""
+    },
+    {
+      "module": "Customers",
+      "test": "GET /customers/opening-balances — list",
+      "status": "PASS",
+      "httpCode": 200,
+      "detail": ""
+    },
+    {
+      "module": "Vendors",
+      "test": "GET /vendors — list (paginated)",
+      "status": "PASS",
+      "httpCode": 200,
+      "detail": ""
+    },
+    {
+      "module": "Vendors",
+      "test": "POST /vendors — create vendor",
+      "status": "PASS",
+      "httpCode": 201,
+      "detail": ""
+    },
+    {
+      "module": "Vendors",
+      "test": "GET /vendors/:id — read vendor",
+      "status": "PASS",
+      "httpCode": 200,
+      "detail": ""
+    },
+    {
+      "module": "Vendors",
+      "test": "PUT /vendors/:id — update vendor",
+      "status": "PASS",
+      "httpCode": 200,
+      "detail": ""
+    },
+    {
+      "module": "Vendors",
+      "test": "GET /vendors/search — search by name",
+      "status": "PASS",
+      "httpCode": 200,
+      "detail": ""
+    },
+    {
+      "module": "Vendors",
+      "test": "DELETE /vendors/:id — soft delete",
+      "status": "PASS",
+      "httpCode": 200,
+      "detail": ""
+    },
+    {
+      "module": "Vendors",
+      "test": "GET /vendors/opening-balances — list",
+      "status": "PASS",
+      "httpCode": 200,
+      "detail": ""
+    },
+    {
+      "module": "Inventory",
+      "test": "GET /warehouses — list",
+      "status": "PASS",
+      "httpCode": 200,
+      "detail": ""
+    },
+    {
+      "module": "Inventory",
+      "test": "POST /warehouses — create warehouse",
+      "status": "PASS",
+      "httpCode": 201,
+      "detail": ""
+    },
+    {
+      "module": "Inventory",
+      "test": "GET /warehouses/:id — read warehouse",
+      "status": "PASS",
+      "httpCode": 200,
+      "detail": ""
+    },
+    {
+      "module": "Inventory",
+      "test": "PUT /warehouses/:id — update warehouse",
+      "status": "PASS",
+      "httpCode": 200,
+      "detail": ""
+    },
+    {
+      "module": "Inventory",
+      "test": "GET /products — list",
+      "status": "PASS",
+      "httpCode": 200,
+      "detail": ""
+    },
+    {
+      "module": "Inventory",
+      "test": "POST /products — create product",
+      "status": "PASS",
+      "httpCode": 201,
+      "detail": ""
+    },
+    {
+      "module": "Inventory",
+      "test": "GET /products/:id — read product",
+      "status": "PASS",
+      "httpCode": 200,
+      "detail": ""
+    },
+    {
+      "module": "Inventory",
+      "test": "PUT /products/:id — update product",
+      "status": "PASS",
+      "httpCode": 200,
+      "detail": ""
+    },
+    {
+      "module": "Inventory",
+      "test": "GET /products/search — search products",
+      "status": "PASS",
+      "httpCode": 200,
+      "detail": ""
+    },
+    {
+      "module": "Inventory",
+      "test": "GET /products/:id/warehouse-stocks — list",
+      "status": "PASS",
+      "httpCode": 200,
+      "detail": ""
+    },
+    {
+      "module": "Inventory",
+      "test": "DELETE /products/:id — soft delete",
+      "status": "PASS",
+      "httpCode": 200,
+      "detail": ""
+    },
+    {
+      "module": "Treasury",
+      "test": "GET /banks — list banks",
+      "status": "PASS",
+      "httpCode": 200,
+      "detail": ""
+    },
+    {
+      "module": "Treasury",
+      "test": "GET /bank-accounts — list",
+      "status": "PASS",
+      "httpCode": 200,
+      "detail": ""
+    },
+    {
+      "module": "Treasury",
+      "test": "GET /cashboxes — list",
+      "status": "PASS",
+      "httpCode": 200,
+      "detail": ""
+    },
+    {
+      "module": "Treasury",
+      "test": "POST /cashboxes — create cashbox",
+      "status": "PASS",
+      "httpCode": 201,
+      "detail": ""
+    },
+    {
+      "module": "Treasury",
+      "test": "GET /cashboxes/:id — read cashbox",
+      "status": "PASS",
+      "httpCode": 200,
+      "detail": ""
+    },
+    {
+      "module": "Treasury",
+      "test": "PUT /cashboxes/:id — update cashbox",
+      "status": "PASS",
+      "httpCode": 200,
+      "detail": ""
+    },
+    {
+      "module": "Treasury",
+      "test": "DELETE /cashboxes/:id — soft delete",
+      "status": "PASS",
+      "httpCode": 200,
+      "detail": ""
+    },
+    {
+      "module": "Treasury",
+      "test": "GET /bank-accounts/opening-balances — list",
+      "status": "PASS",
+      "httpCode": 200,
+      "detail": ""
+    },
+    {
+      "module": "Treasury",
+      "test": "GET /cashboxes/opening-balances — list",
+      "status": "PASS",
+      "httpCode": 200,
+      "detail": ""
+    },
+    {
+      "module": "Treasury",
+      "test": "GET /received-cheques — list",
+      "status": "PASS",
+      "httpCode": 200,
+      "detail": ""
+    },
+    {
+      "module": "Treasury",
+      "test": "GET /paid-cheques — list",
+      "status": "PASS",
+      "httpCode": 200,
+      "detail": ""
+    },
+    {
+      "module": "Treasury",
+      "test": "POST /cashboxes — missing currencyId → 400",
+      "status": "PASS",
+      "httpCode": 400,
+      "detail": ""
+    },
+    {
+      "module": "Invoices",
+      "test": "GET /invoices — list invoices",
+      "status": "PASS",
+      "httpCode": 200,
+      "detail": ""
+    },
+    {
+      "module": "Guards",
+      "test": "Protected route without token → 401",
+      "status": "PASS",
+      "httpCode": 401,
+      "detail": ""
+    },
+    {
+      "module": "Guards",
+      "test": "Invalid token → 401",
+      "status": "PASS",
+      "httpCode": 401,
+      "detail": ""
+    },
+    {
+      "module": "Guards",
+      "test": "Non-existent route → 404",
+      "status": "PASS",
+      "httpCode": 404,
+      "detail": ""
+    },
+    {
+      "module": "Guards",
+      "test": "Error shape: {error:{code,message}}",
+      "status": "PASS",
+      "httpCode": 401,
+      "detail": ""
+    },
+    {
+      "module": "Guards",
+      "test": "ValidationPipe error → 400",
+      "status": "PASS",
+      "httpCode": 400,
+      "detail": ""
+    },
+    {
+      "module": "Guards",
+      "test": "BigInt serialized as number (creditLimit)",
+      "status": "PASS",
+      "httpCode": 200,
+      "detail": ""
+    },
+    {
+      "module": "Swagger",
+      "test": "GET /api/docs — Swagger UI",
+      "status": "PASS",
+      "httpCode": 200,
+      "detail": ""
+    },
+    {
+      "module": "Swagger",
+      "test": "GET /api/docs-json — OpenAPI spec",
+      "status": "PASS",
+      "httpCode": 200,
+      "detail": "55 paths documented"
+    }
+  ]
+}

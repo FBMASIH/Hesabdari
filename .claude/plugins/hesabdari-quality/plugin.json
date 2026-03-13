@@ -1,0 +1,5 @@
+{
+  "name": "hesabdari-quality",
+  "version": "1.0.0",
+  "description": "Backend code quality reviewer for the Hesabdari accounting platform. Checks all backend modules against CLAUDE.md conventions, clean architecture, security, and accounting domain rules."
+}
