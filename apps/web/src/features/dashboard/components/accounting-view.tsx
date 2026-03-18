@@ -1,6 +1,16 @@
 import { type ReactNode } from 'react';
 import Link from 'next/link';
-import { IconScale, IconBook, IconDocument, IconNotebook, IconClipboardList } from '@hesabdari/ui';
+import {
+  IconScale,
+  IconBook,
+  IconDocument,
+  IconNotebook,
+  IconClipboardList,
+  IconTrendingUp,
+  IconWallet,
+  IconChart,
+  IconBag,
+} from '@hesabdari/ui';
 import { t } from '@/shared/lib/i18n';
 import { formatMoney } from '@/shared/lib/money';
 import { toPersianDigits } from '@/shared/lib/date';
@@ -15,14 +25,39 @@ interface BalanceCard {
   label: string;
   debit: string;
   credit: string;
+  icon: ReactNode;
   color: string;
 }
 
 const balanceCards: BalanceCard[] = [
-  { label: acct.types.asset, debit: '0', credit: '0', color: 'bg-primary-default' },
-  { label: acct.types.liability, debit: '0', credit: '0', color: 'bg-danger-default' },
-  { label: acct.types.revenue, debit: '0', credit: '0', color: 'bg-success-default' },
-  { label: acct.types.expense, debit: '0', credit: '0', color: 'bg-warning-default' },
+  {
+    label: acct.types.asset,
+    debit: '0',
+    credit: '0',
+    icon: <IconTrendingUp size={18} />,
+    color: 'bg-primary-default/12 text-primary-default',
+  },
+  {
+    label: acct.types.liability,
+    debit: '0',
+    credit: '0',
+    icon: <IconWallet size={18} />,
+    color: 'bg-danger-default/12 text-danger-default',
+  },
+  {
+    label: acct.types.revenue,
+    debit: '0',
+    credit: '0',
+    icon: <IconChart size={18} />,
+    color: 'bg-success-default/12 text-success-default',
+  },
+  {
+    label: acct.types.expense,
+    debit: '0',
+    credit: '0',
+    icon: <IconBag size={18} />,
+    color: 'bg-warning-default/12 text-warning-default',
+  },
 ];
 
 /* ── Report shortcuts ────────────────────────── */
@@ -51,9 +86,11 @@ export function AccountingView() {
             key={card.label}
             className="glass-interactive flex flex-col gap-2 rounded-2xl p-4 cursor-default"
           >
-            <div className="flex items-center gap-2">
-              <span className={`h-2.5 w-2.5 rounded-full ${card.color}`} />
+            <div className="flex items-center justify-between">
               <span className="text-[11px] font-medium text-fg-tertiary">{card.label}</span>
+              <div className={`flex h-8 w-8 items-center justify-center rounded-xl ${card.color}`}>
+                {card.icon}
+              </div>
             </div>
             <div className="flex items-baseline justify-between">
               <div className="flex flex-col">
