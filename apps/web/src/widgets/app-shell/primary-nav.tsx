@@ -3,15 +3,7 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { type ReactNode } from 'react';
-import {
-  cn,
-  IconHome,
-  IconCart,
-  IconBag,
-  IconWallet,
-  IconBox,
-  IconChart,
-} from '@hesabdari/ui';
+import { cn, IconHome, IconCart, IconBag, IconWallet, IconBox, IconChart } from '@hesabdari/ui';
 import { t } from '@/shared/lib/i18n';
 
 const nav = t('nav');
@@ -29,11 +21,13 @@ export function PrimaryNav() {
   const pathname = usePathname();
 
   return (
-    <nav aria-label="ناوبری اصلی" className="mx-auto flex w-full max-w-[1440px] justify-center px-6 pb-2">
-      <div className="glass-surface-static inline-flex items-center gap-1 rounded-2xl p-1.5">
+    <nav
+      aria-label="ناوبری اصلی"
+      className="mx-auto flex w-full max-w-[1440px] justify-center px-6 pb-4"
+    >
+      <div className="glass-surface-static inline-flex items-center gap-1.5 rounded-2xl p-1.5">
         {tabs.map((tab) => {
-          const isActive =
-            tab.href === '/' ? pathname === '/' : pathname.startsWith(tab.href);
+          const isActive = tab.href === '/' ? pathname === '/' : pathname.startsWith(tab.href);
           return (
             <Link
               key={tab.href}
@@ -45,7 +39,12 @@ export function PrimaryNav() {
                   : 'text-fg-secondary hover:text-fg-primary hover:bg-bg-secondary/50 active:bg-bg-secondary/30',
               )}
             >
-              <span className={cn('transition-colors', isActive ? 'text-brand-deep' : 'text-fg-tertiary')}>
+              <span
+                className={cn(
+                  'transition-colors',
+                  isActive ? 'text-brand-deep' : 'text-fg-tertiary',
+                )}
+              >
                 {tab.icon}
               </span>
               {tab.label}

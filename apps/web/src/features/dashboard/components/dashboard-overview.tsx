@@ -15,7 +15,7 @@ export function DashboardOverview() {
   const [dateRange, setDateRange] = useState<DateRange>('thisWeek');
 
   return (
-    <div className="flex flex-col">
+    <div className="flex flex-col gap-5">
       {/* 1. Page title + mode controls */}
       <PageHeader
         activeMode={activeMode}
@@ -26,9 +26,9 @@ export function DashboardOverview() {
 
       {/* 2. Mode-specific content */}
       {activeMode === 'daily' && (
-        <>
+        <div className="flex flex-col gap-5">
           <KpiStrip />
-          <div className="grid grid-cols-1 gap-3 pb-3 lg:grid-cols-5">
+          <div className="grid grid-cols-1 gap-3 lg:grid-cols-5">
             <div className="lg:col-span-3">
               <CashflowChart />
             </div>
@@ -44,7 +44,7 @@ export function DashboardOverview() {
               <MoneySummary />
             </div>
           </div>
-        </>
+        </div>
       )}
 
       {activeMode === 'management' && <ManagementView />}

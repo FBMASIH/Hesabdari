@@ -60,7 +60,7 @@ export function PageHeader({
   const activeDateLabel = dateRanges.find((r) => r.key === dateRange)?.label ?? common.thisWeek;
 
   return (
-    <div className="flex items-start justify-between pt-4 pb-3">
+    <div className="flex items-start justify-between">
       {/* Title — right side in RTL */}
       <div>
         <h1 className="text-xl font-semibold text-fg-primary">{dash.title}</h1>

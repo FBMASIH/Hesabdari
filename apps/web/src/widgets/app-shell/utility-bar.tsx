@@ -18,12 +18,10 @@ export function UtilityBar() {
   };
 
   return (
-    <header className="mx-auto flex w-full max-w-[1440px] items-center gap-4 px-6 py-3">
+    <header className="mx-auto flex w-full max-w-[1440px] items-center gap-5 px-6 py-4">
       {/* Brand — right side in RTL */}
       <div className="flex items-center gap-3">
-        <div
-          className="flex h-9 w-9 items-center justify-center rounded-xl bg-brand-deep text-sm font-bold text-primary-fg shadow-[0_1px_4px_rgba(74,141,184,0.3)]"
-        >
+        <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-brand-deep text-sm font-bold text-primary-fg shadow-[0_1px_4px_rgba(74,141,184,0.3)]">
           T
         </div>
         <div className="flex flex-col">
@@ -32,9 +30,9 @@ export function UtilityBar() {
         </div>
       </div>
 
-      {/* Search */}
-      <div className="relative flex-1 max-w-lg mx-4">
-        <div className="glass-surface flex h-9 items-center rounded-xl px-4">
+      {/* Search — centered */}
+      <div className="relative flex-1 max-w-xl mx-auto">
+        <div className="glass-surface flex h-10 items-center rounded-xl px-4">
           <IconMagnifer size={16} className="text-fg-tertiary flex-shrink-0" />
           <input
             type="text"
@@ -49,7 +47,7 @@ export function UtilityBar() {
       </div>
 
       {/* Selectors — left side in RTL */}
-      <div className="flex items-center gap-3">
+      <div className="flex items-center gap-3.5">
         <OrgSelector />
 
         <div className="glass-surface-static flex h-9 items-center gap-2 rounded-xl px-4 text-sm text-fg-secondary">
