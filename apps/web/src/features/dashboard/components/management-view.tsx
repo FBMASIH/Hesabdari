@@ -64,29 +64,44 @@ interface EntityLink {
 }
 
 const entities: EntityLink[] = [
-  { label: t('customer').title, count: toPersianDigits(0), icon: <IconUsersGroup size={18} />, href: '/customers' },
-  { label: t('vendor').title, count: toPersianDigits(0), icon: <IconDelivery size={18} />, href: '/vendors' },
-  { label: t('invoice').title, count: toPersianDigits(0), icon: <IconDocument size={18} />, href: '/invoices' },
+  {
+    label: t('customer').title,
+    count: toPersianDigits(0),
+    icon: <IconUsersGroup size={18} />,
+    href: '/customers',
+  },
+  {
+    label: t('vendor').title,
+    count: toPersianDigits(0),
+    icon: <IconDelivery size={18} />,
+    href: '/vendors',
+  },
+  {
+    label: t('invoice').title,
+    count: toPersianDigits(0),
+    icon: <IconDocument size={18} />,
+    href: '/invoices',
+  },
 ];
 
 export function ManagementView() {
   return (
-    <div className="flex flex-col gap-4">
-      {/* Stat cards */}
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+    <div className="flex flex-col gap-3">
+      {/* Stat cards — 3 columns */}
+      <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
         {stats.map((stat) => (
           <Link
             key={stat.label}
-            href={stat.href as '/reports' | '/invoices'}
-            className="glass-surface flex flex-col gap-3 rounded-2xl p-5"
+            href={stat.href as never}
+            className="glass-interactive flex flex-col gap-2 rounded-2xl p-5"
           >
             <div className="flex items-center justify-between">
-              <span className="text-xs font-medium text-fg-tertiary">{stat.label}</span>
+              <span className="text-[11px] font-medium text-fg-tertiary">{stat.label}</span>
               <div className={`flex h-8 w-8 items-center justify-center rounded-xl ${stat.color}`}>
                 {stat.icon}
               </div>
             </div>
-            <span className="text-2xl font-bold tabular-nums text-fg-primary">
+            <span className="text-xl font-bold tabular-nums text-fg-primary leading-tight">
               {stat.value}
               <span className="ms-1 text-xs font-normal text-fg-tertiary">{common.toman}</span>
             </span>
@@ -95,39 +110,46 @@ export function ManagementView() {
         ))}
       </div>
 
-      {/* Lower row — chart + entity quick links */}
-      <div className="flex flex-col gap-4 lg:flex-row">
-        {/* Chart placeholder */}
-        <div className="glass-surface-static flex flex-1 flex-col rounded-2xl p-6">
-          <div className="mb-4">
-            <h2 className="text-base font-semibold text-fg-primary">{dash.moneyTrend}</h2>
-            <p className="mt-0.5 text-xs text-fg-tertiary">{dash.moneyTrendSubtitle}</p>
+      {/* Lower row — 5-col grid (3:2 ratio) */}
+      <div className="grid grid-cols-1 gap-3 lg:grid-cols-5">
+        {/* Chart */}
+        <div className="lg:col-span-3">
+          <div className="glass-surface-static flex h-full flex-col rounded-2xl p-5">
+            <div className="mb-3">
+              <h2 className="text-base font-semibold text-fg-primary">{dash.moneyTrend}</h2>
+              <p className="mt-0.5 text-xs text-fg-tertiary">{dash.moneyTrendSubtitle}</p>
+            </div>
+            <div className="flex flex-1 items-center justify-center">
+              <EmptyState
+                title={common.noData}
+                description={dash.chartEmptyDescription}
+                icon={<IconChart size={20} />}
+                className="py-6"
+              />
+            </div>
           </div>
-          <EmptyState
-            title={common.noData}
-            description={dash.chartEmptyDescription}
-            icon={<IconChart size={20} />}
-          />
         </div>
 
         {/* Entity quick links */}
-        <div className="glass-surface-static flex w-72 flex-col gap-2 rounded-2xl p-5">
-          <h2 className="text-base font-semibold text-fg-primary mb-2">{common.viewAll}</h2>
-          {entities.map((entity) => (
-            <Link
-              key={entity.label}
-              href={entity.href as '/customers' | '/vendors' | '/invoices'}
-              className="flex items-center justify-between rounded-xl px-3 py-2.5 transition-colors hover:bg-bg-primary/60"
-            >
-              <div className="flex items-center gap-2.5">
-                <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary-subtle text-brand-deep">
-                  {entity.icon}
+        <div className="lg:col-span-2">
+          <div className="glass-surface-static flex h-full flex-col gap-2 rounded-2xl p-5">
+            <h2 className="mb-1 text-base font-semibold text-fg-primary">{common.viewAll}</h2>
+            {entities.map((entity) => (
+              <Link
+                key={entity.label}
+                href={entity.href as never}
+                className="flex items-center justify-between rounded-xl px-3 py-2.5 transition-all duration-150 hover:bg-bg-tertiary/50 hover:shadow-xs active:scale-[0.98]"
+              >
+                <div className="flex items-center gap-2.5">
+                  <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary-subtle text-brand-deep shadow-xs">
+                    {entity.icon}
+                  </div>
+                  <span className="text-sm font-medium text-fg-primary">{entity.label}</span>
                 </div>
-                <span className="text-sm font-medium text-fg-primary">{entity.label}</span>
-              </div>
-              <span className="tabular-nums text-xs text-fg-tertiary">{entity.count}</span>
-            </Link>
-          ))}
+                <span className="tabular-nums text-xs text-fg-tertiary">{entity.count}</span>
+              </Link>
+            ))}
+          </div>
         </div>
       </div>
     </div>

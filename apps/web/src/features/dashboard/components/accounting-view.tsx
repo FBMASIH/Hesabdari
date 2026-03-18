@@ -1,12 +1,6 @@
 import { type ReactNode } from 'react';
 import Link from 'next/link';
-import {
-  IconScale,
-  IconBook,
-  IconDocument,
-  IconNotebook,
-  IconClipboardList,
-} from '@hesabdari/ui';
+import { IconScale, IconBook, IconDocument, IconNotebook, IconClipboardList } from '@hesabdari/ui';
 import { t } from '@/shared/lib/i18n';
 import { formatMoney } from '@/shared/lib/money';
 import { toPersianDigits } from '@/shared/lib/date';
@@ -49,14 +43,17 @@ const reportLinks: ReportLink[] = [
 
 export function AccountingView() {
   return (
-    <div className="flex flex-col gap-4">
-      {/* Account type balance cards */}
-      <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
+    <div className="flex flex-col gap-3">
+      {/* Account type balance cards — 4 columns */}
+      <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
         {balanceCards.map((card) => (
-          <div key={card.label} className="glass-surface-static flex flex-col gap-3 rounded-2xl p-5">
+          <div
+            key={card.label}
+            className="glass-interactive flex flex-col gap-2 rounded-2xl p-4 cursor-default"
+          >
             <div className="flex items-center gap-2">
               <span className={`h-2.5 w-2.5 rounded-full ${card.color}`} />
-              <span className="text-xs font-medium text-fg-tertiary">{card.label}</span>
+              <span className="text-[11px] font-medium text-fg-tertiary">{card.label}</span>
             </div>
             <div className="flex items-baseline justify-between">
               <div className="flex flex-col">
@@ -76,59 +73,67 @@ export function AccountingView() {
         ))}
       </div>
 
-      {/* Lower row — journal status + report shortcuts */}
-      <div className="flex flex-col gap-4 lg:flex-row">
+      {/* Lower row — 5-col grid (3:2 ratio) */}
+      <div className="grid grid-cols-1 gap-3 lg:grid-cols-5">
         {/* Journal entries status */}
-        <div className="glass-surface-static flex flex-1 flex-col rounded-2xl p-6">
-          <div className="mb-4">
-            <h2 className="text-base font-semibold text-fg-primary">{journal.title}</h2>
-            <p className="mt-0.5 text-xs text-fg-tertiary">{journal.subtitle}</p>
-          </div>
+        <div className="lg:col-span-3">
+          <div className="glass-surface-static flex h-full flex-col rounded-2xl p-5">
+            <div className="mb-3">
+              <h2 className="text-base font-semibold text-fg-primary">{journal.title}</h2>
+              <p className="mt-0.5 text-xs text-fg-tertiary">{journal.subtitle}</p>
+            </div>
 
-          <div className="mb-4 flex items-center gap-6">
-            <div className="flex flex-col">
-              <span className="text-[11px] text-fg-tertiary">{journal.totalDebit}</span>
-              <span className="text-lg font-bold tabular-nums text-fg-primary">
-                {formatMoney('0', { showUnit: false })}
-              </span>
+            <div className="mb-4 flex items-center gap-6">
+              <div className="flex flex-col">
+                <span className="text-[11px] text-fg-tertiary">{journal.totalDebit}</span>
+                <span className="text-lg font-bold tabular-nums text-fg-primary">
+                  {formatMoney('0', { showUnit: false })}
+                </span>
+              </div>
+              <div className="flex flex-col">
+                <span className="text-[11px] text-fg-tertiary">{journal.totalCredit}</span>
+                <span className="text-lg font-bold tabular-nums text-fg-primary">
+                  {formatMoney('0', { showUnit: false })}
+                </span>
+              </div>
+              <div className="flex flex-col">
+                <span className="text-[11px] text-fg-tertiary">{journal.balanceColumn}</span>
+                <span className="text-lg font-bold tabular-nums text-success-default">
+                  {journal.balanced}
+                </span>
+              </div>
             </div>
-            <div className="flex flex-col">
-              <span className="text-[11px] text-fg-tertiary">{journal.totalCredit}</span>
-              <span className="text-lg font-bold tabular-nums text-fg-primary">
-                {formatMoney('0', { showUnit: false })}
-              </span>
-            </div>
-            <div className="flex flex-col">
-              <span className="text-[11px] text-fg-tertiary">{journal.balanceColumn}</span>
-              <span className="text-lg font-bold tabular-nums text-success-default">
-                {journal.balanced}
-              </span>
-            </div>
-          </div>
 
-          <div className="flex items-center gap-4 text-xs text-fg-tertiary">
-            <span>{toPersianDigits(0)} {journal.entryCount}</span>
-            <span className="text-fg-quaternary">|</span>
-            <span>{toPersianDigits(0)} {journal.rowCount}</span>
+            <div className="flex items-center gap-4 text-xs text-fg-tertiary">
+              <span>
+                {toPersianDigits(0)} {journal.entryCount}
+              </span>
+              <span className="text-fg-disabled">|</span>
+              <span>
+                {toPersianDigits(0)} {journal.rowCount}
+              </span>
+            </div>
           </div>
         </div>
 
         {/* Report shortcuts */}
-        <div className="glass-surface-static flex w-72 flex-col rounded-2xl p-5">
-          <h2 className="text-base font-semibold text-fg-primary mb-3">{reports.title}</h2>
-          <div className="flex flex-col gap-1">
-            {reportLinks.map((link) => (
-              <Link
-                key={link.label}
-                href={link.href as '/reports' | '/journal-entries'}
-                className="flex items-center gap-2.5 rounded-xl px-3 py-2.5 transition-colors hover:bg-bg-primary/60"
-              >
-                <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-primary-subtle text-brand-deep">
-                  {link.icon}
-                </div>
-                <span className="text-sm font-medium text-fg-secondary">{link.label}</span>
-              </Link>
-            ))}
+        <div className="lg:col-span-2">
+          <div className="glass-surface-static flex h-full flex-col rounded-2xl p-5">
+            <h2 className="mb-2 text-base font-semibold text-fg-primary">{reports.title}</h2>
+            <div className="flex flex-col gap-1">
+              {reportLinks.map((link) => (
+                <Link
+                  key={link.label}
+                  href={link.href as never}
+                  className="flex items-center gap-2.5 rounded-xl px-3 py-2.5 transition-all duration-150 hover:bg-bg-tertiary/50 hover:shadow-xs active:scale-[0.98]"
+                >
+                  <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-primary-subtle text-brand-deep shadow-xs">
+                    {link.icon}
+                  </div>
+                  <span className="text-sm font-medium text-fg-secondary">{link.label}</span>
+                </Link>
+              ))}
+            </div>
           </div>
         </div>
       </div>
