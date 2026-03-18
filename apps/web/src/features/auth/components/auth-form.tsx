@@ -47,7 +47,8 @@ function PasswordToggle(visible: boolean, toggle: () => void) {
 const AUTH_INPUT = 'auth-input h-[42px] rounded-xl px-3.5 text-[13px]';
 const AUTH_INPUT_LTR = `${AUTH_INPUT} text-left`;
 const AUTH_BTN = 'auth-submit-btn h-[42px] w-full rounded-full text-[14px] font-semibold';
-const AUTH_SOCIAL = 'auth-social-btn flex h-[42px] w-full items-center justify-center gap-2 rounded-full text-[13px] font-medium transition-all active:scale-[0.98]';
+const AUTH_SOCIAL =
+  'auth-social-btn flex h-[42px] w-full items-center justify-center gap-2 rounded-full text-[13px] font-medium transition-all active:scale-[0.98]';
 
 export function AuthForm() {
   const auth = t('auth');
@@ -60,9 +61,22 @@ export function AuthForm() {
   // Security: strip only sensitive credentials from the URL, preserve others (email, redirect, etc.)
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
-    const sensitive = ['password', 'token', 'secret', 'access_token', 'refresh_token', 'jwt', 'credential'];
+    const sensitive = [
+      'password',
+      'token',
+      'secret',
+      'access_token',
+      'refresh_token',
+      'jwt',
+      'credential',
+    ];
     let changed = false;
-    sensitive.forEach((p) => { if (params.has(p)) { params.delete(p); changed = true; } });
+    sensitive.forEach((p) => {
+      if (params.has(p)) {
+        params.delete(p);
+        changed = true;
+      }
+    });
     if (changed) {
       const clean = params.toString();
       window.history.replaceState(null, '', window.location.pathname + (clean ? `?${clean}` : ''));
@@ -151,7 +165,13 @@ export function AuthForm() {
       {formError && <FormErrorBanner message={formError} className="mt-4" />}
 
       {mode === 'sign-in' && (
-        <form key="sign-in" method="post" noValidate onSubmit={loginForm.handleSubmit(handleLogin)} className="auth-form-enter mt-5 space-y-4">
+        <form
+          key="sign-in"
+          method="post"
+          noValidate
+          onSubmit={loginForm.handleSubmit(handleLogin)}
+          className="auth-form-enter mt-5 space-y-4"
+        >
           <FormField error={loginForm.formState.errors.email?.message}>
             <FormLabel htmlFor="login-email" className="mb-1.5 text-[12px]">
               {auth.email}
@@ -166,7 +186,9 @@ export function AuthForm() {
                 className={AUTH_INPUT_LTR}
                 {...loginForm.register('email')}
               />
-              <span className="auth-input-icon auth-input-icon-ltr"><IconLetter size={16} /></span>
+              <span className="auth-input-icon auth-input-icon-ltr">
+                <IconLetter size={16} />
+              </span>
             </div>
           </FormField>
 
@@ -208,34 +230,74 @@ export function AuthForm() {
       )}
 
       {mode === 'sign-up' && (
-        <form key="sign-up" method="post" noValidate onSubmit={registerForm.handleSubmit(handleRegister)} className="auth-form-enter mt-5 space-y-4">
+        <form
+          key="sign-up"
+          method="post"
+          noValidate
+          onSubmit={registerForm.handleSubmit(handleRegister)}
+          className="auth-form-enter mt-5 space-y-4"
+        >
           <div className="grid grid-cols-2 gap-3">
             <FormField error={registerForm.formState.errors.firstName?.message}>
-              <FormLabel htmlFor="reg-firstName" className="mb-1.5 text-[12px]">{auth.firstName}</FormLabel>
+              <FormLabel htmlFor="reg-firstName" className="mb-1.5 text-[12px]">
+                {auth.firstName}
+              </FormLabel>
               <div className="auth-input-wrapper">
-                <Input id="reg-firstName" placeholder={auth.firstNamePlaceholder} autoComplete="given-name" className={AUTH_INPUT} {...registerForm.register('firstName')} />
-                <span className="auth-input-icon"><IconUser size={16} /></span>
+                <Input
+                  id="reg-firstName"
+                  placeholder={auth.firstNamePlaceholder}
+                  autoComplete="given-name"
+                  className={AUTH_INPUT}
+                  {...registerForm.register('firstName')}
+                />
+                <span className="auth-input-icon">
+                  <IconUser size={16} />
+                </span>
               </div>
             </FormField>
             <FormField error={registerForm.formState.errors.lastName?.message}>
-              <FormLabel htmlFor="reg-lastName" className="mb-1.5 text-[12px]">{auth.lastName}</FormLabel>
+              <FormLabel htmlFor="reg-lastName" className="mb-1.5 text-[12px]">
+                {auth.lastName}
+              </FormLabel>
               <div className="auth-input-wrapper">
-                <Input id="reg-lastName" placeholder={auth.lastNamePlaceholder} autoComplete="family-name" className={AUTH_INPUT} {...registerForm.register('lastName')} />
-                <span className="auth-input-icon"><IconUser size={16} /></span>
+                <Input
+                  id="reg-lastName"
+                  placeholder={auth.lastNamePlaceholder}
+                  autoComplete="family-name"
+                  className={AUTH_INPUT}
+                  {...registerForm.register('lastName')}
+                />
+                <span className="auth-input-icon">
+                  <IconUser size={16} />
+                </span>
               </div>
             </FormField>
           </div>
 
           <FormField error={registerForm.formState.errors.email?.message}>
-            <FormLabel htmlFor="reg-email" className="mb-1.5 text-[12px]">{auth.email}</FormLabel>
+            <FormLabel htmlFor="reg-email" className="mb-1.5 text-[12px]">
+              {auth.email}
+            </FormLabel>
             <div className="auth-input-wrapper">
-              <Input id="reg-email" type="email" dir="ltr" placeholder={auth.emailPlaceholder} autoComplete="email" className={AUTH_INPUT_LTR} {...registerForm.register('email')} />
-              <span className="auth-input-icon auth-input-icon-ltr"><IconLetter size={16} /></span>
+              <Input
+                id="reg-email"
+                type="email"
+                dir="ltr"
+                placeholder={auth.emailPlaceholder}
+                autoComplete="email"
+                className={AUTH_INPUT_LTR}
+                {...registerForm.register('email')}
+              />
+              <span className="auth-input-icon auth-input-icon-ltr">
+                <IconLetter size={16} />
+              </span>
             </div>
           </FormField>
 
           <FormField error={registerForm.formState.errors.password?.message}>
-            <FormLabel htmlFor="reg-password" className="mb-1.5 text-[12px]">{auth.password}</FormLabel>
+            <FormLabel htmlFor="reg-password" className="mb-1.5 text-[12px]">
+              {auth.password}
+            </FormLabel>
             <div className="auth-input-wrapper">
               <PasswordInput
                 id="reg-password"
@@ -257,13 +319,41 @@ export function AuthForm() {
 
       <AuthDivider label={auth.orContinueWith} />
 
-      <div className="mt-4 space-y-2.5">
-        <button type="button" className={cn(AUTH_SOCIAL, 'bg-bg-inverse text-fg-inverse hover:opacity-90')}>
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M18.71 19.5C17.88 20.74 17 21.95 15.66 21.97C14.32 21.99 13.89 21.18 12.37 21.18C10.84 21.18 10.37 21.95 9.1 21.99C7.79 22.03 6.8 20.68 5.96 19.47C4.25 16.97 2.94 12.45 4.7 9.39C5.57 7.87 7.13 6.91 8.82 6.88C10.1 6.86 11.32 7.75 12.11 7.75C12.89 7.75 14.37 6.68 15.92 6.84C16.57 6.87 18.39 7.1 19.56 8.82C19.47 8.88 17.39 10.1 17.41 12.63C17.44 15.65 20.06 16.66 20.09 16.67C20.06 16.74 19.67 18.11 18.71 19.5ZM13 3.5C13.73 2.67 14.94 2.04 15.94 2C16.07 3.17 15.6 4.35 14.9 5.19C14.21 6.04 13.07 6.7 11.95 6.61C11.8 5.46 12.36 4.26 13 3.5Z" /></svg>
+      <div className="mt-4 grid grid-cols-2 gap-2.5">
+        <button
+          type="button"
+          className={cn(AUTH_SOCIAL, 'bg-bg-inverse text-fg-inverse hover:opacity-90')}
+        >
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M18.71 19.5C17.88 20.74 17 21.95 15.66 21.97C14.32 21.99 13.89 21.18 12.37 21.18C10.84 21.18 10.37 21.95 9.1 21.99C7.79 22.03 6.8 20.68 5.96 19.47C4.25 16.97 2.94 12.45 4.7 9.39C5.57 7.87 7.13 6.91 8.82 6.88C10.1 6.86 11.32 7.75 12.11 7.75C12.89 7.75 14.37 6.68 15.92 6.84C16.57 6.87 18.39 7.1 19.56 8.82C19.47 8.88 17.39 10.1 17.41 12.63C17.44 15.65 20.06 16.66 20.09 16.67C20.06 16.74 19.67 18.11 18.71 19.5ZM13 3.5C13.73 2.67 14.94 2.04 15.94 2C16.07 3.17 15.6 4.35 14.9 5.19C14.21 6.04 13.07 6.7 11.95 6.61C11.8 5.46 12.36 4.26 13 3.5Z" />
+          </svg>
           {auth.signInWithApple}
         </button>
-        <button type="button" className={cn(AUTH_SOCIAL, 'border border-border-primary bg-bg-secondary text-fg-primary hover:bg-bg-tertiary')}>
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path d="M22.56 12.25C22.56 11.47 22.49 10.72 22.36 10H12V14.26H17.92C17.66 15.63 16.88 16.79 15.71 17.57V20.34H19.28C21.36 18.42 22.56 15.6 22.56 12.25Z" fill="#4285F4" /><path d="M12 23C14.97 23 17.46 22.02 19.28 20.34L15.71 17.57C14.73 18.23 13.48 18.63 12 18.63C9.14 18.63 6.71 16.69 5.84 14.09H2.18V16.94C3.99 20.53 7.7 23 12 23Z" fill="#34A853" /><path d="M5.84 14.09C5.62 13.43 5.49 12.73 5.49 12C5.49 11.27 5.62 10.57 5.84 9.91V7.06H2.18C1.43 8.55 1 10.22 1 12C1 13.78 1.43 15.45 2.18 16.94L5.84 14.09Z" fill="#FBBC05" /><path d="M12 5.38C13.62 5.38 15.06 5.94 16.21 7.02L19.36 3.87C17.45 2.09 14.97 1 12 1C7.7 1 3.99 3.47 2.18 7.06L5.84 9.91C6.71 7.31 9.14 5.38 12 5.38Z" fill="#EA4335" /></svg>
+        <button
+          type="button"
+          className={cn(
+            AUTH_SOCIAL,
+            'border border-border-primary bg-bg-secondary text-fg-primary hover:bg-bg-tertiary',
+          )}
+        >
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
+            <path
+              d="M22.56 12.25C22.56 11.47 22.49 10.72 22.36 10H12V14.26H17.92C17.66 15.63 16.88 16.79 15.71 17.57V20.34H19.28C21.36 18.42 22.56 15.6 22.56 12.25Z"
+              fill="#4285F4"
+            />
+            <path
+              d="M12 23C14.97 23 17.46 22.02 19.28 20.34L15.71 17.57C14.73 18.23 13.48 18.63 12 18.63C9.14 18.63 6.71 16.69 5.84 14.09H2.18V16.94C3.99 20.53 7.7 23 12 23Z"
+              fill="#34A853"
+            />
+            <path
+              d="M5.84 14.09C5.62 13.43 5.49 12.73 5.49 12C5.49 11.27 5.62 10.57 5.84 9.91V7.06H2.18C1.43 8.55 1 10.22 1 12C1 13.78 1.43 15.45 2.18 16.94L5.84 14.09Z"
+              fill="#FBBC05"
+            />
+            <path
+              d="M12 5.38C13.62 5.38 15.06 5.94 16.21 7.02L19.36 3.87C17.45 2.09 14.97 1 12 1C7.7 1 3.99 3.47 2.18 7.06L5.84 9.91C6.71 7.31 9.14 5.38 12 5.38Z"
+              fill="#EA4335"
+            />
+          </svg>
           {auth.signInWithGoogle}
         </button>
       </div>
