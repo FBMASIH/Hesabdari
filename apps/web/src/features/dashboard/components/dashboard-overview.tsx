@@ -28,13 +28,21 @@ export function DashboardOverview() {
       {activeMode === 'daily' && (
         <>
           <KpiStrip />
-          <div className="flex flex-col gap-4 pb-4 lg:flex-row">
-            <CashflowChart />
-            <TodayTasks />
+          <div className="grid grid-cols-1 gap-3 pb-3 lg:grid-cols-5">
+            <div className="lg:col-span-3">
+              <CashflowChart />
+            </div>
+            <div className="lg:col-span-2">
+              <TodayTasks />
+            </div>
           </div>
-          <div className="flex flex-col gap-4 lg:flex-row">
-            <ActivityTable />
-            <MoneySummary />
+          <div className="grid grid-cols-1 gap-3 lg:grid-cols-5">
+            <div className="lg:col-span-3">
+              <ActivityTable />
+            </div>
+            <div className="lg:col-span-2">
+              <MoneySummary />
+            </div>
           </div>
         </>
       )}

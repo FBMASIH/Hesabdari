@@ -29,7 +29,12 @@ interface PageHeaderProps {
   onDateRangeChange: (range: DateRange) => void;
 }
 
-export function PageHeader({ activeMode, onModeChange, dateRange, onDateRangeChange }: PageHeaderProps) {
+export function PageHeader({
+  activeMode,
+  onModeChange,
+  dateRange,
+  onDateRangeChange,
+}: PageHeaderProps) {
   const [dateMenuOpen, setDateMenuOpen] = useState(false);
   const dateMenuRef = useRef<HTMLDivElement>(null);
 
@@ -55,7 +60,7 @@ export function PageHeader({ activeMode, onModeChange, dateRange, onDateRangeCha
   const activeDateLabel = dateRanges.find((r) => r.key === dateRange)?.label ?? common.thisWeek;
 
   return (
-    <div className="flex items-start justify-between pt-6 pb-4">
+    <div className="flex items-start justify-between pt-4 pb-3">
       {/* Title — right side in RTL */}
       <div>
         <h1 className="text-xl font-semibold text-fg-primary">{dash.title}</h1>
@@ -107,7 +112,10 @@ export function PageHeader({ activeMode, onModeChange, dateRange, onDateRangeCha
                   role="option"
                   aria-selected={dateRange === range.key}
                   key={range.key}
-                  onClick={() => { onDateRangeChange(range.key); setDateMenuOpen(false); }}
+                  onClick={() => {
+                    onDateRangeChange(range.key);
+                    setDateMenuOpen(false);
+                  }}
                   className={cn(
                     'flex w-full items-center px-3 py-2 text-xs font-medium transition-colors',
                     dateRange === range.key

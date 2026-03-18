@@ -12,12 +12,10 @@ const summaryItems = [
 
 export function MoneySummary() {
   return (
-    <div className="glass-surface-static flex w-72 flex-col rounded-2xl p-5">
-      <div className="flex w-full items-center justify-between mb-5">
-        <h2 className="text-base font-semibold text-fg-primary">{dash.moneySummary}</h2>
-      </div>
+    <div className="glass-surface-static flex flex-col rounded-2xl p-5">
+      <h2 className="mb-5 text-base font-semibold text-fg-primary">{dash.moneySummary}</h2>
 
-      <div className="flex w-full flex-col gap-4">
+      <div className="flex flex-col gap-4">
         {summaryItems.map((item) => (
           <div key={item.label} className="flex items-center justify-between">
             <div className="flex items-center gap-2">

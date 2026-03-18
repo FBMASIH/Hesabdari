@@ -1,5 +1,12 @@
 import Link from 'next/link';
-import { EmptyState, IconDocument, IconUpload, IconDownload, IconTransfer, IconClipboardList } from '@hesabdari/ui';
+import {
+  EmptyState,
+  IconDocument,
+  IconUpload,
+  IconDownload,
+  IconTransfer,
+  IconClipboardList,
+} from '@hesabdari/ui';
 import { t } from '@/shared/lib/i18n';
 
 const dash = t('dashboard');
@@ -35,7 +42,7 @@ const quickActions: QuickAction[] = [
 
 export function TodayTasks() {
   return (
-    <div className="glass-surface-static flex w-80 flex-col rounded-2xl p-5">
+    <div className="glass-surface-static flex flex-col rounded-2xl p-5">
       <h2 className="text-base font-semibold text-fg-primary mb-4">{dash.todaysTasks}</h2>
 
       {/* Pending tasks — from API when available */}

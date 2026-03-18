@@ -1,8 +1,16 @@
 'use client';
 
 import {
-  Badge, Skeleton, EmptyState, IconDocument,
-  Table, TableHeader, TableBody, TableRow, TableHead, TableCell,
+  Badge,
+  Skeleton,
+  EmptyState,
+  IconDocument,
+  Table,
+  TableHeader,
+  TableBody,
+  TableRow,
+  TableHead,
+  TableCell,
 } from '@hesabdari/ui';
 import { t } from '@/shared/lib/i18n';
 import { formatMoney } from '@/shared/lib/money';
@@ -31,10 +39,8 @@ export function ActivityTable() {
   const invoices = data?.data ?? [];
 
   return (
-    <div className="flex flex-1 flex-col gap-4">
-      <div className="flex items-center justify-between">
-        <h2 className="text-base font-semibold text-fg-primary">{dash.recentActivity}</h2>
-      </div>
+    <div className="glass-surface-static flex flex-col gap-4 rounded-2xl p-5">
+      <h2 className="text-base font-semibold text-fg-primary">{dash.recentActivity}</h2>
 
       {isLoading && (
         <div className="flex flex-col gap-3">
@@ -49,9 +55,7 @@ export function ActivityTable() {
         </div>
       )}
 
-      {!isLoading && isError && (
-        <DataErrorState error={error} onRetry={() => refetch()} />
-      )}
+      {!isLoading && isError && <DataErrorState error={error} onRetry={() => refetch()} />}
 
       {!isLoading && !isError && invoices.length === 0 && (
         <EmptyState
@@ -76,8 +80,12 @@ export function ActivityTable() {
             {invoices.map((row: InvoiceDto) => (
               <TableRow key={row.id}>
                 <TableCell className="text-fg-secondary">{row.invoiceNumber}</TableCell>
-                <TableCell className="font-medium">{row.customer?.name ?? row.vendor?.name ?? '—'}</TableCell>
-                <TableCell className="text-fg-secondary">{formatISOToJalali(row.invoiceDate, 'short')}</TableCell>
+                <TableCell className="font-medium">
+                  {row.customer?.name ?? row.vendor?.name ?? '—'}
+                </TableCell>
+                <TableCell className="text-fg-secondary">
+                  {formatISOToJalali(row.invoiceDate, 'short')}
+                </TableCell>
                 <TableCell>
                   <Badge variant={statusVariant[row.status] ?? 'warning'}>
                     {statusLabel[row.status] ?? row.status}
