@@ -3,7 +3,19 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useForm, Controller } from 'react-hook-form';
-import { Input, Checkbox, FormField, FormLabel, FormErrorBanner, MoneyInput, DatePicker, Select, SelectTrigger, SelectContent, SelectItem } from '@hesabdari/ui';
+import {
+  Input,
+  Checkbox,
+  FormField,
+  FormLabel,
+  FormErrorBanner,
+  MoneyInput,
+  DatePicker,
+  Select,
+  SelectTrigger,
+  SelectContent,
+  SelectItem,
+} from '@hesabdari/ui';
 import { t } from '@/shared/lib/i18n';
 import { FormSection, FormActions, DataPageHeader } from '@/features/shared';
 import { useAppToast } from '@/providers/toast-provider';
@@ -94,11 +106,20 @@ export function BankAccountForm() {
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
             <FormField error={errors.code?.message}>
               <FormLabel>{tr.bankAccountCode}</FormLabel>
-              <Input {...register('code', { required: true })} placeholder="BA-001" className="rounded-xl ltr-text" dir="ltr" />
+              <Input
+                {...register('code', { required: true })}
+                placeholder="BA-001"
+                className="rounded-xl ltr-text"
+                dir="ltr"
+              />
             </FormField>
             <FormField error={errors.name?.message}>
               <FormLabel>{tr.bankAccountName}</FormLabel>
-              <Input {...register('name', { required: true })} placeholder={tr.bankAccountName} className="rounded-xl" />
+              <Input
+                {...register('name', { required: true })}
+                placeholder={tr.bankAccountName}
+                className="rounded-xl"
+              />
             </FormField>
             {/* bankId: uses static list until the banks API is available */}
             <FormField>
@@ -109,7 +130,9 @@ export function BankAccountForm() {
                 </SelectTrigger>
                 <SelectContent>
                   {IRANIAN_BANKS.map((b) => (
-                    <SelectItem key={b.value} value={b.value}>{b.label}</SelectItem>
+                    <SelectItem key={b.value} value={b.value}>
+                      {b.label}
+                    </SelectItem>
                   ))}
                 </SelectContent>
               </Select>
@@ -120,7 +143,12 @@ export function BankAccountForm() {
             </FormField>
             <FormField error={errors.accountNumber?.message}>
               <FormLabel>{tr.accountNumber}</FormLabel>
-              <Input {...register('accountNumber', { required: true })} placeholder="0123456789" className="rounded-xl ltr-text" dir="ltr" />
+              <Input
+                {...register('accountNumber', { required: true })}
+                placeholder="0123456789"
+                className="rounded-xl ltr-text"
+                dir="ltr"
+              />
             </FormField>
             <div className="flex items-center gap-2 pt-6">
               <Controller
@@ -134,7 +162,9 @@ export function BankAccountForm() {
                   />
                 )}
               />
-              <label htmlFor="isActive" className="text-sm text-fg-primary cursor-pointer">{common.active}</label>
+              <label htmlFor="isActive" className="text-sm text-fg-primary cursor-pointer">
+                {common.active}
+              </label>
             </div>
           </div>
         </FormSection>
@@ -142,12 +172,18 @@ export function BankAccountForm() {
         <FormSection title={tr.openingBalance} description={tr.openingBalanceDesc}>
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
             <FormField>
-              <FormLabel>{tr.balanceAmount} ({common.rial})</FormLabel>
+              <FormLabel>
+                {tr.balanceAmount} ({common.rial})
+              </FormLabel>
               <Controller
                 name="openingBalance.amount"
                 control={control}
                 render={({ field }) => (
-                  <MoneyInput value={field.value ?? ''} onChange={field.onChange} suffix="﷼" />
+                  <MoneyInput
+                    value={field.value ?? ''}
+                    onChange={field.onChange}
+                    suffix={common.rial}
+                  />
                 )}
               />
             </FormField>
@@ -163,7 +199,11 @@ export function BankAccountForm() {
             </FormField>
             <FormField>
               <FormLabel>{common.description}</FormLabel>
-              <Input {...register('openingBalance.description')} placeholder={tr.openingBalanceDesc} className="rounded-xl" />
+              <Input
+                {...register('openingBalance.description')}
+                placeholder={tr.openingBalanceDesc}
+                className="rounded-xl"
+              />
             </FormField>
           </div>
         </FormSection>

@@ -3,11 +3,22 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useForm, Controller } from 'react-hook-form';
-import { Input, Textarea, FormField, FormLabel, FormErrorBanner, MoneyInput, DatePicker } from '@hesabdari/ui';
+import {
+  Input,
+  Textarea,
+  FormField,
+  FormLabel,
+  FormErrorBanner,
+  MoneyInput,
+  DatePicker,
+} from '@hesabdari/ui';
 import { t } from '@/shared/lib/i18n';
 import { FormSection, FormActions, DataPageHeader, SearchableSelect } from '@/features/shared';
 import { useAppToast } from '@/providers/toast-provider';
-import { useCreateReceivedCheque, type CreateReceivedChequeInput } from '../hooks/use-received-cheques';
+import {
+  useCreateReceivedCheque,
+  type CreateReceivedChequeInput,
+} from '../hooks/use-received-cheques';
 import { useCustomers } from '@/features/customers/hooks/use-customers';
 import { useDefaultCurrencyId } from '@/features/shared/hooks/use-currencies';
 import { ApiError } from '@hesabdari/api-client';
@@ -30,13 +41,24 @@ export function ReceivedChequeForm() {
     control,
     formState: { errors, isSubmitting },
   } = useForm<CreateReceivedChequeInput>({
-    defaultValues: { chequeNumber: '', sayadiNumber: '', customerId: '', amount: '', date: '', dueDate: '', description: '' },
+    defaultValues: {
+      chequeNumber: '',
+      sayadiNumber: '',
+      customerId: '',
+      amount: '',
+      date: '',
+      dueDate: '',
+      description: '',
+    },
   });
 
   const onSubmit = async (data: CreateReceivedChequeInput) => {
     setFormError(null);
     try {
-      await createMutation.mutateAsync({ ...data, currencyId: currencyId ?? '00000000-0000-0000-0000-000000000001' });
+      await createMutation.mutateAsync({
+        ...data,
+        currencyId: currencyId ?? '00000000-0000-0000-0000-000000000001',
+      });
       showToast({ title: msgs.saveSuccess, variant: 'success' });
       router.back();
     } catch (err) {
@@ -63,11 +85,21 @@ export function ReceivedChequeForm() {
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
             <FormField error={errors.chequeNumber?.message}>
               <FormLabel>{tr.chequeNumber}</FormLabel>
-              <Input {...register('chequeNumber', { required: true })} placeholder="123456" className="rounded-xl ltr-text" dir="ltr" />
+              <Input
+                {...register('chequeNumber', { required: true })}
+                placeholder="123456"
+                className="rounded-xl ltr-text"
+                dir="ltr"
+              />
             </FormField>
             <FormField error={errors.sayadiNumber?.message}>
               <FormLabel>{tr.sayadiNumber}</FormLabel>
-              <Input {...register('sayadiNumber')} placeholder="000000000000000000" className="rounded-xl ltr-text" dir="ltr" />
+              <Input
+                {...register('sayadiNumber')}
+                placeholder="000000000000000000"
+                className="rounded-xl ltr-text"
+                dir="ltr"
+              />
             </FormField>
             <FormField error={errors.customerId?.message}>
               <FormLabel>{tr.drawer}</FormLabel>
@@ -78,7 +110,9 @@ export function ReceivedChequeForm() {
                 render={({ field }) => (
                   <SearchableSelect
                     value={field.value}
-                    onChange={(id) => { field.onChange(id); }}
+                    onChange={(id) => {
+                      field.onChange(id);
+                    }}
                     options={customerOptions}
                     isLoading={customerList.isLoading}
                     placeholder={tr.searchReceivedCheque}
@@ -89,13 +123,15 @@ export function ReceivedChequeForm() {
           </div>
           <div className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
             <FormField error={errors.amount?.message}>
-              <FormLabel>{tr.chequeAmount} ({common.rial})</FormLabel>
+              <FormLabel>
+                {tr.chequeAmount} ({common.rial})
+              </FormLabel>
               <Controller
                 name="amount"
                 control={control}
                 rules={{ required: true }}
                 render={({ field }) => (
-                  <MoneyInput value={field.value} onChange={field.onChange} suffix="﷼" />
+                  <MoneyInput value={field.value} onChange={field.onChange} suffix={common.rial} />
                 )}
               />
             </FormField>
@@ -105,9 +141,7 @@ export function ReceivedChequeForm() {
                 name="date"
                 control={control}
                 rules={{ required: true }}
-                render={({ field }) => (
-                  <DatePicker value={field.value} onChange={field.onChange} />
-                )}
+                render={({ field }) => <DatePicker value={field.value} onChange={field.onChange} />}
               />
             </FormField>
             <FormField error={errors.dueDate?.message}>
@@ -116,16 +150,19 @@ export function ReceivedChequeForm() {
                 name="dueDate"
                 control={control}
                 rules={{ required: true }}
-                render={({ field }) => (
-                  <DatePicker value={field.value} onChange={field.onChange} />
-                )}
+                render={({ field }) => <DatePicker value={field.value} onChange={field.onChange} />}
               />
             </FormField>
           </div>
           <div className="mt-4">
             <FormField error={errors.description?.message}>
               <FormLabel>{common.description}</FormLabel>
-              <Textarea {...register('description')} placeholder={common.description} className="rounded-xl resize-none" rows={2} />
+              <Textarea
+                {...register('description')}
+                placeholder={common.description}
+                className="rounded-xl resize-none"
+                rows={2}
+              />
             </FormField>
           </div>
         </FormSection>

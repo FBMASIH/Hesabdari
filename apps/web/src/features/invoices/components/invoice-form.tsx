@@ -3,18 +3,38 @@
 import { useState, useCallback, useMemo, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import {
-  Button, Input, DatePicker, MoneyInput, FormField, FormLabel, FormErrorBanner,
-  Select, SelectTrigger, SelectContent, SelectItem,
+  Button,
+  Input,
+  DatePicker,
+  MoneyInput,
+  FormField,
+  FormLabel,
+  FormErrorBanner,
+  Select,
+  SelectTrigger,
+  SelectContent,
+  SelectItem,
   ConfirmDialog,
-  IconClose, IconPlus,
+  IconClose,
+  IconPlus,
 } from '@hesabdari/ui';
 import { ApiError } from '@hesabdari/api-client';
 import { t } from '@/shared/lib/i18n';
 import { formatMoney } from '@/shared/lib/money';
 import { toPersianDigits } from '@/shared/lib/date';
-import { FormSection, FormActions, SearchableSelect, type SearchableSelectOption } from '@/features/shared';
+import {
+  FormSection,
+  FormActions,
+  SearchableSelect,
+  type SearchableSelectOption,
+} from '@/features/shared';
 import { useAppToast } from '@/providers/toast-provider';
-import { useCreateInvoice, useUpdateInvoice, useConfirmInvoice, type InvoiceDto } from '../hooks/use-invoices';
+import {
+  useCreateInvoice,
+  useUpdateInvoice,
+  useConfirmInvoice,
+  type InvoiceDto,
+} from '../hooks/use-invoices';
 import { useCustomers } from '@/features/customers/hooks/use-customers';
 import { useVendors } from '@/features/vendors/hooks/use-vendors';
 import { useProducts } from '@/features/shared/hooks/use-products';
@@ -28,9 +48,9 @@ interface InvoiceLine {
   id: string;
   productId: string;
   quantity: number;
-  unitPrice: bigint;  // Rial
-  discount: bigint;   // Rial
-  tax: bigint;        // Rial
+  unitPrice: bigint; // Rial
+  discount: bigint; // Rial
+  tax: bigint; // Rial
 }
 
 // ── i18n ────────────────────────────────────────────
@@ -72,17 +92,26 @@ export function InvoiceForm({ initialData }: InvoiceFormProps = {}) {
   const isEditMode = !!initialData;
   const currencyId = useDefaultCurrencyId();
   const lineIdCounter = useRef(0);
-  const newLine = useCallback((): InvoiceLine => ({
-    id: createLineId(lineIdCounter),
-    productId: '', quantity: 1, unitPrice: 0n, discount: 0n, tax: 0n,
-  }), []);
+  const newLine = useCallback(
+    (): InvoiceLine => ({
+      id: createLineId(lineIdCounter),
+      productId: '',
+      quantity: 1,
+      unitPrice: 0n,
+      discount: 0n,
+      tax: 0n,
+    }),
+    [],
+  );
 
   // Form state — pre-populate from initialData if editing
   const [docType, setDocType] = useState<DocumentType>(initialData?.documentType ?? 'SALES');
   const [invoiceNumber, setInvoiceNumber] = useState(initialData?.invoiceNumber ?? '');
   const [invoiceDate, setInvoiceDate] = useState(initialData?.invoiceDate ?? '');
   const [dueDate, setDueDate] = useState(initialData?.dueDate ?? '');
-  const [partyId, setPartyId] = useState(initialData?.customer?.id ?? initialData?.vendor?.id ?? '');
+  const [partyId, setPartyId] = useState(
+    initialData?.customer?.id ?? initialData?.vendor?.id ?? '',
+  );
   const [lines, setLines] = useState<InvoiceLine[]>(() =>
     initialData?.lines?.length
       ? initialData.lines.map((l) => ({
@@ -136,14 +165,15 @@ export function InvoiceForm({ initialData }: InvoiceFormProps = {}) {
   }, [newLine]);
 
   const removeLine = useCallback((id: string) => {
-    setLines((prev) => prev.length > 1 ? prev.filter((l) => l.id !== id) : prev);
+    setLines((prev) => (prev.length > 1 ? prev.filter((l) => l.id !== id) : prev));
   }, []);
 
-  const updateLine = useCallback((id: string, field: keyof InvoiceLine, value: string | number | bigint) => {
-    setLines((prev) =>
-      prev.map((l) => (l.id === id ? { ...l, [field]: value } : l)),
-    );
-  }, []);
+  const updateLine = useCallback(
+    (id: string, field: keyof InvoiceLine, value: string | number | bigint) => {
+      setLines((prev) => prev.map((l) => (l.id === id ? { ...l, [field]: value } : l)));
+    },
+    [],
+  );
 
   // Validation
   function validate(): string[] {
@@ -223,7 +253,11 @@ export function InvoiceForm({ initialData }: InvoiceFormProps = {}) {
       }
 
       showToast({
-        title: isEditMode ? inv.invoiceUpdated : (status === 'DRAFT' ? inv.draftSaved : inv.invoiceConfirmed),
+        title: isEditMode
+          ? inv.invoiceUpdated
+          : status === 'DRAFT'
+            ? inv.draftSaved
+            : inv.invoiceConfirmed,
         variant: 'success',
       });
       router.push('/invoices');
@@ -239,7 +273,10 @@ export function InvoiceForm({ initialData }: InvoiceFormProps = {}) {
   return (
     <form
       method="post"
-      onSubmit={(e) => { e.preventDefault(); handleSubmit(false); }}
+      onSubmit={(e) => {
+        e.preventDefault();
+        handleSubmit(false);
+      }}
       className="flex flex-col gap-5"
     >
       {formError && <FormErrorBanner message={formError} />}
@@ -250,13 +287,21 @@ export function InvoiceForm({ initialData }: InvoiceFormProps = {}) {
           {/* Document type */}
           <FormField>
             <FormLabel>{inv.documentType}</FormLabel>
-            <Select value={docType} onValueChange={(v) => { setDocType(v as DocumentType); setPartyId(''); }}>
+            <Select
+              value={docType}
+              onValueChange={(v) => {
+                setDocType(v as DocumentType);
+                setPartyId('');
+              }}
+            >
               <SelectTrigger className="rounded-xl">
                 <span>{DOC_TYPES.find((d) => d.value === docType)?.label}</span>
               </SelectTrigger>
               <SelectContent>
                 {DOC_TYPES.map((d) => (
-                  <SelectItem key={d.value} value={d.value}>{d.label}</SelectItem>
+                  <SelectItem key={d.value} value={d.value}>
+                    {d.label}
+                  </SelectItem>
                 ))}
               </SelectContent>
             </Select>
@@ -277,19 +322,13 @@ export function InvoiceForm({ initialData }: InvoiceFormProps = {}) {
           {/* Invoice date */}
           <FormField>
             <FormLabel>{inv.invoiceDate}</FormLabel>
-            <DatePicker
-              value={invoiceDate}
-              onChange={setInvoiceDate}
-            />
+            <DatePicker value={invoiceDate} onChange={setInvoiceDate} />
           </FormField>
 
           {/* Due date */}
           <FormField>
             <FormLabel>{inv.dueDate}</FormLabel>
-            <DatePicker
-              value={dueDate}
-              onChange={setDueDate}
-            />
+            <DatePicker value={dueDate} onChange={setDueDate} />
           </FormField>
         </div>
 
@@ -315,12 +354,24 @@ export function InvoiceForm({ initialData }: InvoiceFormProps = {}) {
             <thead>
               <tr className="border-b border-border-secondary">
                 <th className="py-2 pe-3 text-start text-xs font-medium text-fg-tertiary w-8">#</th>
-                <th className="py-2 pe-3 text-start text-xs font-medium text-fg-tertiary min-w-[160px]">{inv.product}</th>
-                <th className="py-2 pe-3 text-start text-xs font-medium text-fg-tertiary w-20">{inv.quantity}</th>
-                <th className="py-2 pe-3 text-start text-xs font-medium text-fg-tertiary w-32">{inv.unitPrice} ({common.rial})</th>
-                <th className="py-2 pe-3 text-start text-xs font-medium text-fg-tertiary w-28">{inv.discount}</th>
-                <th className="py-2 pe-3 text-start text-xs font-medium text-fg-tertiary w-28">{inv.tax}</th>
-                <th className="py-2 pe-3 text-start text-xs font-medium text-fg-tertiary w-32">{inv.lineTotal}</th>
+                <th className="py-2 pe-3 text-start text-xs font-medium text-fg-tertiary min-w-[160px]">
+                  {inv.product}
+                </th>
+                <th className="py-2 pe-3 text-start text-xs font-medium text-fg-tertiary w-20">
+                  {inv.quantity}
+                </th>
+                <th className="py-2 pe-3 text-start text-xs font-medium text-fg-tertiary w-32">
+                  {inv.unitPrice} ({common.rial})
+                </th>
+                <th className="py-2 pe-3 text-start text-xs font-medium text-fg-tertiary w-28">
+                  {inv.discount}
+                </th>
+                <th className="py-2 pe-3 text-start text-xs font-medium text-fg-tertiary w-28">
+                  {inv.tax}
+                </th>
+                <th className="py-2 pe-3 text-start text-xs font-medium text-fg-tertiary w-32">
+                  {inv.lineTotal}
+                </th>
                 <th className="py-2 w-10" />
               </tr>
             </thead>
@@ -342,7 +393,9 @@ export function InvoiceForm({ initialData }: InvoiceFormProps = {}) {
                       type="number"
                       min={1}
                       value={line.quantity}
-                      onChange={(e) => updateLine(line.id, 'quantity', Math.max(1, Number(e.target.value)))}
+                      onChange={(e) =>
+                        updateLine(line.id, 'quantity', Math.max(1, Number(e.target.value)))
+                      }
                       className="h-8 rounded-lg text-center text-xs ltr-text"
                       dir="ltr"
                     />
@@ -351,7 +404,7 @@ export function InvoiceForm({ initialData }: InvoiceFormProps = {}) {
                     <MoneyInput
                       value={line.unitPrice > 0n ? line.unitPrice.toString() : ''}
                       onChange={(v) => updateLine(line.id, 'unitPrice', v ? BigInt(v) : 0n)}
-                      suffix="\uFDFC"
+                      suffix={common.rial}
                       className="h-8 rounded-lg text-xs"
                       placeholder="0"
                     />
@@ -360,7 +413,7 @@ export function InvoiceForm({ initialData }: InvoiceFormProps = {}) {
                     <MoneyInput
                       value={line.discount > 0n ? line.discount.toString() : ''}
                       onChange={(v) => updateLine(line.id, 'discount', v ? BigInt(v) : 0n)}
-                      suffix="\uFDFC"
+                      suffix={common.rial}
                       className="h-8 rounded-lg text-xs"
                       placeholder="0"
                     />
@@ -369,7 +422,7 @@ export function InvoiceForm({ initialData }: InvoiceFormProps = {}) {
                     <MoneyInput
                       value={line.tax > 0n ? line.tax.toString() : ''}
                       onChange={(v) => updateLine(line.id, 'tax', v ? BigInt(v) : 0n)}
-                      suffix="\uFDFC"
+                      suffix={common.rial}
                       className="h-8 rounded-lg text-xs"
                       placeholder="0"
                     />
@@ -405,19 +458,27 @@ export function InvoiceForm({ initialData }: InvoiceFormProps = {}) {
         <div className="flex flex-col gap-2 sm:items-end">
           <div className="flex items-center justify-between gap-8 text-sm sm:min-w-[300px]">
             <span className="text-fg-secondary">{inv.subtotal}</span>
-            <span className="tabular-nums font-medium text-fg-primary">{formatMoney(totals.subtotal)}</span>
+            <span className="tabular-nums font-medium text-fg-primary">
+              {formatMoney(totals.subtotal)}
+            </span>
           </div>
           <div className="flex items-center justify-between gap-8 text-sm sm:min-w-[300px]">
             <span className="text-fg-secondary">{inv.totalDiscount}</span>
-            <span className="tabular-nums text-danger-default">{totals.totalDiscount > 0n ? `−${formatMoney(totals.totalDiscount)}` : '—'}</span>
+            <span className="tabular-nums text-danger-default">
+              {totals.totalDiscount > 0n ? `−${formatMoney(totals.totalDiscount)}` : '—'}
+            </span>
           </div>
           <div className="flex items-center justify-between gap-8 text-sm sm:min-w-[300px]">
             <span className="text-fg-secondary">{inv.totalTax}</span>
-            <span className="tabular-nums text-fg-primary">{totals.totalTax > 0n ? formatMoney(totals.totalTax) : '—'}</span>
+            <span className="tabular-nums text-fg-primary">
+              {totals.totalTax > 0n ? formatMoney(totals.totalTax) : '—'}
+            </span>
           </div>
           <div className="flex items-center justify-between gap-8 border-t border-border-secondary pt-2 sm:min-w-[300px]">
             <span className="text-base font-semibold text-fg-primary">{inv.grandTotal}</span>
-            <span className="tabular-nums text-base font-bold text-fg-primary">{formatMoney(totals.grandTotal)}</span>
+            <span className="tabular-nums text-base font-bold text-fg-primary">
+              {formatMoney(totals.grandTotal)}
+            </span>
           </div>
         </div>
       </div>

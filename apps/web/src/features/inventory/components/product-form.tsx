@@ -3,8 +3,17 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import {
-  Input, MoneyInput, FormField, FormLabel, FormErrorBanner,
-  Table, TableHeader, TableBody, TableRow, TableHead, TableCell,
+  Input,
+  MoneyInput,
+  FormField,
+  FormLabel,
+  FormErrorBanner,
+  Table,
+  TableHeader,
+  TableBody,
+  TableRow,
+  TableHead,
+  TableCell,
 } from '@hesabdari/ui';
 import { ApiError } from '@hesabdari/api-client';
 import { t } from '@/shared/lib/i18n';
@@ -239,7 +248,7 @@ export function ProductForm({ initialData }: ProductFormProps = {}) {
               <MoneyInput
                 value={salePrice1}
                 onChange={setSalePrice1}
-                suffix="﷼"
+                suffix={common.rial}
                 placeholder="0"
               />
             </FormField>
@@ -248,7 +257,7 @@ export function ProductForm({ initialData }: ProductFormProps = {}) {
               <MoneyInput
                 value={salePrice2}
                 onChange={setSalePrice2}
-                suffix="﷼"
+                suffix={common.rial}
                 placeholder="0"
               />
             </FormField>
@@ -257,7 +266,7 @@ export function ProductForm({ initialData }: ProductFormProps = {}) {
               <MoneyInput
                 value={salePrice3}
                 onChange={setSalePrice3}
-                suffix="﷼"
+                suffix={common.rial}
                 placeholder="0"
               />
             </FormField>
@@ -266,9 +275,7 @@ export function ProductForm({ initialData }: ProductFormProps = {}) {
 
         {/* ── Section 3: Opening Stock ── */}
         <FormSection title={prod.openingStock} description={prod.openingStockDesc}>
-          {warehouseQuery.isLoading && (
-            <p className="text-sm text-fg-tertiary">{common.loading}</p>
-          )}
+          {warehouseQuery.isLoading && <p className="text-sm text-fg-tertiary">{common.loading}</p>}
 
           {!warehouseQuery.isLoading && warehouses.length === 0 && (
             <p className="text-sm text-fg-tertiary">{prod.noWarehouseYet}</p>
@@ -286,13 +293,17 @@ export function ProductForm({ initialData }: ProductFormProps = {}) {
               <TableBody>
                 {stockRows.map((row) => (
                   <TableRow key={row.warehouseId}>
-                    <TableCell className="text-fg-primary font-medium">{row.warehouseName}</TableCell>
+                    <TableCell className="text-fg-primary font-medium">
+                      {row.warehouseName}
+                    </TableCell>
                     <TableCell>
                       <Input
                         type="number"
                         min={0}
                         value={row.quantity}
-                        onChange={(e) => updateStockRow(row.warehouseId, 'quantity', e.target.value)}
+                        onChange={(e) =>
+                          updateStockRow(row.warehouseId, 'quantity', e.target.value)
+                        }
                         className="h-8 w-24 rounded-lg text-center text-xs ltr-text"
                         dir="ltr"
                         placeholder="0"
@@ -302,7 +313,7 @@ export function ProductForm({ initialData }: ProductFormProps = {}) {
                       <MoneyInput
                         value={row.purchasePrice}
                         onChange={(v) => updateStockRow(row.warehouseId, 'purchasePrice', v)}
-                        suffix="﷼"
+                        suffix={common.rial}
                         placeholder="0"
                         className="h-8 w-36 text-xs"
                       />

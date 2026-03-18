@@ -57,15 +57,29 @@ export function VendorForm() {
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
             <FormField error={errors.code?.message}>
               <FormLabel>{vnd.vendorCode}</FormLabel>
-              <Input {...register('code')} placeholder="V-001" className="rounded-xl ltr-text" dir="ltr" />
+              <Input
+                {...register('code')}
+                placeholder="V-001"
+                className="rounded-xl ltr-text"
+                dir="ltr"
+              />
             </FormField>
             <FormField error={errors.name?.message}>
               <FormLabel>{vnd.vendorName}</FormLabel>
-              <Input {...register('name')} placeholder={vnd.namePlaceholder} className="rounded-xl" />
+              <Input
+                {...register('name')}
+                placeholder={vnd.namePlaceholder}
+                className="rounded-xl"
+              />
             </FormField>
             <FormField error={errors.phone1?.message}>
               <FormLabel>{vnd.phone}</FormLabel>
-              <Input {...register('phone1')} placeholder="۰۲۱-۱۲۳۴۵۶۷۸" className="rounded-xl ltr-text" dir="ltr" />
+              <Input
+                {...register('phone1')}
+                placeholder="۰۲۱-۱۲۳۴۵۶۷۸"
+                className="rounded-xl ltr-text"
+                dir="ltr"
+              />
             </FormField>
           </div>
         </FormSection>
@@ -85,11 +99,13 @@ export function VendorForm() {
               <Input {...register('postalCode')} className="rounded-xl ltr-text" dir="ltr" />
             </FormField>
             <FormField error={errors.creditLimit?.message}>
-              <FormLabel>{common.creditLimit} ({common.rial})</FormLabel>
+              <FormLabel>
+                {common.creditLimit} ({common.rial})
+              </FormLabel>
               <MoneyInput
                 value={watch('creditLimit') ?? ''}
                 onChange={(v) => setValue('creditLimit', v, { shouldValidate: true })}
-                suffix="\uFDFC"
+                suffix={common.rial}
                 placeholder="0"
                 className="rounded-xl"
               />
@@ -98,7 +114,12 @@ export function VendorForm() {
           <div className="mt-4">
             <FormField error={errors.address?.message}>
               <FormLabel>{vnd.address}</FormLabel>
-              <Textarea {...register('address')} placeholder={vnd.addressPlaceholder} className="rounded-xl resize-none" rows={2} />
+              <Textarea
+                {...register('address')}
+                placeholder={vnd.addressPlaceholder}
+                className="rounded-xl resize-none"
+                rows={2}
+              />
             </FormField>
           </div>
         </FormSection>

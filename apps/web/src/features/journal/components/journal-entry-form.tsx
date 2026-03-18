@@ -3,15 +3,29 @@
 import { useState, useCallback, useMemo, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import {
-  Button, Input, Badge, DatePicker, MoneyInput, FormField, FormLabel, FormErrorBanner,
-  Textarea, ConfirmDialog,
-  IconClose, IconPlus,
+  Button,
+  Input,
+  Badge,
+  DatePicker,
+  MoneyInput,
+  FormField,
+  FormLabel,
+  FormErrorBanner,
+  Textarea,
+  ConfirmDialog,
+  IconClose,
+  IconPlus,
 } from '@hesabdari/ui';
 import { ApiError } from '@hesabdari/api-client';
 import { t } from '@/shared/lib/i18n';
 import { formatMoney } from '@/shared/lib/money';
 import { toPersianDigits } from '@/shared/lib/date';
-import { FormSection, FormActions, SearchableSelect, type SearchableSelectOption } from '@/features/shared';
+import {
+  FormSection,
+  FormActions,
+  SearchableSelect,
+  type SearchableSelectOption,
+} from '@/features/shared';
 import { useAppToast } from '@/providers/toast-provider';
 import { useCreateJournalEntry, usePostJournalEntry } from '../hooks/use-journal-entries';
 import { useAccounts } from '@/features/shared/hooks/use-accounts';
@@ -23,7 +37,7 @@ interface JournalLine {
   id: string;
   accountId: string;
   description: string;
-  debitAmount: bigint;  // Rial
+  debitAmount: bigint; // Rial
   creditAmount: bigint; // Rial
 }
 
@@ -48,10 +62,16 @@ export function JournalEntryForm() {
   const postMutation = usePostJournalEntry();
   const activePeriodId = useActivePeriodId();
   const lineIdCounter = useRef(0);
-  const newLine = useCallback((): JournalLine => ({
-    id: createJournalLineId(lineIdCounter),
-    accountId: '', description: '', debitAmount: 0n, creditAmount: 0n,
-  }), []);
+  const newLine = useCallback(
+    (): JournalLine => ({
+      id: createJournalLineId(lineIdCounter),
+      accountId: '',
+      description: '',
+      debitAmount: 0n,
+      creditAmount: 0n,
+    }),
+    [],
+  );
 
   // Account list from API
   const accountsQuery = useAccounts();
@@ -77,7 +97,12 @@ export function JournalEntryForm() {
       totalDebit += line.debitAmount;
       totalCredit += line.creditAmount;
     }
-    return { totalDebit, totalCredit, diff: totalDebit - totalCredit, isBalanced: totalDebit === totalCredit && totalDebit > 0n };
+    return {
+      totalDebit,
+      totalCredit,
+      diff: totalDebit - totalCredit,
+      isBalanced: totalDebit === totalCredit && totalDebit > 0n,
+    };
   }, [lines]);
 
   // Line handlers
@@ -86,7 +111,7 @@ export function JournalEntryForm() {
   }, [newLine]);
 
   const removeLine = useCallback((id: string) => {
-    setLines((prev) => prev.length > 2 ? prev.filter((l) => l.id !== id) : prev);
+    setLines((prev) => (prev.length > 2 ? prev.filter((l) => l.id !== id) : prev));
   }, []);
 
   const updateLine = useCallback((id: string, field: keyof JournalLine, value: string | bigint) => {
@@ -189,7 +214,10 @@ export function JournalEntryForm() {
   return (
     <form
       method="post"
-      onSubmit={(e) => { e.preventDefault(); handleSubmit(false); }}
+      onSubmit={(e) => {
+        e.preventDefault();
+        handleSubmit(false);
+      }}
       className="flex flex-col gap-5"
     >
       {formError && <FormErrorBanner message={formError} />}
@@ -236,10 +264,18 @@ export function JournalEntryForm() {
             <thead>
               <tr className="border-b border-border-secondary">
                 <th className="py-2 pe-3 text-start text-xs font-medium text-fg-tertiary w-8">#</th>
-                <th className="py-2 pe-3 text-start text-xs font-medium text-fg-tertiary min-w-[180px]">{acct.account}</th>
-                <th className="py-2 pe-3 text-start text-xs font-medium text-fg-tertiary min-w-[140px]">{common.description}</th>
-                <th className="py-2 pe-3 text-start text-xs font-medium text-fg-tertiary w-36">{acct.debit} ({common.rial})</th>
-                <th className="py-2 pe-3 text-start text-xs font-medium text-fg-tertiary w-36">{acct.credit} ({common.rial})</th>
+                <th className="py-2 pe-3 text-start text-xs font-medium text-fg-tertiary min-w-[180px]">
+                  {acct.account}
+                </th>
+                <th className="py-2 pe-3 text-start text-xs font-medium text-fg-tertiary min-w-[140px]">
+                  {common.description}
+                </th>
+                <th className="py-2 pe-3 text-start text-xs font-medium text-fg-tertiary w-36">
+                  {acct.debit} ({common.rial})
+                </th>
+                <th className="py-2 pe-3 text-start text-xs font-medium text-fg-tertiary w-36">
+                  {acct.credit} ({common.rial})
+                </th>
                 <th className="py-2 w-10" />
               </tr>
             </thead>
@@ -268,7 +304,7 @@ export function JournalEntryForm() {
                     <MoneyInput
                       value={line.debitAmount > 0n ? line.debitAmount.toString() : ''}
                       onChange={(v) => updateLine(line.id, 'debitAmount', v ? BigInt(v) : 0n)}
-                      suffix="\uFDFC"
+                      suffix={common.rial}
                       className="h-8 rounded-lg text-xs"
                       placeholder="0"
                       disabled={line.creditAmount > 0n}
@@ -278,7 +314,7 @@ export function JournalEntryForm() {
                     <MoneyInput
                       value={line.creditAmount > 0n ? line.creditAmount.toString() : ''}
                       onChange={(v) => updateLine(line.id, 'creditAmount', v ? BigInt(v) : 0n)}
-                      suffix="\uFDFC"
+                      suffix={common.rial}
                       className="h-8 rounded-lg text-xs"
                       placeholder="0"
                       disabled={line.debitAmount > 0n}
@@ -306,10 +342,14 @@ export function JournalEntryForm() {
                   {common.total}
                 </td>
                 <td className="py-3 pe-3 tabular-nums text-sm font-bold text-fg-primary">
-                  {balance.totalDebit > 0n ? formatMoney(balance.totalDebit, { showUnit: false }) : '—'}
+                  {balance.totalDebit > 0n
+                    ? formatMoney(balance.totalDebit, { showUnit: false })
+                    : '—'}
                 </td>
                 <td className="py-3 pe-3 tabular-nums text-sm font-bold text-fg-primary">
-                  {balance.totalCredit > 0n ? formatMoney(balance.totalCredit, { showUnit: false }) : '—'}
+                  {balance.totalCredit > 0n
+                    ? formatMoney(balance.totalCredit, { showUnit: false })
+                    : '—'}
                 </td>
                 <td />
               </tr>
@@ -327,11 +367,14 @@ export function JournalEntryForm() {
           <div className="flex items-center gap-3">
             {balance.diff !== 0n && balance.totalDebit > 0n && (
               <span className="text-xs text-fg-tertiary">
-                {j.balanceDiff}: {formatMoney(balance.diff < 0n ? -balance.diff : balance.diff, { showUnit: false })}
+                {j.balanceDiff}:{' '}
+                {formatMoney(balance.diff < 0n ? -balance.diff : balance.diff, { showUnit: false })}
               </span>
             )}
             <Badge
-              variant={balance.isBalanced ? 'success' : balance.totalDebit > 0n ? 'danger' : 'warning'}
+              variant={
+                balance.isBalanced ? 'success' : balance.totalDebit > 0n ? 'danger' : 'warning'
+              }
               className="px-3 py-1 text-sm font-semibold"
             >
               {balance.isBalanced ? j.balanced : j.unbalanced}
