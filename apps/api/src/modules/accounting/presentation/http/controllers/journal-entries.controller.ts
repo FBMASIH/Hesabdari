@@ -1,6 +1,7 @@
-import { Controller, Get, Post, Param } from '@nestjs/common';
+import { Controller, Get, Post, Put, Body, Param } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
-import type { JournalEntryService } from '../../../application/services/journal-entry.service';
+import { JournalEntryService } from '../../../application/services/journal-entry.service';
+import { createJournalEntrySchema, updateJournalEntrySchema } from '@hesabdari/contracts';
 import { CurrentUser, type RequestUser } from '@/platform/decorators';
 
 @ApiTags('Journal Entries')
@@ -19,6 +20,20 @@ export class JournalEntriesController {
   @ApiOperation({ summary: 'Get journal entry by ID' })
   async findById(@Param('orgId') orgId: string, @Param('id') id: string) {
     return this.journalEntryService.findById(id, orgId);
+  }
+
+  @Post()
+  @ApiOperation({ summary: 'Create a draft journal entry with lines (transactional)' })
+  async create(@Param('orgId') orgId: string, @Body() body: unknown) {
+    const data = createJournalEntrySchema.parse(body);
+    return this.journalEntryService.create(orgId, data);
+  }
+
+  @Put(':id')
+  @ApiOperation({ summary: 'Update a DRAFT journal entry (transactional)' })
+  async update(@Param('orgId') orgId: string, @Param('id') id: string, @Body() body: unknown) {
+    const data = updateJournalEntrySchema.parse({ ...(body as object), id });
+    return this.journalEntryService.update(id, orgId, data);
   }
 
   @Post(':id/post')

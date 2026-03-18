@@ -1,6 +1,6 @@
 import { Controller, Get, Post, Param } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
-import type { PeriodService } from '../../../application/services/period.service';
+import { PeriodService } from '../../../application/services/period.service';
 import { CurrentUser, type RequestUser } from '@/platform/decorators';
 
 @ApiTags('Accounting Periods')

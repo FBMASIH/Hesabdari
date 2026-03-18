@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import type { CustomerRepository } from '../../infrastructure/repositories/customer.repository';
+import { CustomerRepository } from '../../infrastructure/repositories/customer.repository';
 import { NotFoundError, ConflictError } from '@/platform/errors';
 import type { CreateCustomerDto, UpdateCustomerDto, CustomerQueryDto } from '@hesabdari/contracts';
 

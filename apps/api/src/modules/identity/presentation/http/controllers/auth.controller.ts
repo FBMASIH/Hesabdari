@@ -1,6 +1,6 @@
-import { Controller, Post, Body, HttpCode, HttpStatus } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
-import { Public } from '@/platform/decorators';
+import { Controller, Get, Post, Body, HttpCode, HttpStatus } from '@nestjs/common';
+import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth } from '@nestjs/swagger';
+import { Public, CurrentUser, type RequestUser } from '@/platform/decorators';
 import { AuthService } from '../../../application/services/auth.service';
 import {
   LoginRequestDto,
@@ -13,6 +13,13 @@ import {
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
+
+  @Get('profile')
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Get current user profile with organizations' })
+  async profile(@CurrentUser() user: RequestUser) {
+    return this.authService.getProfile(user.userId);
+  }
 
   @Public()
   @Post('register')
@@ -38,5 +45,23 @@ export class AuthController {
   @ApiResponse({ status: 200, type: AuthResponseDto })
   async refresh(@Body() dto: RefreshTokenRequestDto): Promise<AuthResponseDto> {
     return this.authService.refreshToken(dto.refreshToken);
+  }
+
+  @Public()
+  @Post('logout')
+  @HttpCode(HttpStatus.NO_CONTENT)
+  @ApiOperation({ summary: 'Logout and invalidate refresh token' })
+  @ApiResponse({ status: 204, description: 'Logged out successfully' })
+  async logout(@Body() dto: RefreshTokenRequestDto): Promise<void> {
+    return this.authService.logout(dto.refreshToken);
+  }
+
+  @Post('logout-all')
+  @ApiBearerAuth()
+  @HttpCode(HttpStatus.NO_CONTENT)
+  @ApiOperation({ summary: 'Logout from all devices' })
+  @ApiResponse({ status: 204, description: 'All sessions invalidated' })
+  async logoutAll(@CurrentUser() user: RequestUser): Promise<void> {
+    return this.authService.logoutAll(user.userId);
   }
 }

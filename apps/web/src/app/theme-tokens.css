@@ -1,0 +1,56 @@
+/* Auto-generated Tailwind @theme tokens — DO NOT EDIT */
+/* Run: pnpm --filter @hesabdari/design-tokens generate:css */
+
+@theme {
+  --color-bg-primary: #F7F8F0;
+  --color-bg-secondary: #FFFFFF;
+  --color-bg-tertiary: #EDF0E6;
+  --color-bg-inverse: #1D2B36;
+  --color-bg-overlay: rgba(0, 0, 0, 0.4);
+  --color-fg-primary: #1D2B36;
+  --color-fg-secondary: #4A6274;
+  --color-fg-tertiary: #8DA4B4;
+  --color-fg-disabled: #B8C8D4;
+  --color-fg-inverse: #FFFFFF;
+  --color-fg-link: #4A8DB8;
+  --color-border-primary: rgba(53, 88, 114, 0.14);
+  --color-border-secondary: rgba(53, 88, 114, 0.07);
+  --color-border-focus: #7AACCE;
+  --color-border-error: #D64545;
+  --color-primary-default: #4A8DB8;
+  --color-primary-hover: #3D7BA6;
+  --color-primary-active: #356A94;
+  --color-primary-subtle: rgba(122, 172, 206, 0.1);
+  --color-primary-fg: #FFFFFF;
+  --color-success-default: #34C759;
+  --color-success-hover: #2DB84E;
+  --color-success-subtle: rgba(52, 199, 89, 0.08);
+  --color-success-fg: #FFFFFF;
+  --color-warning-default: #FF9500;
+  --color-warning-hover: #E68600;
+  --color-warning-subtle: rgba(255, 149, 0, 0.08);
+  --color-warning-fg: #FFFFFF;
+  --color-danger-default: #FF3B30;
+  --color-danger-hover: #E6352B;
+  --color-danger-subtle: rgba(255, 59, 48, 0.08);
+  --color-danger-fg: #FFFFFF;
+  --color-info-default: #5AC8FA;
+  --color-info-hover: #4FB8E8;
+  --color-info-subtle: rgba(90, 200, 250, 0.08);
+  --color-info-fg: #FFFFFF;
+  --brand-deep: #4A8DB8;
+  --color-brand-deep: #4A8DB8;
+  --brand-mid: #7AACCE;
+  --color-brand-mid: #7AACCE;
+  --brand-light: #9CD5FF;
+  --color-brand-light: #9CD5FF;
+  --brand-warm: #F7F8F0;
+  --color-brand-warm: #F7F8F0;
+  --glass-bg: rgba(247, 248, 240, 0.78);
+  --glass-bg-hover: rgba(247, 248, 240, 0.88);
+  --glass-border: rgba(53, 88, 114, 0.08);
+  --glass-border-active: rgba(74, 141, 184, 0.35);
+  --glass-shadow: 0 0 0 0.5px rgba(0,0,0,0.04), 0 4px 16px rgba(0,0,0,0.04);
+  --glass-shadow-hover: 0 0 0 0.5px rgba(0,0,0,0.06), 0 8px 24px rgba(0,0,0,0.06);
+  --glass-blur: 20px;
+}

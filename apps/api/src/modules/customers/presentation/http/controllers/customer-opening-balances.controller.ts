@@ -1,6 +1,6 @@
 import { Controller, Get, Post, Delete, Body, Param, Query } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
-import type { CustomerOpeningBalanceService } from '../../../application/services/customer-opening-balance.service';
+import { CustomerOpeningBalanceService } from '../../../application/services/customer-opening-balance.service';
 import {
   createCustomerOpeningBalanceSchema,
   customerOpeningBalanceQuerySchema,

@@ -13,7 +13,7 @@ export const ToastViewport = forwardRef<
   <ToastPrimitive.Viewport
     ref={ref}
     className={cn(
-      'fixed top-0 z-toast flex max-h-screen w-full flex-col-reverse p-4 sm:bottom-0 sm:start-auto sm:end-0 sm:top-auto sm:flex-col md:max-w-[420px]',
+      'fixed bottom-0 z-[9999] flex max-h-screen w-full flex-col gap-2 p-4 sm:start-auto sm:end-0 sm:max-w-[360px]',
       className,
     )}
     {...props}
@@ -28,7 +28,7 @@ export const Toast = forwardRef<
   <ToastPrimitive.Root
     ref={ref}
     className={cn(
-      'group pointer-events-auto relative flex w-full items-center justify-between gap-4 overflow-hidden rounded-md border border-border-primary bg-bg-primary p-4 shadow-lg transition-all',
+      'toast-root group pointer-events-auto relative flex w-full items-center gap-3 overflow-hidden rounded-xl border border-border-primary bg-bg-primary px-4 py-3 shadow-lg',
       className,
     )}
     {...props}
@@ -42,7 +42,7 @@ export const ToastTitle = forwardRef<
 >(({ className, ...props }, ref) => (
   <ToastPrimitive.Title
     ref={ref}
-    className={cn('text-sm font-semibold text-fg-primary', className)}
+    className={cn('text-[13px] font-semibold', className)}
     {...props}
   />
 ));
@@ -54,7 +54,7 @@ export const ToastDescription = forwardRef<
 >(({ className, ...props }, ref) => (
   <ToastPrimitive.Description
     ref={ref}
-    className={cn('text-sm text-fg-secondary', className)}
+    className={cn('text-[12px] text-fg-secondary', className)}
     {...props}
   />
 ));

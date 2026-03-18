@@ -32,9 +32,18 @@ async function bootstrap() {
   // Global interceptors — logging + BigInt serialization
   app.useGlobalInterceptors(new LoggingInterceptor(), new BigIntSerializerInterceptor());
 
-  // CORS
+  // CORS — validate request origin against the allowed list.
+  // In development, also allow any same-machine origin (varying ports).
   app.enableCors({
-    origin: config.corsOrigins,
+    origin: (origin, callback) => {
+      // Allow requests with no origin (server-to-server, curl, health checks)
+      if (!origin) return callback(null, true);
+      // Allow if origin matches configured list
+      if (config.corsOrigins.includes(origin)) return callback(null, true);
+      // In development, allow any origin (varying IPs/ports for local network access)
+      if (config.nodeEnv === 'development') return callback(null, true);
+      callback(new Error(`CORS: origin ${origin} not allowed`), false);
+    },
     credentials: true,
   });
 

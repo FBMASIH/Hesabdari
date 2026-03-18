@@ -3,17 +3,17 @@ import { cn } from '../lib/utils';
 
 export interface InputProps extends InputHTMLAttributes<HTMLInputElement> {}
 
+/** macOS-style text input — compact, inset shadow, blue focus border */
 export const Input = forwardRef<HTMLInputElement, InputProps>(
   ({ className, type, ...props }, ref) => {
     return (
       <input
         type={type}
         className={cn(
-          'flex h-9 w-full rounded-md border border-border-primary bg-bg-primary px-3 py-1 text-sm text-fg-primary shadow-xs transition-colors',
-          'file:border-0 file:bg-transparent file:text-sm file:font-medium',
+          'flex h-[30px] w-full rounded-md border-[0.5px] border-border-primary bg-bg-secondary px-2.5 text-[13px] text-fg-primary shadow-inner transition-all',
           'placeholder:text-fg-tertiary',
-          'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-focus',
-          'disabled:cursor-not-allowed disabled:opacity-50',
+          'focus:border-brand-deep focus:outline-none focus:ring-[3px] focus:ring-brand-deep/20',
+          'disabled:cursor-not-allowed disabled:bg-bg-tertiary disabled:opacity-60',
           className,
         )}
         ref={ref}

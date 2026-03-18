@@ -1,6 +1,6 @@
 import { Controller, Get, Post, Put, Body, Param, Query } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
-import type { WarehouseService } from '../../../application/services/warehouse.service';
+import { WarehouseService } from '../../../application/services/warehouse.service';
 import {
   createWarehouseSchema,
   updateWarehouseSchema,

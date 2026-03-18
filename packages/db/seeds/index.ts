@@ -2,7 +2,7 @@ import 'dotenv/config';
 import { PrismaPg } from '@prisma/adapter-pg';
 import { PrismaClient } from '../src/generated/prisma/client';
 
-const adapter = new PrismaPg(process.env.DATABASE_URL!);
+const adapter = new PrismaPg({ connectionString: process.env.DATABASE_URL! });
 const prisma = new PrismaClient({ adapter });
 
 async function main() {
@@ -34,6 +34,194 @@ async function main() {
       create: { ...perm },
     });
   }
+
+  // ── Currency (IRR) ───────────────────────────────
+  const irr = await prisma.currency.upsert({
+    where: { id: '00000000-0000-0000-0000-000000000001' },
+    update: {},
+    create: {
+      id: '00000000-0000-0000-0000-000000000001',
+      code: 'IRR',
+      name: 'ریال ایران',
+      symbol: '﷼',
+      decimalPlaces: 0,
+      isActive: true,
+    },
+  });
+  console.log(`Currency: ${irr.code}`);
+
+  // ── Organization + Admin User ──────────────────────
+  const org = await prisma.organization.upsert({
+    where: { slug: 'hesabdari-dev' },
+    update: {},
+    create: {
+      id: '00000000-0000-0000-0000-000000000001',
+      name: 'شرکت نمونه حسابداری',
+      slug: 'hesabdari-dev',
+    },
+  });
+  console.log(`Organization: ${org.name}`);
+
+  // ── Accounting Period ──────────────────────────────
+  const period = await prisma.accountingPeriod.upsert({
+    where: { id: '00000000-0000-0000-0000-000000000001' },
+    update: {},
+    create: {
+      id: '00000000-0000-0000-0000-000000000001',
+      organizationId: org.id,
+      name: 'سال مالی ۱۴۰۵',
+      startDate: new Date('2026-03-21'),
+      endDate: new Date('2027-03-20'),
+      status: 'OPEN',
+    },
+  });
+  console.log(`Period: ${period.name}`);
+
+  // ── Chart of Accounts (tree) ───────────────────────
+  const accounts = [
+    { code: '1100', name: 'دارایی‌های جاری', type: 'ASSET' as const, parentId: null },
+    { code: '1101', name: 'صندوق', type: 'ASSET' as const, parentId: '1100' },
+    { code: '1102', name: 'بانک ملت', type: 'ASSET' as const, parentId: '1100' },
+    { code: '1103', name: 'بانک ملی', type: 'ASSET' as const, parentId: '1100' },
+    { code: '1200', name: 'حساب‌های دریافتنی', type: 'ASSET' as const, parentId: null },
+    { code: '1201', name: 'بدهکاران تجاری', type: 'ASSET' as const, parentId: '1200' },
+    { code: '2100', name: 'بدهی‌های جاری', type: 'LIABILITY' as const, parentId: null },
+    { code: '2101', name: 'حساب‌های پرداختنی', type: 'LIABILITY' as const, parentId: '2100' },
+    { code: '3100', name: 'حقوق صاحبان سهام', type: 'EQUITY' as const, parentId: null },
+    { code: '3101', name: 'سرمایه', type: 'EQUITY' as const, parentId: '3100' },
+    { code: '4100', name: 'درآمدها', type: 'REVENUE' as const, parentId: null },
+    { code: '4101', name: 'فروش کالا', type: 'REVENUE' as const, parentId: '4100' },
+    { code: '4102', name: 'درآمد خدمات', type: 'REVENUE' as const, parentId: '4100' },
+    { code: '5100', name: 'بهای تمام‌شده', type: 'EXPENSE' as const, parentId: null },
+    { code: '5101', name: 'بهای تمام‌شده کالای فروش‌رفته', type: 'EXPENSE' as const, parentId: '5100' },
+    { code: '6100', name: 'هزینه‌های عملیاتی', type: 'EXPENSE' as const, parentId: null },
+    { code: '6101', name: 'هزینه حقوق و دستمزد', type: 'EXPENSE' as const, parentId: '6100' },
+    { code: '6102', name: 'هزینه اجاره', type: 'EXPENSE' as const, parentId: '6100' },
+    { code: '6103', name: 'هزینه استهلاک', type: 'EXPENSE' as const, parentId: '6100' },
+  ];
+
+  // First pass: create accounts without parentId
+  const accountIdMap = new Map<string, string>();
+  for (const acct of accounts) {
+    const existing = await prisma.account.findFirst({
+      where: { organizationId: org.id, code: acct.code },
+    });
+    if (existing) {
+      accountIdMap.set(acct.code, existing.id);
+    } else {
+      const created = await prisma.account.create({
+        data: {
+          organizationId: org.id,
+          code: acct.code,
+          name: acct.name,
+          type: acct.type,
+          isActive: true,
+        },
+      });
+      accountIdMap.set(acct.code, created.id);
+    }
+  }
+  // Second pass: set parent references
+  for (const acct of accounts) {
+    if (acct.parentId) {
+      const parentDbId = accountIdMap.get(acct.parentId);
+      const childDbId = accountIdMap.get(acct.code);
+      if (parentDbId && childDbId) {
+        await prisma.account.update({
+          where: { id: childDbId },
+          data: { parentId: parentDbId },
+        });
+      }
+    }
+  }
+  console.log(`Accounts: ${accounts.length} seeded`);
+
+  // ── Customers ──────────────────────────────────────
+  const customers = [
+    { code: 'C-001', name: 'شرکت آراد تجارت', phone1: '021-88001122' },
+    { code: 'C-002', name: 'پارسیان الکترونیک', phone1: '021-66334455' },
+    { code: 'C-003', name: 'فروشگاه زنجیره‌ای ستاره', phone1: '021-44556677' },
+    { code: 'C-004', name: 'گروه صنعتی بهمن', phone1: '021-22778899' },
+    { code: 'C-005', name: 'شرکت نوآوران فناوری', phone1: '021-77889900' },
+  ];
+
+  for (const cust of customers) {
+    const exists = await prisma.customer.findFirst({
+      where: { organizationId: org.id, code: cust.code },
+    });
+    if (!exists) {
+      await prisma.customer.create({
+        data: { ...cust, organizationId: org.id, isActive: true },
+      });
+    }
+  }
+  console.log(`Customers: ${customers.length} seeded`);
+
+  // ── Vendors ────────────────────────────────────────
+  const vendors = [
+    { code: 'V-001', name: 'تأمین‌کننده مواد اولیه', phone1: '021-33445566' },
+    { code: 'V-002', name: 'شرکت فولاد مبارکه', phone1: '031-22334455' },
+    { code: 'V-003', name: 'شرکت توسعه ساختمان', phone1: '021-55667788' },
+    { code: 'V-004', name: 'صنایع بسته‌بندی پارس', phone1: '021-11223344' },
+    { code: 'V-005', name: 'شرکت حمل‌ونقل سریع', phone1: '021-99887766' },
+  ];
+
+  for (const vnd of vendors) {
+    const exists = await prisma.vendor.findFirst({
+      where: { organizationId: org.id, code: vnd.code },
+    });
+    if (!exists) {
+      await prisma.vendor.create({
+        data: { ...vnd, organizationId: org.id, isActive: true },
+      });
+    }
+  }
+  console.log(`Vendors: ${vendors.length} seeded`);
+
+  // ── Warehouse ──────────────────────────────────────
+  const _warehouse = await prisma.warehouse.upsert({
+    where: { id: '00000000-0000-0000-0000-000000000002' },
+    update: {},
+    create: {
+      id: '00000000-0000-0000-0000-000000000002',
+      organizationId: org.id,
+      code: 'WH-01',
+      name: 'انبار مرکزی',
+      costingMethod: 'FIFO',
+      isActive: true,
+    },
+  });
+
+  // ── Products ───────────────────────────────────────
+  const products = [
+    { code: 'P-001', name: 'لپ‌تاپ ایسوس VivoBook', countingUnit: 'عدد', salePrice1: 450000000n },
+    { code: 'P-002', name: 'مانیتور سامسونگ ۲۷ اینچ', countingUnit: 'عدد', salePrice1: 180000000n },
+    { code: 'P-003', name: 'کیبورد لاجیتک مکانیکال', countingUnit: 'عدد', salePrice1: 35000000n },
+    { code: 'P-004', name: 'هارد اکسترنال ۱ ترابایت', countingUnit: 'عدد', salePrice1: 42000000n },
+    { code: 'P-005', name: 'کابل شبکه Cat6 متری', countingUnit: 'متر', salePrice1: 150000n },
+    { code: 'P-006', name: 'پرینتر لیزری HP', countingUnit: 'عدد', salePrice1: 95000000n },
+    { code: 'P-007', name: 'ماوس بی‌سیم', countingUnit: 'عدد', salePrice1: 12000000n },
+    { code: 'P-008', name: 'فلش مموری ۶۴ گیگ', countingUnit: 'عدد', salePrice1: 8500000n },
+  ];
+
+  for (const prod of products) {
+    const exists = await prisma.product.findFirst({
+      where: { organizationId: org.id, code: prod.code },
+    });
+    if (!exists) {
+      await prisma.product.create({
+        data: {
+          organizationId: org.id,
+          code: prod.code,
+          name: prod.name,
+          countingUnit: prod.countingUnit,
+          salePrice1: prod.salePrice1,
+          isActive: true,
+        },
+      });
+    }
+  }
+  console.log(`Products: ${products.length} seeded`);
 
   console.log('Seed completed.');
 }

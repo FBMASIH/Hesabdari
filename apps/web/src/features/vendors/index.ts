@@ -1,1 +1,2 @@
-// Vendors feature module barrel export
+export { VendorListPage } from './components/vendor-list';
+export { VendorForm } from './components/vendor-form';

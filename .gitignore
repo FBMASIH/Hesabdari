@@ -2,6 +2,12 @@
 node_modules/
 .pnpm-store/
 
+# Dev server logs & PIDs
+.api.log
+.web.log
+.api.pid
+.web.pid
+
 # Build
 dist/
 .next/

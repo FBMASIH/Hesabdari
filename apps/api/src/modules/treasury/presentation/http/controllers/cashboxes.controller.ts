@@ -1,6 +1,6 @@
 import { Controller, Get, Post, Put, Delete, Body, Param, Query } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
-import type { CashboxService } from '../../../application/services/cashbox.service';
+import { CashboxService } from '../../../application/services/cashbox.service';
 import { createCashboxSchema, updateCashboxSchema, cashboxQuerySchema } from '@hesabdari/contracts';
 
 @ApiTags('Cashboxes')

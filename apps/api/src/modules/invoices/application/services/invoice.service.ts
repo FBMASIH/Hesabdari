@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import type { InvoiceRepository } from '../../infrastructure/repositories/invoice.repository';
+import { InvoiceRepository } from '../../infrastructure/repositories/invoice.repository';
 import { NotFoundError, ConflictError, ApplicationError } from '@/platform/errors';
 import type { CreateInvoiceDto, UpdateInvoiceDto, InvoiceQueryDto } from '@hesabdari/contracts';
 

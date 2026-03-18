@@ -13,3 +13,4 @@ export * from './vendor.js';
 export * from './invoice.js';
 export * from './opening-balance.js';
 export * from './cheque.js';
+export * from './journal-entry.js';

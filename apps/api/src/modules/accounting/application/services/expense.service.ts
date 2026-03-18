@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import type { ExpenseRepository } from '../../infrastructure/repositories/expense.repository';
+import { ExpenseRepository } from '../../infrastructure/repositories/expense.repository';
 import { NotFoundError, ConflictError } from '@/platform/errors';
 import type { CreateExpenseDto, UpdateExpenseDto } from '@hesabdari/contracts';
 

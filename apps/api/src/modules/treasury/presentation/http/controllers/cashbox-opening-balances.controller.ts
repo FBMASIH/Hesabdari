@@ -1,6 +1,6 @@
 import { Controller, Get, Post, Delete, Body, Param, Query } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
-import type { CashboxOpeningBalanceService } from '../../../application/services/cashbox-opening-balance.service';
+import { CashboxOpeningBalanceService } from '../../../application/services/cashbox-opening-balance.service';
 import {
   createCashboxOpeningBalanceSchema,
   cashboxOpeningBalanceQuerySchema,

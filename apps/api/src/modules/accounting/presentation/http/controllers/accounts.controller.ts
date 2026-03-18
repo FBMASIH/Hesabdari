@@ -1,6 +1,6 @@
 import { Controller, Get, Post, Body, Param } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
-import type { AccountService } from '../../../application/services/account.service';
+import { AccountService } from '../../../application/services/account.service';
 import { createAccountSchema } from '@hesabdari/contracts';
 
 @ApiTags('Accounts')

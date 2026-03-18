@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import type { PeriodRepository } from '../../infrastructure/repositories/period.repository';
+import { PeriodRepository } from '../../infrastructure/repositories/period.repository';
 import { NotFoundError } from '@/platform/errors';
 
 @Injectable()

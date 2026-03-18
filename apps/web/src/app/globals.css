@@ -1,84 +1,19 @@
 @import 'tailwindcss';
 
-:root {
-  --color-bg-primary: #ffffff;
-  --color-bg-secondary: #fafafa;
-  --color-bg-tertiary: #f4f4f5;
-  --color-bg-inverse: #18181b;
-  --color-bg-overlay: rgba(0, 0, 0, 0.5);
-  --color-fg-primary: #18181b;
-  --color-fg-secondary: #52525b;
-  --color-fg-tertiary: #71717a;
-  --color-fg-disabled: #a1a1aa;
-  --color-fg-inverse: #ffffff;
-  --color-fg-link: #2563eb;
-  --color-border-primary: #e4e4e7;
-  --color-border-secondary: #f4f4f5;
-  --color-border-focus: #3b82f6;
-  --color-border-error: #ef4444;
-  --color-primary-default: #2563eb;
-  --color-primary-hover: #1d4ed8;
-  --color-primary-active: #1e40af;
-  --color-primary-subtle: #eff6ff;
-  --color-primary-fg: #ffffff;
-  --color-success-default: #16a34a;
-  --color-success-hover: #15803d;
-  --color-success-subtle: #f0fdf4;
-  --color-success-fg: #ffffff;
-  --color-warning-default: #f59e0b;
-  --color-warning-hover: #d97706;
-  --color-warning-subtle: #fffbeb;
-  --color-warning-fg: #ffffff;
-  --color-danger-default: #dc2626;
-  --color-danger-hover: #b91c1c;
-  --color-danger-subtle: #fef2f2;
-  --color-danger-fg: #ffffff;
-  --color-info-default: #3b82f6;
-  --color-info-hover: #2563eb;
-  --color-info-subtle: #eff6ff;
-  --color-info-fg: #ffffff;
-  --font-family-sans:
-    var(--font-vazirmatn), 'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif;
-  --font-family-mono: 'JetBrains Mono', 'Fira Code', monospace;
-}
+/* ── Scan shared UI package for Tailwind classes ── */
+@source "../../../../packages/ui/src";
 
-[data-theme='dark'] {
-  --color-bg-primary: #09090b;
-  --color-bg-secondary: #18181b;
-  --color-bg-tertiary: #27272a;
-  --color-bg-inverse: #fafafa;
-  --color-bg-overlay: rgba(0, 0, 0, 0.7);
-  --color-fg-primary: #fafafa;
-  --color-fg-secondary: #a1a1aa;
-  --color-fg-tertiary: #71717a;
-  --color-fg-disabled: #52525b;
-  --color-fg-inverse: #18181b;
-  --color-fg-link: #60a5fa;
-  --color-border-primary: #27272a;
-  --color-border-secondary: #3f3f46;
-  --color-border-focus: #3b82f6;
-  --color-border-error: #ef4444;
-  --color-primary-default: #3b82f6;
-  --color-primary-hover: #60a5fa;
-  --color-primary-active: #93c5fd;
-  --color-primary-subtle: #172554;
-  --color-primary-fg: #ffffff;
-  --color-success-default: #22c55e;
-  --color-success-hover: #4ade80;
-  --color-success-subtle: #052e16;
-  --color-success-fg: #ffffff;
-  --color-warning-default: #f59e0b;
-  --color-warning-hover: #fbbf24;
-  --color-warning-subtle: #451a03;
-  --color-warning-fg: #ffffff;
-  --color-danger-default: #ef4444;
-  --color-danger-hover: #f87171;
-  --color-danger-subtle: #450a0a;
-  --color-danger-fg: #ffffff;
-  --color-info-default: #3b82f6;
-  --color-info-hover: #60a5fa;
-  --color-info-subtle: #172554;
-  --color-info-fg: #ffffff;
+/* ── Generated design tokens — DO NOT EDIT these imports
+ * Source of truth: packages/design-tokens/src/themes.ts
+ * Regenerate: pnpm --filter @hesabdari/design-tokens build
+ * ─────────────────────────────────────────────── */
+@import './theme-vars.css';
+@import './theme-tokens.css';
+
+/* ── Non-token typography ──────────────────────── */
+:root {
+  --font-family-sans: var(--font-vazirmatn), -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Segoe UI', system-ui, sans-serif;
+  --font-family-mono: 'SF Mono', 'JetBrains Mono', 'Fira Code', monospace;
 }
 
 body {
@@ -87,17 +22,340 @@ body {
   color: var(--color-fg-primary);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  line-height: 1.6;
+  line-height: 1.5;
   font-feature-settings: 'ss01', 'ss02';
 }
 
-/* Tabular numbers for financial data */
+/* ── Form error state ────────────────────────── */
+.form-field-error input,
+.form-field-error textarea,
+.form-field-error select,
+.form-field-error .auth-input {
+  border-color: var(--color-danger-default) !important;
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--color-danger-default) 8%, transparent) !important;
+}
+
+/* ── macOS vibrancy material ─────────────────── */
+.glass-surface {
+  background: var(--glass-bg);
+  backdrop-filter: blur(var(--glass-blur)) saturate(180%);
+  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(180%);
+  border: 0.5px solid var(--glass-border);
+  box-shadow: var(--glass-shadow);
+  transition: background 200ms ease, box-shadow 200ms ease;
+}
+
+.glass-surface:hover {
+  background: var(--glass-bg-hover);
+  box-shadow: var(--glass-shadow-hover);
+}
+
+.glass-surface-static {
+  background: var(--glass-bg);
+  backdrop-filter: blur(var(--glass-blur)) saturate(180%);
+  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(180%);
+  border: 0.5px solid var(--glass-border);
+  box-shadow: var(--glass-shadow);
+}
+
+/* ── macOS window background ─────────────────── */
+.ambient-bg {
+  background: var(--color-bg-primary);
+}
+
+/* ── Tabular numbers for financial data ────────── */
 .tabular-nums {
   font-variant-numeric: tabular-nums;
 }
 
-/* Force LTR for technical identifiers */
+/* ── Force LTR for technical identifiers ───────── */
 .ltr-text {
   direction: ltr;
   unicode-bidi: isolate;
+}
+
+/* ── macOS-style scrollbar ───────────────────── */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: color-mix(in srgb, var(--color-fg-primary) 15%, transparent);
+  border-radius: 4px;
+  border: 2px solid transparent;
+  background-clip: content-box;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: color-mix(in srgb, var(--color-fg-primary) 25%, transparent);
+  background-clip: content-box;
+}
+
+/* ── Selection color ─────────────────────────── */
+::selection {
+  background: var(--color-primary-subtle);
+}
+
+/* ── Toast notifications ────────────────────── */
+.toast-root[data-state="open"] {
+  animation: toast-slide-in 280ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.toast-root[data-state="closed"] {
+  animation: toast-fade-out 180ms ease-in forwards;
+}
+
+.toast-root[data-swipe="move"] {
+  transform: translateX(var(--radix-toast-swipe-move-x));
+}
+
+.toast-root[data-swipe="cancel"] {
+  transform: translateX(0);
+  transition: transform 200ms ease-out;
+}
+
+.toast-root[data-swipe="end"] {
+  animation: toast-swipe-out 120ms ease-out forwards;
+}
+
+[dir="rtl"] .toast-root[data-swipe="end"] {
+  animation: toast-swipe-out-rtl 120ms ease-out forwards;
+}
+
+@keyframes toast-slide-in {
+  from {
+    opacity: 0;
+    transform: translateY(100%) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes toast-fade-out {
+  from { opacity: 1; }
+  to { opacity: 0; transform: scale(0.96); }
+}
+
+@keyframes toast-swipe-out {
+  from { opacity: 1; }
+  to { opacity: 0; transform: translateX(100%); }
+}
+
+@keyframes toast-swipe-out-rtl {
+  from { opacity: 1; }
+  to { opacity: 0; transform: translateX(-100%); }
+}
+
+.toast-success {
+  background: color-mix(in srgb, var(--color-success-default) 6%, var(--color-bg-primary));
+  border-color: color-mix(in srgb, var(--color-success-default) 15%, transparent);
+}
+
+.toast-error {
+  background: color-mix(in srgb, var(--color-danger-default) 6%, var(--color-bg-primary));
+  border-color: color-mix(in srgb, var(--color-danger-default) 15%, transparent);
+}
+
+/* ── Auth page ───────────────────────────────── */
+.auth-shell {
+  background:
+    radial-gradient(ellipse at 30% 0%, color-mix(in srgb, var(--color-primary-default) 8%, transparent) 0%, transparent 50%),
+    radial-gradient(ellipse at 70% 100%, color-mix(in srgb, var(--color-primary-default) 5%, transparent) 0%, transparent 50%),
+    linear-gradient(180deg, var(--color-bg-tertiary) 0%, color-mix(in srgb, var(--color-bg-tertiary) 85%, var(--color-bg-primary)) 100%);
+}
+
+.auth-card {
+  box-shadow:
+    0 0 0 0.5px var(--color-border-primary),
+    0 1px 3px var(--color-border-secondary),
+    0 8px 24px color-mix(in srgb, var(--color-bg-inverse) 8%, transparent),
+    0 32px 80px -16px color-mix(in srgb, var(--color-bg-inverse) 18%, transparent),
+    inset 0 1px 0 color-mix(in srgb, var(--color-bg-secondary) 60%, transparent);
+}
+
+/* ── Auth form panel ───────────────────────── */
+.auth-form-panel {
+  background: linear-gradient(
+    180deg,
+    color-mix(in srgb, var(--color-bg-secondary) 95%, transparent) 0%,
+    color-mix(in srgb, var(--color-bg-secondary) 98%, var(--color-bg-tertiary)) 100%
+  );
+}
+
+.auth-brand-icon {
+  box-shadow:
+    0 2px 8px color-mix(in srgb, var(--brand-deep) 35%, transparent),
+    0 1px 2px color-mix(in srgb, var(--color-bg-inverse) 10%, transparent);
+}
+
+.auth-input-wrapper {
+  position: relative;
+}
+
+.auth-input-wrapper .auth-input {
+  padding-inline-end: 44px;
+}
+
+.auth-input-icon {
+  position: absolute;
+  top: 50%;
+  inset-inline-end: 14px;
+  transform: translateY(-50%);
+  opacity: 0.35;
+}
+
+/* LTR inputs (email, password) — force icon to the right side */
+.auth-input-icon-ltr {
+  inset-inline-end: auto !important;
+  right: 14px;
+}
+
+.auth-input-icon:not(:has(button)) {
+  pointer-events: none;
+}
+
+.auth-input-icon:has(button) {
+  pointer-events: auto;
+  opacity: 0.5;
+}
+
+.auth-input {
+  border: 1px solid var(--color-border-primary);
+  background: color-mix(in srgb, var(--color-bg-secondary) 80%, transparent);
+  box-shadow:
+    0 1px 3px color-mix(in srgb, var(--color-bg-inverse) 4%, transparent),
+    inset 0 1px 2px color-mix(in srgb, var(--color-bg-inverse) 3%, transparent);
+  transition: border-color 200ms ease, box-shadow 200ms ease;
+}
+
+.auth-input:focus {
+  border-color: var(--brand-deep);
+  box-shadow:
+    0 0 0 3px color-mix(in srgb, var(--brand-deep) 12%, transparent),
+    0 1px 3px color-mix(in srgb, var(--color-bg-inverse) 4%, transparent);
+}
+
+.auth-submit-btn {
+  box-shadow:
+    0 2px 8px color-mix(in srgb, var(--brand-deep) 30%, transparent),
+    0 1px 2px color-mix(in srgb, var(--color-bg-inverse) 10%, transparent);
+  transition: box-shadow 200ms ease, transform 100ms ease;
+}
+
+.auth-submit-btn:hover:not(:disabled) {
+  box-shadow:
+    0 4px 16px color-mix(in srgb, var(--brand-deep) 40%, transparent),
+    0 1px 3px color-mix(in srgb, var(--color-bg-inverse) 12%, transparent);
+}
+
+.auth-submit-btn:active:not(:disabled) {
+  transform: scale(0.98);
+}
+
+.auth-social-btn {
+  box-shadow: 0 1px 3px color-mix(in srgb, var(--color-bg-inverse) 6%, transparent);
+}
+
+/* ── Liquid silk decoration ─────────────────── */
+.auth-decoration {
+  --deco-deep: var(--brand-mid);
+  --deco-mid: var(--brand-light);
+  --deco-light: color-mix(in srgb, var(--brand-light) 60%, white);
+  --deco-base: var(--color-bg-inverse);
+  --deco-glow: color-mix(in srgb, var(--brand-light) 70%, white);
+}
+
+.auth-blob {
+  position: absolute;
+  filter: blur(40px);
+  will-change: transform;
+}
+
+.auth-blob-1 {
+  width: 500px;
+  height: 180px;
+  top: 5%;
+  inset-inline-end: -20%;
+  border-radius: 40% 60% 70% 30% / 40% 50% 60% 50%;
+  background: linear-gradient(135deg, var(--deco-glow) 0%, var(--deco-deep) 40%, var(--deco-base) 100%);
+  opacity: 0.85;
+  animation: auth-silk-1 16s ease-in-out infinite alternate;
+}
+
+.auth-blob-2 {
+  width: 400px;
+  height: 150px;
+  bottom: 15%;
+  inset-inline-start: -15%;
+  border-radius: 60% 40% 30% 70% / 50% 60% 40% 50%;
+  background: linear-gradient(225deg, var(--deco-mid) 0%, var(--deco-deep) 50%, var(--deco-base) 100%);
+  opacity: 0.8;
+  animation: auth-silk-2 14s ease-in-out infinite alternate;
+}
+
+.auth-blob-3 {
+  width: 300px;
+  height: 120px;
+  top: 40%;
+  inset-inline-end: 5%;
+  border-radius: 70% 30% 50% 50% / 30% 60% 40% 70%;
+  background: linear-gradient(160deg, var(--deco-light) 0%, var(--deco-deep) 60%, transparent 100%);
+  opacity: 0.7;
+  filter: blur(30px);
+  animation: auth-silk-3 12s ease-in-out infinite alternate;
+}
+
+.auth-blob-4 {
+  width: 350px;
+  height: 140px;
+  bottom: 30%;
+  inset-inline-end: -10%;
+  border-radius: 30% 70% 60% 40% / 60% 30% 70% 40%;
+  background: linear-gradient(180deg, var(--deco-deep) 0%, var(--deco-base) 70%, transparent 100%);
+  opacity: 0.6;
+  filter: blur(50px);
+  animation: auth-silk-4 18s ease-in-out infinite alternate;
+}
+
+@keyframes auth-silk-1 {
+  0%   { transform: translate(0, 0) rotate(0deg) scaleX(1); }
+  25%  { transform: translate(-30px, 40px) rotate(-8deg) scaleX(1.1); }
+  50%  { transform: translate(20px, 80px) rotate(-3deg) scaleX(0.95); }
+  75%  { transform: translate(-10px, 30px) rotate(-12deg) scaleX(1.05); }
+  100% { transform: translate(15px, 60px) rotate(-6deg) scaleX(1); }
+}
+
+@keyframes auth-silk-2 {
+  0%   { transform: translate(0, 0) rotate(0deg) scaleY(1); }
+  30%  { transform: translate(40px, -30px) rotate(10deg) scaleY(1.15); }
+  60%  { transform: translate(20px, -60px) rotate(5deg) scaleY(0.9); }
+  100% { transform: translate(30px, -20px) rotate(8deg) scaleY(1.1); }
+}
+
+@keyframes auth-silk-3 {
+  0%   { transform: translate(0, 0) rotate(0deg) scale(1); }
+  33%  { transform: translate(-25px, -20px) rotate(-15deg) scale(1.1); }
+  66%  { transform: translate(15px, 25px) rotate(5deg) scale(0.9); }
+  100% { transform: translate(-10px, -10px) rotate(-8deg) scale(1.05); }
+}
+
+@keyframes auth-silk-4 {
+  0%   { transform: translate(0, 0) rotate(0deg); }
+  50%  { transform: translate(-20px, -40px) rotate(6deg); }
+  100% { transform: translate(10px, -20px) rotate(-4deg); }
+}
+
+/* ── Accessibility: respect reduced motion ──── */
+@media (prefers-reduced-motion: reduce) {
+  .auth-blob {
+    animation: none;
+    will-change: auto;
+  }
 }

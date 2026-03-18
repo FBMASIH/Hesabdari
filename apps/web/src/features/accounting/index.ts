@@ -1,1 +1,1 @@
-// Accounting feature module barrel export
+export { AccountTreePage } from './components/account-tree';

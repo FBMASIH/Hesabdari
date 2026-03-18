@@ -1,17 +1,13 @@
-'use client';
-
 import type { ReactNode } from 'react';
-import { Sidebar } from './sidebar';
-import { Topbar } from './topbar';
+import { UtilityBar } from './utility-bar';
+import { PrimaryNav } from './primary-nav';
 
 export function AppShell({ children }: { children: ReactNode }) {
   return (
-    <div className="flex h-screen bg-bg-primary">
-      <Sidebar />
-      <div className="flex flex-1 flex-col overflow-hidden">
-        <Topbar />
-        <main className="flex-1 overflow-y-auto p-6">{children}</main>
-      </div>
+    <div className="ambient-bg flex min-h-screen flex-col">
+      <UtilityBar />
+      <PrimaryNav />
+      <main className="mx-auto w-full max-w-[1440px] flex-1 px-6 pb-8">{children}</main>
     </div>
   );
 }

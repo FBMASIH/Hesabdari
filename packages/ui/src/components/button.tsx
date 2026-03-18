@@ -3,23 +3,45 @@ import { Slot } from '@radix-ui/react-slot';
 import { cva, type VariantProps } from 'class-variance-authority';
 import { cn } from '../lib/utils';
 
+/**
+ * macOS-style button system.
+ *
+ * Variants:
+ *   default      — Brand blue filled. Primary CTA. One per section max.
+ *   secondary    — Subtle gray filled. Supporting actions in forms/headers.
+ *   outline      — Visible border, transparent bg. Secondary form actions.
+ *   ghost        — No chrome at rest, bg on hover. Nav/toolbar icons.
+ *   destructive  — Red filled. Dangerous confirm dialogs.
+ *   danger       — Red-tinted capsule. Inline delete/cancel in tables.
+ *   link         — Underline text link.
+ */
 const buttonVariants = cva(
-  'inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-focus disabled:pointer-events-none disabled:opacity-50',
+  'inline-flex items-center justify-center whitespace-nowrap rounded-xl text-[13px] font-medium transition-all duration-100 focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-brand-deep/25 disabled:pointer-events-none disabled:opacity-40',
   {
     variants: {
       variant: {
-        default: 'bg-primary text-primary-fg hover:bg-primary-hover active:bg-primary-active',
-        destructive: 'bg-danger text-danger-fg hover:bg-danger-hover',
-        outline: 'border border-border-primary bg-bg-primary hover:bg-bg-secondary text-fg-primary',
-        secondary: 'bg-bg-tertiary text-fg-primary hover:bg-bg-secondary',
-        ghost: 'hover:bg-bg-secondary text-fg-primary',
-        link: 'text-fg-link underline-offset-4 hover:underline',
+        default:
+          'bg-brand-deep text-primary-fg shadow-sm hover:brightness-110 active:brightness-90',
+        secondary:
+          'bg-bg-tertiary text-fg-primary hover:brightness-95 active:brightness-90',
+        outline:
+          'border border-border-primary bg-bg-secondary text-fg-primary shadow-xs hover:bg-bg-tertiary active:brightness-95',
+        ghost:
+          'text-fg-secondary hover:bg-bg-tertiary hover:text-fg-primary active:bg-bg-secondary',
+        destructive:
+          'bg-danger-default text-danger-fg shadow-sm hover:brightness-110 active:brightness-90',
+        danger:
+          'bg-danger-subtle text-danger-default hover:brightness-95 active:brightness-90',
+        link:
+          'text-brand-deep underline-offset-4 hover:underline',
       },
       size: {
-        sm: 'h-8 rounded-md px-3 text-xs',
-        md: 'h-9 px-4 py-2',
-        lg: 'h-10 rounded-md px-6 text-base',
-        icon: 'h-9 w-9',
+        xs: 'h-[24px] px-2.5 text-[11px] rounded-lg gap-1',
+        sm: 'h-[28px] px-3 text-[12px] gap-1.5',
+        md: 'h-[32px] px-4 gap-2',
+        lg: 'h-[36px] px-5 text-[14px] gap-2',
+        icon: 'h-[32px] w-[32px]',
+        'icon-sm': 'h-[24px] w-[24px] rounded-lg',
       },
     },
     defaultVariants: {

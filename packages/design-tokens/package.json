@@ -18,6 +18,7 @@
   },
   "scripts": {
     "build": "tsc && node --import tsx/esm scripts/generate-css.ts",
+    "generate:css": "node --import tsx/esm scripts/generate-css.ts",
     "typecheck": "tsc --noEmit",
     "lint": "eslint src/",
     "clean": "rm -rf dist"

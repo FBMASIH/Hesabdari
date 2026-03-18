@@ -1,6 +1,6 @@
 import { Controller, Get, Post, Put, Body, Param, Query } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
-import type { ExpenseService } from '../../../application/services/expense.service';
+import { ExpenseService } from '../../../application/services/expense.service';
 import { createExpenseSchema, updateExpenseSchema, expenseQuerySchema } from '@hesabdari/contracts';
 
 @ApiTags('Expenses')

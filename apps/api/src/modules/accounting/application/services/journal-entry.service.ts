@@ -1,12 +1,13 @@
 import { Injectable } from '@nestjs/common';
-import type { JournalEntryRepository } from '../../infrastructure/repositories/journal-entry.repository';
-import type { PeriodRepository } from '../../infrastructure/repositories/period.repository';
+import type { CreateJournalEntryDto, UpdateJournalEntryDto } from '@hesabdari/contracts';
+import { JournalEntryRepository } from '../../infrastructure/repositories/journal-entry.repository';
+import { PeriodRepository } from '../../infrastructure/repositories/period.repository';
 import {
   assertJournalBalances,
   assertMinimumLines,
 } from '../../domain/rules/journal-balancing.rule';
 import { assertPeriodOpen } from '../../domain/rules/period.rule';
-import { NotFoundError } from '@/platform/errors';
+import { NotFoundError, ConflictError } from '@/platform/errors';
 
 @Injectable()
 export class JournalEntryService {
@@ -23,6 +24,73 @@ export class JournalEntryService {
 
   async findByOrganization(organizationId: string) {
     return this.journalEntryRepository.findByOrganizationId(organizationId);
+  }
+
+  async create(organizationId: string, data: CreateJournalEntryDto) {
+    // Check entry number uniqueness per org
+    const existing = await this.journalEntryRepository.findByNumber(
+      organizationId,
+      data.entryNumber,
+    );
+    if (existing) {
+      throw new ConflictError(
+        `Journal entry number ${data.entryNumber} already exists`,
+      );
+    }
+
+    // Validate period is open
+    const period = await this.periodRepository.findById(data.periodId, organizationId);
+    if (!period) throw new NotFoundError('AccountingPeriod', data.periodId);
+    assertPeriodOpen(period.status);
+
+    // Transform lines: strings to BigInt
+    const lines = data.lines.map((line) => ({
+      accountId: line.accountId,
+      description: line.description ?? null,
+      debitAmount: BigInt(line.debitAmount),
+      creditAmount: BigInt(line.creditAmount),
+    }));
+
+    // Validate accounting rules
+    assertMinimumLines(lines);
+    assertJournalBalances(lines);
+
+    return this.journalEntryRepository.createWithLines({
+      organizationId,
+      periodId: data.periodId,
+      entryNumber: data.entryNumber,
+      date: data.date,
+      description: data.description,
+      idempotencyKey: data.idempotencyKey,
+      lines,
+    });
+  }
+
+  async update(id: string, organizationId: string, data: UpdateJournalEntryDto) {
+    const entry = await this.findById(id, organizationId);
+
+    // Only DRAFT entries can be edited (immutable ledger rule)
+    if (entry.status !== 'DRAFT') {
+      throw new ConflictError('Only DRAFT journal entries can be edited');
+    }
+
+    let lines: { accountId: string; description: string | null; debitAmount: bigint; creditAmount: bigint }[] | undefined;
+    if (data.lines) {
+      lines = data.lines.map((line) => ({
+        accountId: line.accountId,
+        description: line.description ?? null,
+        debitAmount: BigInt(line.debitAmount),
+        creditAmount: BigInt(line.creditAmount),
+      }));
+      assertMinimumLines(lines);
+      assertJournalBalances(lines);
+    }
+
+    return this.journalEntryRepository.updateWithLines(
+      id,
+      { date: data.date, description: data.description },
+      lines,
+    );
   }
 
   async post(id: string, organizationId: string, postedBy: string) {

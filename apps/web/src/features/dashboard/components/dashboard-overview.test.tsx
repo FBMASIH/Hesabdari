@@ -6,12 +6,22 @@ import { DashboardOverview } from './dashboard-overview';
 describe('DashboardOverview', () => {
   it('renders the dashboard heading', () => {
     renderWithProviders(<DashboardOverview />);
-    expect(screen.getByText('Dashboard')).toBeInTheDocument();
+    expect(screen.getByText('داشبورد مالی')).toBeInTheDocument();
   });
 
-  it('renders summary cards', () => {
+  it('renders KPI strip with metrics', () => {
     renderWithProviders(<DashboardOverview />);
-    expect(screen.getByText('Total Revenue')).toBeInTheDocument();
-    expect(screen.getByText('Net Income')).toBeInTheDocument();
+    expect(screen.getByText('فروش روز')).toBeInTheDocument();
+    expect(screen.getByText('کارتخوان')).toBeInTheDocument();
+  });
+
+  it('renders chart section', () => {
+    renderWithProviders(<DashboardOverview />);
+    expect(screen.getByText('روند کلی پول')).toBeInTheDocument();
+  });
+
+  it('renders money summary', () => {
+    renderWithProviders(<DashboardOverview />);
+    expect(screen.getByText('خلاصه پول')).toBeInTheDocument();
   });
 });

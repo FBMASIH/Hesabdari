@@ -1,6 +1,6 @@
 import { Controller, Get, Post, Put, Delete, Body, Param, Query } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
-import type { VendorService } from '../../../application/services/vendor.service';
+import { VendorService } from '../../../application/services/vendor.service';
 import {
   createVendorSchema,
   updateVendorSchema,

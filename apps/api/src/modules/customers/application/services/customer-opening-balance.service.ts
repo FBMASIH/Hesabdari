@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import type { CustomerOpeningBalanceRepository } from '../../infrastructure/repositories/customer-opening-balance.repository';
+import { CustomerOpeningBalanceRepository } from '../../infrastructure/repositories/customer-opening-balance.repository';
 import { NotFoundError, ConflictError } from '@/platform/errors';
 import type { CreateCustomerOpeningBalanceDto } from '@hesabdari/contracts';
 

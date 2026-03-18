@@ -1,12 +1,10 @@
-import { t } from '@/shared/lib/i18n';
+import { ErrorBoundary } from '@hesabdari/ui';
+import { SettingsPage } from '@/features/settings';
 
-const s = t('settings');
-
-export default function SettingsPage() {
+export default function SettingsRoute() {
   return (
-    <div>
-      <h1 className="text-2xl font-semibold text-fg-primary">{s.title}</h1>
-      <p className="mt-2 text-fg-secondary">{s.subtitle}</p>
-    </div>
+    <ErrorBoundary>
+      <SettingsPage />
+    </ErrorBoundary>
   );
 }

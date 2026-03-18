@@ -20,6 +20,8 @@
     "db:generate": "turbo run db:generate --filter=@hesabdari/db",
     "db:migrate": "turbo run db:migrate --filter=@hesabdari/db",
     "db:seed": "turbo run db:seed --filter=@hesabdari/db",
+    "start:all": "bash scripts/start.sh",
+    "stop:all": "bash scripts/stop.sh",
     "prepare": "husky"
   },
   "pnpm": {

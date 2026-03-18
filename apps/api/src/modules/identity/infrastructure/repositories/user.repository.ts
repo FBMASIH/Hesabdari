@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
-import type { PrismaService } from '@/platform/database/prisma.service';
-import type { IUserRepository } from '../../domain/repositories/user.repository.interface';
+import { PrismaService } from '@/platform/database/prisma.service';
+import type { IUserRepository, UserWithOrganizations } from '../../domain/repositories/user.repository.interface';
 import type { UserEntity } from '../../domain/entities/user.entity';
 
 @Injectable()
@@ -17,6 +17,20 @@ export class UserRepository implements IUserRepository {
 
   async create(data: Omit<UserEntity, 'id' | 'createdAt' | 'updatedAt'>): Promise<UserEntity> {
     return this.prisma.user.create({ data });
+  }
+
+  async findByIdWithOrganizations(id: string): Promise<UserWithOrganizations | null> {
+    return this.prisma.user.findUnique({
+      where: { id },
+      include: {
+        memberships: {
+          include: {
+            organization: { select: { id: true, name: true, slug: true } },
+            role: { select: { name: true } },
+          },
+        },
+      },
+    });
   }
 
   async existsByEmail(email: string): Promise<boolean> {

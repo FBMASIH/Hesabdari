@@ -1,6 +1,6 @@
 import { Controller, Get, Post, Put, Delete, Body, Param, Query } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
-import type { BankAccountService } from '../../../application/services/bank-account.service';
+import { BankAccountService } from '../../../application/services/bank-account.service';
 import {
   createBankAccountSchema,
   updateBankAccountSchema,

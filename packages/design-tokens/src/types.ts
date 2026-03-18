@@ -80,6 +80,30 @@ export interface SemanticColors {
   };
 }
 
+export interface BrandTokens {
+  deep: string;
+  mid: string;
+  light: string;
+  warm: string;
+}
+
+export interface GlassTokens {
+  bg: string;
+  bgHover: string;
+  border: string;
+  borderActive: string;
+  shadow: string;
+  shadowHover: string;
+  blur: string;
+}
+
+/** Complete theme token set — single source of truth for a theme mode */
+export interface ThemeTokens {
+  semantic: SemanticColors;
+  brand: BrandTokens;
+  glass: GlassTokens;
+}
+
 export interface ColorToken {
   primitive: ColorPrimitives;
   semantic: SemanticColors;

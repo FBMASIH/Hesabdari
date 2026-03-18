@@ -1,0 +1,102 @@
+'use client';
+
+import { useState, type ReactNode } from 'react';
+import {
+  Button,
+  DateInput,
+  EmptyState,
+  cn,
+  IconChart,
+  IconScale,
+  IconTrendingUp,
+  IconClipboardList,
+  IconBook,
+  IconNotebook,
+  IconWallet,
+} from '@hesabdari/ui';
+import { t } from '@/shared/lib/i18n';
+import { DataPageHeader, FormSection } from '@/features/shared';
+
+const rpt = t('reports');
+
+const REPORT_TYPES: { key: string; label: string; icon: ReactNode }[] = [
+  { key: 'trial-balance', label: rpt.trialBalance, icon: <IconScale size={22} /> },
+  { key: 'income-statement', label: rpt.incomeStatement, icon: <IconTrendingUp size={22} /> },
+  { key: 'balance-sheet', label: rpt.balanceSheet, icon: <IconClipboardList size={22} /> },
+  { key: 'ledger', label: rpt.ledger, icon: <IconBook size={22} /> },
+  { key: 'journal', label: rpt.journal, icon: <IconNotebook size={22} /> },
+  { key: 'cash-flow', label: rpt.cashFlow, icon: <IconWallet size={22} /> },
+];
+
+export function ReportsPage() {
+  const [selectedReport, setSelectedReport] = useState<string>('');
+  const [fromDate, setFromDate] = useState('');
+  const [toDate, setToDate] = useState('');
+
+  return (
+    <div className="flex flex-col">
+      <DataPageHeader
+        title={rpt.title}
+        subtitle={rpt.subtitle}
+      />
+
+      {/* Report type selection */}
+      <div className="grid grid-cols-2 gap-3 pb-5 sm:grid-cols-3 lg:grid-cols-6">
+        {REPORT_TYPES.map((r) => (
+          <button
+            key={r.key}
+            type="button"
+            onClick={() => setSelectedReport(r.key)}
+            className={cn('glass-surface-static flex flex-col items-center gap-2.5 rounded-2xl p-4 text-center transition-all',
+              selectedReport === r.key
+                ? 'ring-2 ring-brand-deep/50 bg-primary-subtle shadow-md'
+                : 'hover:shadow-sm'
+            )}
+          >
+            <span className="text-brand-deep">{r.icon}</span>
+            <span className="text-xs font-medium text-fg-primary">{r.label}</span>
+          </button>
+        ))}
+      </div>
+
+      {/* Date range + generate */}
+      {selectedReport && (
+        <FormSection title={rpt.fiscalPeriod} className="mb-5">
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+            <div>
+              <label className="mb-1 block text-xs font-medium text-fg-secondary">{rpt.fromDate}</label>
+              <DateInput value={fromDate} onChange={setFromDate} />
+            </div>
+            <div>
+              <label className="mb-1 block text-xs font-medium text-fg-secondary">{rpt.toDate}</label>
+              <DateInput value={toDate} onChange={setToDate} />
+            </div>
+            <div className="flex items-end">
+              <Button type="button" size="sm">
+                {rpt.generateReport}
+              </Button>
+            </div>
+          </div>
+        </FormSection>
+      )}
+
+      {/* Report output placeholder */}
+      {selectedReport ? (
+        <div className="glass-surface-static rounded-2xl p-8">
+          <EmptyState
+            title={`${REPORT_TYPES.find((r) => r.key === selectedReport)?.label ?? ''}`}
+            description="گزارش پس از اتصال به API تولید خواهد شد. بازه زمانی را انتخاب و دکمه ایجاد گزارش را بزنید."
+            icon={<IconChart size={20} />}
+          />
+        </div>
+      ) : (
+        <div className="glass-surface-static rounded-2xl p-8">
+          <EmptyState
+            title="نوع گزارش را انتخاب کنید"
+            description="یکی از گزارش‌های بالا را انتخاب کنید تا بتوانید بازه زمانی و فیلترها را تنظیم کنید."
+          />
+        </div>
+      )}
+    </div>
+  );
+}

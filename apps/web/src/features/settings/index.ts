@@ -1,1 +1,1 @@
-// Settings feature module barrel export
+export { SettingsPage } from './components/settings-page';

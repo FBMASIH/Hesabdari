@@ -6,10 +6,22 @@ import {
 } from 'react';
 import { cn } from '../lib/utils';
 
+/**
+ * macOS-style data table — glass surface container, hairline separators,
+ * generous RTL-aware padding, hover rows.
+ *
+ * Usage:
+ *   <Table>
+ *     <TableHeader><TableRow><TableHead>...</TableHead></TableRow></TableHeader>
+ *     <TableBody><TableRow><TableCell>...</TableCell></TableRow></TableBody>
+ *   </Table>
+ */
 export const Table = forwardRef<HTMLTableElement, HTMLAttributes<HTMLTableElement>>(
   ({ className, ...props }, ref) => (
-    <div className="relative w-full overflow-auto">
-      <table ref={ref} className={cn('w-full caption-bottom text-sm', className)} {...props} />
+    <div className="glass-surface-static overflow-hidden rounded-2xl">
+      <div className="overflow-auto">
+        <table ref={ref} className={cn('w-full text-sm', className)} {...props} />
+      </div>
     </div>
   ),
 );
@@ -19,7 +31,7 @@ export const TableHeader = forwardRef<
   HTMLTableSectionElement,
   HTMLAttributes<HTMLTableSectionElement>
 >(({ className, ...props }, ref) => (
-  <thead ref={ref} className={cn('[&_tr]:border-b', className)} {...props} />
+  <thead ref={ref} className={cn('[&_tr]:border-b [&_tr]:border-border-secondary', className)} {...props} />
 ));
 TableHeader.displayName = 'TableHeader';
 
@@ -36,7 +48,7 @@ export const TableRow = forwardRef<HTMLTableRowElement, HTMLAttributes<HTMLTable
     <tr
       ref={ref}
       className={cn(
-        'border-b border-border-primary transition-colors hover:bg-bg-secondary data-[state=selected]:bg-bg-tertiary',
+        'border-b border-border-secondary/50 transition-colors hover:bg-bg-primary/40',
         className,
       )}
       {...props}
@@ -50,7 +62,7 @@ export const TableHead = forwardRef<HTMLTableCellElement, ThHTMLAttributes<HTMLT
     <th
       ref={ref}
       className={cn(
-        'h-10 px-4 text-start align-middle font-medium text-fg-secondary [&:has([role=checkbox])]:pe-0',
+        'py-3 pe-4 text-start align-middle text-xs font-medium text-fg-tertiary first:ps-5 last:pe-5',
         className,
       )}
       {...props}
@@ -63,7 +75,10 @@ export const TableCell = forwardRef<HTMLTableCellElement, TdHTMLAttributes<HTMLT
   ({ className, ...props }, ref) => (
     <td
       ref={ref}
-      className={cn('p-4 align-middle text-fg-primary [&:has([role=checkbox])]:pe-0', className)}
+      className={cn(
+        'py-3.5 pe-4 align-middle text-sm text-fg-primary first:ps-5 last:pe-5',
+        className,
+      )}
       {...props}
     />
   ),

@@ -64,6 +64,13 @@ export const hesabdariPreset = {
           subtle: cssVar('info-subtle'),
           fg: cssVar('info-fg'),
         },
+        /* Brand tokens — chart colors, logo, data visualization */
+        brand: {
+          deep: 'var(--brand-deep)',
+          mid: 'var(--brand-mid)',
+          light: 'var(--brand-light)',
+          warm: 'var(--brand-warm)',
+        },
       },
       fontFamily: {
         sans: [
@@ -91,6 +98,6 @@ export const hesabdariPreset = {
       screens: theme.breakpoint,
     },
   },
-};
+} satisfies Record<string, unknown>;
 
 export default hesabdariPreset;

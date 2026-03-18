@@ -3,6 +3,7 @@ export { Input, type InputProps } from './components/input';
 export { Textarea, type TextareaProps } from './components/textarea';
 export {
   Select,
+  SelectValue,
   SelectTrigger,
   SelectContent,
   SelectItem,
@@ -36,4 +37,17 @@ export {
   ToastDescription,
   ToastViewport,
 } from './components/toast';
+export { ErrorBoundary } from './components/error-boundary';
+export { Skeleton, type SkeletonProps } from './components/skeleton';
+export { Spinner, type SpinnerProps } from './components/spinner';
+export { EmptyState, type EmptyStateProps } from './components/empty-state';
+export { Pagination, type PaginationProps } from './components/pagination';
+export { ConfirmDialog, type ConfirmDialogProps } from './components/confirm-dialog';
+export { FormErrorBanner, type FormErrorBannerProps } from './components/form-error-banner';
+export { DateInput, type DateInputProps } from './components/date-input';
+export { PasswordInput, type PasswordInputProps } from './components/password-input';
 export { cn } from './lib/utils';
+
+// Icons — Solar Linear style, tree-shakeable
+export * from './icons';
+

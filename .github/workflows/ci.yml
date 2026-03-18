@@ -168,3 +168,31 @@ jobs:
           key: deps-${{ hashFiles('pnpm-lock.yaml') }}
 
       - run: pnpm build
+
+  e2e:
+    name: E2E Tests
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: ${{ env.PNPM_VERSION }}
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      - uses: actions/cache/restore@v4
+        with:
+          path: |
+            node_modules
+            apps/*/node_modules
+            packages/*/node_modules
+            packages/config/*/node_modules
+          key: deps-${{ hashFiles('pnpm-lock.yaml') }}
+
+      - run: pnpm build
+      - run: pnpm exec playwright install --with-deps chromium
+      - run: pnpm --filter @hesabdari/web test:e2e

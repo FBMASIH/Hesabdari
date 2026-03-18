@@ -1,6 +1,6 @@
 import { Controller, Get, Post, Put, Delete, Body, Param, Query } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
-import type { CustomerService } from '../../../application/services/customer.service';
+import { CustomerService } from '../../../application/services/customer.service';
 import {
   createCustomerSchema,
   updateCustomerSchema,

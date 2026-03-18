@@ -1,6 +1,6 @@
 import { Controller, Get, Post, Put, Delete, Body, Param, Query } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
-import type { ProductService } from '../../../application/services/product.service';
+import { ProductService } from '../../../application/services/product.service';
 import {
   createProductSchema,
   updateProductSchema,

@@ -1,6 +1,6 @@
 import { Controller, Get, Post, Put, Body, Param, Query } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
-import type { InvoiceService } from '../../../application/services/invoice.service';
+import { InvoiceService } from '../../../application/services/invoice.service';
 import { createInvoiceSchema, updateInvoiceSchema, invoiceQuerySchema } from '@hesabdari/contracts';
 
 @ApiTags('Invoices')
