@@ -18,7 +18,7 @@ export function UtilityBar() {
   };
 
   return (
-    <header className="mx-auto flex w-full max-w-[1440px] items-center gap-5 px-6 py-4">
+    <header className="mx-auto flex w-full max-w-[1440px] items-center gap-5 px-6 pb-3 pt-5">
       {/* Brand — right side in RTL */}
       <div className="flex items-center gap-3">
         <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-brand-deep text-sm font-bold text-primary-fg shadow-[0_1px_4px_rgba(74,141,184,0.3)]">

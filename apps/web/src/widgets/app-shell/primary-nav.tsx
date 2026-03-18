@@ -23,7 +23,7 @@ export function PrimaryNav() {
   return (
     <nav
       aria-label="ناوبری اصلی"
-      className="mx-auto flex w-full max-w-[1440px] justify-center px-6 pb-4"
+      className="mx-auto flex w-full max-w-[1440px] justify-center px-6 pt-1 pb-5"
     >
       <div className="glass-surface-static inline-flex items-center gap-1.5 rounded-2xl p-1.5">
         {tabs.map((tab) => {
