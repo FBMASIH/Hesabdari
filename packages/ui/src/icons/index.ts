@@ -6,6 +6,10 @@ export type { IconProps } from './icon-base';
 export { IconBase } from './icon-base';
 
 // Navigation & UI
+export { IconHome } from './home';
+export { IconCart } from './cart';
+export { IconBag } from './bag';
+export { IconBox } from './box';
 export { IconChevronDown } from './chevron-down';
 export { IconChevronRight } from './chevron-right';
 export { IconChevronLeft } from './chevron-left';
