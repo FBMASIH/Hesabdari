@@ -12,7 +12,7 @@ const tabs = [
   { label: nav.sales, href: '/invoices' },
   { label: nav.purchases, href: '/vendors' },
   { label: nav.money, href: '/accounting' },
-  { label: nav.products, href: '/customers' },  // TODO: change href to /inventory when inventory page is built
+  { label: nav.products, href: '/products' },
   { label: nav.reports, href: '/reports' },
 ] as const;
 

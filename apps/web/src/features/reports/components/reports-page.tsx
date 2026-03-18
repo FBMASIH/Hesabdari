@@ -3,7 +3,7 @@
 import { useState, type ReactNode } from 'react';
 import {
   Button,
-  DateInput,
+  DatePicker,
   EmptyState,
   cn,
   IconChart,
@@ -65,11 +65,11 @@ export function ReportsPage() {
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
             <div>
               <label className="mb-1 block text-xs font-medium text-fg-secondary">{rpt.fromDate}</label>
-              <DateInput value={fromDate} onChange={setFromDate} />
+              <DatePicker value={fromDate} onChange={setFromDate} />
             </div>
             <div>
               <label className="mb-1 block text-xs font-medium text-fg-secondary">{rpt.toDate}</label>
-              <DateInput value={toDate} onChange={setToDate} />
+              <DatePicker value={toDate} onChange={setToDate} />
             </div>
             <div className="flex items-end">
               <Button type="button" size="sm">
@@ -85,15 +85,16 @@ export function ReportsPage() {
         <div className="glass-surface-static rounded-2xl p-8">
           <EmptyState
             title={`${REPORT_TYPES.find((r) => r.key === selectedReport)?.label ?? ''}`}
-            description="گزارش پس از اتصال به API تولید خواهد شد. بازه زمانی را انتخاب و دکمه ایجاد گزارش را بزنید."
+            description={rpt.reportSelectedDescription}
             icon={<IconChart size={20} />}
           />
         </div>
       ) : (
         <div className="glass-surface-static rounded-2xl p-8">
           <EmptyState
-            title="نوع گزارش را انتخاب کنید"
-            description="یکی از گزارش‌های بالا را انتخاب کنید تا بتوانید بازه زمانی و فیلترها را تنظیم کنید."
+            icon={<IconChart size={20} />}
+            title={rpt.selectReportType}
+            description={rpt.selectReportTypeDescription}
           />
         </div>
       )}

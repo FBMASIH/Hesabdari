@@ -86,7 +86,7 @@ export function VendorListPage() {
       <DataFilterBar
         searchValue={search}
         onSearchChange={(v) => { setSearch(v); setPage(1); }}
-        searchPlaceholder="جستجو نام یا کد تأمین‌کننده..."
+        searchPlaceholder={vnd.searchPlaceholder}
         filters={filters}
         onFilterToggle={(key) => { setActiveFilter(key); setPage(1); }}
       />
@@ -101,7 +101,7 @@ export function VendorListPage() {
             <div className="glass-surface-static overflow-hidden rounded-2xl">
               <EmptyState
                 title={search ? common.noResults : common.noData}
-                description={search ? 'تأمین‌کننده‌ای با این مشخصات یافت نشد' : 'هنوز تأمین‌کننده‌ای ثبت نشده است'}
+                description={search ? vnd.noVendorFound : vnd.noVendorYet}
                 icon={<IconDelivery size={20} />}
                 action={!search ? (
                   <Button variant="default" size="sm" onClick={() => router.push('/vendors/new')}>
@@ -144,10 +144,12 @@ export function VendorListPage() {
             </Table>
           )}
 
-          <div className="flex items-center justify-between pt-4">
-            <span className="text-xs text-fg-tertiary">{toPersianDigits(data?.total ?? 0)} تأمین‌کننده</span>
-            <Pagination currentPage={page} totalPages={totalPages} onPageChange={setPage} />
-          </div>
+          {vendors.length > 0 && (
+            <div className="flex items-center justify-between pt-4">
+              <span className="text-xs text-fg-tertiary">{toPersianDigits(data?.total ?? 0)} {vnd.vendorCount}</span>
+              <Pagination currentPage={page} totalPages={totalPages} onPageChange={setPage} />
+            </div>
+          )}
         </>
       )}
 

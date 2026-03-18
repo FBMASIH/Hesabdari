@@ -1,34 +1,36 @@
-import { Skeleton } from '@hesabdari/ui';
 import { t } from '@/shared/lib/i18n';
+import { formatMoney } from '@/shared/lib/money';
 
 const dash = t('dashboard');
-const msgs = t('messages');
+const common = t('common');
 
-const summaryLabels = [dash.inflow, dash.outflow, dash.balance];
+const summaryItems = [
+  { label: dash.inflow, value: '0', color: 'bg-success-default' },
+  { label: dash.outflow, value: '0', color: 'bg-danger-default' },
+  { label: dash.balance, value: '0', color: 'bg-primary-default' },
+];
 
 export function MoneySummary() {
   return (
-    <div className="glass-surface-static flex w-72 flex-col items-center rounded-2xl p-5">
+    <div className="glass-surface-static flex w-72 flex-col rounded-2xl p-5">
       <div className="flex w-full items-center justify-between mb-5">
         <h2 className="text-base font-semibold text-fg-primary">{dash.moneySummary}</h2>
       </div>
 
-      {/* Skeleton donut placeholder */}
-      <div className="relative mb-5">
-        <Skeleton circle className="h-[140px] w-[140px]" />
-      </div>
-
-      {/* Summary items — skeleton */}
-      <div className="flex w-full flex-col gap-3">
-        {summaryLabels.map((label) => (
-          <div key={label} className="flex items-center justify-between">
-            <span className="text-xs text-fg-secondary">{label}</span>
-            <Skeleton className="h-4 w-24" />
+      <div className="flex w-full flex-col gap-4">
+        {summaryItems.map((item) => (
+          <div key={item.label} className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <span className={`h-2.5 w-2.5 rounded-full ${item.color}`} />
+              <span className="text-xs text-fg-secondary">{item.label}</span>
+            </div>
+            <span className="text-sm font-semibold tabular-nums text-fg-primary">
+              {formatMoney(item.value, { showUnit: false })}
+              <span className="ms-1 text-xs font-normal text-fg-tertiary">{common.toman}</span>
+            </span>
           </div>
         ))}
       </div>
-
-      <p className="mt-4 text-xs text-fg-tertiary text-center">{msgs.comingSoon}</p>
     </div>
   );
 }

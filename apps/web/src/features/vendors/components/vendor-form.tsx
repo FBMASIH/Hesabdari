@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { createVendorSchema, type CreateVendorDto } from '@hesabdari/contracts';
-import { Input, Textarea, FormField, FormLabel, FormErrorBanner } from '@hesabdari/ui';
+import { Input, Textarea, MoneyInput, FormField, FormLabel, FormErrorBanner } from '@hesabdari/ui';
 import { t } from '@/shared/lib/i18n';
 import { FormSection, FormActions, DataPageHeader } from '@/features/shared';
 import { useAppToast } from '@/providers/toast-provider';
@@ -25,6 +25,8 @@ export function VendorForm() {
   const {
     register,
     handleSubmit,
+    watch,
+    setValue,
     formState: { errors, isSubmitting },
   } = useForm<CreateVendorDto>({
     resolver: zodResolver(createVendorSchema),
@@ -83,6 +85,16 @@ export function VendorForm() {
               <Input {...register('postalCode')} className="rounded-xl ltr-text" dir="ltr" />
             </FormField>
           </div>
+          <FormField error={errors.creditLimit?.message}>
+            <FormLabel>{common.creditLimit} ({common.rial})</FormLabel>
+            <MoneyInput
+              value={watch('creditLimit') ?? ''}
+              onChange={(v) => setValue('creditLimit', v, { shouldValidate: true })}
+              suffix="\uFDFC"
+              placeholder="0"
+              className="rounded-xl"
+            />
+          </FormField>
           <div className="mt-4">
             <FormField error={errors.address?.message}>
               <FormLabel>{vnd.address}</FormLabel>

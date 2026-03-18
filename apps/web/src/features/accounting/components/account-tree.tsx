@@ -137,7 +137,7 @@ export function AccountTreePage() {
           {rootAccounts.length === 0 ? (
             <EmptyState
               title={common.noData}
-              description="حساب‌ها پس از اجرای seed اولیه یا ثبت دستی نمایش داده می‌شوند"
+              description={acct.noAccountYet}
               icon={<IconBuildings size={20} />}
             />
           ) : (
@@ -164,7 +164,7 @@ export function AccountTreePage() {
               {/* Summary */}
               <div className="border-t border-border-secondary px-5 py-3">
                 <span className="text-xs text-fg-tertiary">
-                  {toPersianDigits(accounts?.length ?? 0)} حساب
+                  {toPersianDigits(accounts?.length ?? 0)} {acct.accountUnit}
                 </span>
               </div>
             </>

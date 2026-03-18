@@ -195,7 +195,7 @@ export function AuthForm() {
             <button
               type="button"
               className="text-[12px] font-semibold text-brand-deep hover:underline"
-              onClick={() => showToast({ title: messages.comingSoon, variant: 'default' })}
+              onClick={() => showToast({ title: auth.passwordResetMessage, variant: 'default' })}
             >
               {auth.forgotPassword}
             </button>

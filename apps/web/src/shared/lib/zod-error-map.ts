@@ -1,7 +1,7 @@
 import { z, type ZodErrorMap, ZodIssueCode, ZodParsedType } from 'zod';
 
 /**
- * Persian (fa) Zod error map — friendly, calm, cool validation messages.
+ * Persian (fa) Zod error map — professional validation messages.
  *
  * Set globally once at app init via `z.setErrorMap(persianErrorMap)`.
  * All Zod schemas across the app will use these messages automatically.
@@ -11,51 +11,51 @@ export const persianErrorMap: ZodErrorMap = (issue, ctx) => {
   switch (issue.code) {
     case ZodIssueCode.invalid_type:
       if (issue.received === ZodParsedType.undefined) {
-        return { message: 'اوه! این قسمت رو جا انداختی 😊' };
+        return { message: 'این فیلد الزامی است' };
       }
-      return { message: 'یه چیز دیگه‌ای انتظار داشتیم اینجا 🤔' };
+      return { message: 'نوع داده وارد شده نامعتبر است' };
 
     case ZodIssueCode.invalid_string:
       if (issue.validation === 'email') {
-        return { message: 'این ایمیل درست به نظر نمیاد، یه بار دیگه چک کن ✉️' };
+        return { message: 'آدرس ایمیل معتبر نیست' };
       }
       if (issue.validation === 'url') {
-        return { message: 'آدرس وب‌سایت معتبر نیست 🌐' };
+        return { message: 'آدرس وب‌سایت معتبر نیست' };
       }
-      return { message: 'فرمت وارد شده درست نیست 🙃' };
+      return { message: 'فرمت وارد شده صحیح نیست' };
 
     case ZodIssueCode.too_small:
       if (issue.type === 'string') {
         if (issue.minimum === 1) {
-          return { message: 'نمی‌شه خالی بذاری، پرش کن 📝' };
+          return { message: 'این فیلد نمی‌تواند خالی باشد' };
         }
-        return { message: `حداقل ${issue.minimum} تا کاراکتر لازمه ✍️` };
+        return { message: `حداقل ${issue.minimum} کاراکتر وارد کنید` };
       }
       if (issue.type === 'number') {
-        return { message: `عددش باید حداقل ${issue.minimum} باشه 📊` };
+        return { message: `مقدار باید حداقل ${issue.minimum} باشد` };
       }
       if (issue.type === 'array') {
-        return { message: `حداقل ${issue.minimum} تا انتخاب کن ☑️` };
+        return { message: `حداقل ${issue.minimum} مورد انتخاب کنید` };
       }
-      return { message: 'یکم بیشتر لازمه 📏' };
+      return { message: 'مقدار وارد شده کافی نیست' };
 
     case ZodIssueCode.too_big:
       if (issue.type === 'string') {
-        return { message: `خیلی طولانی شد! حداکثر ${issue.maximum} کاراکتر ✂️` };
+        return { message: `حداکثر ${issue.maximum} کاراکتر مجاز است` };
       }
       if (issue.type === 'number') {
-        return { message: `عددش زیاده، حداکثر ${issue.maximum} 📉` };
+        return { message: `مقدار نباید بیشتر از ${issue.maximum} باشد` };
       }
-      return { message: 'یکم کمترش کن 📏' };
+      return { message: 'مقدار وارد شده بیش از حد مجاز است' };
 
     case ZodIssueCode.invalid_enum_value:
-      return { message: 'این گزینه توی لیست نیست 📋' };
+      return { message: 'مقدار انتخابی معتبر نیست' };
 
     case ZodIssueCode.invalid_date:
-      return { message: 'تاریخ وارد شده معتبر نیست 📅' };
+      return { message: 'تاریخ وارد شده معتبر نیست' };
 
     case ZodIssueCode.custom:
-      return { message: issue.message ?? 'یه مشکلی هست 🤷' };
+      return { message: issue.message ?? 'خطای اعتبارسنجی' };
 
     default:
       return { message: ctx.defaultError };

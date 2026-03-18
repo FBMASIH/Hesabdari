@@ -45,7 +45,9 @@ export { Pagination, type PaginationProps } from './components/pagination';
 export { ConfirmDialog, type ConfirmDialogProps } from './components/confirm-dialog';
 export { FormErrorBanner, type FormErrorBannerProps } from './components/form-error-banner';
 export { DateInput, type DateInputProps } from './components/date-input';
+export { DatePicker, type DatePickerProps } from './components/date-picker';
 export { PasswordInput, type PasswordInputProps } from './components/password-input';
+export { MoneyInput, type MoneyInputProps } from './components/money-input';
 export { cn } from './lib/utils';
 
 // Icons — Solar Linear style, tree-shakeable

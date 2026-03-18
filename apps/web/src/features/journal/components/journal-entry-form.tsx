@@ -3,7 +3,7 @@
 import { useState, useCallback, useMemo, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import {
-  Button, Input, Badge, DateInput, FormField, FormLabel, FormErrorBanner,
+  Button, Input, Badge, DatePicker, MoneyInput, FormField, FormLabel, FormErrorBanner,
   Textarea, ConfirmDialog,
   IconClose, IconPlus,
 } from '@hesabdari/ui';
@@ -105,11 +105,6 @@ export function JournalEntryForm() {
     );
   }, []);
 
-  function parseBigInt(val: string): bigint {
-    const cleaned = val.replace(/[^\d]/g, '');
-    return cleaned ? BigInt(cleaned) * 10n : 0n; // Toman → Rial
-  }
-
   // Validation
   function validate(): string[] {
     const errors: string[] = [];
@@ -208,7 +203,7 @@ export function JournalEntryForm() {
 
           <FormField>
             <FormLabel>{j.entryDate}</FormLabel>
-            <DateInput value={entryDate} onChange={setEntryDate} />
+            <DatePicker value={entryDate} onChange={setEntryDate} />
           </FormField>
 
           <div className="sm:col-span-1" />
@@ -264,25 +259,21 @@ export function JournalEntryForm() {
                     />
                   </td>
                   <td className="py-2 pe-3">
-                    <Input
-                      type="text"
-                      inputMode="numeric"
-                      value={line.debitAmount > 0n ? (line.debitAmount / 10n).toString() : ''}
-                      onChange={(e) => updateLine(line.id, 'debitAmount', parseBigInt(e.target.value))}
-                      className="h-8 rounded-lg text-xs ltr-text tabular-nums"
-                      dir="ltr"
+                    <MoneyInput
+                      value={line.debitAmount > 0n ? line.debitAmount.toString() : ''}
+                      onChange={(v) => updateLine(line.id, 'debitAmount', v ? BigInt(v) : 0n)}
+                      suffix="\uFDFC"
+                      className="h-8 rounded-lg text-xs"
                       placeholder="0"
                       disabled={line.creditAmount > 0n}
                     />
                   </td>
                   <td className="py-2 pe-3">
-                    <Input
-                      type="text"
-                      inputMode="numeric"
-                      value={line.creditAmount > 0n ? (line.creditAmount / 10n).toString() : ''}
-                      onChange={(e) => updateLine(line.id, 'creditAmount', parseBigInt(e.target.value))}
-                      className="h-8 rounded-lg text-xs ltr-text tabular-nums"
-                      dir="ltr"
+                    <MoneyInput
+                      value={line.creditAmount > 0n ? line.creditAmount.toString() : ''}
+                      onChange={(v) => updateLine(line.id, 'creditAmount', v ? BigInt(v) : 0n)}
+                      suffix="\uFDFC"
+                      className="h-8 rounded-lg text-xs"
                       placeholder="0"
                       disabled={line.debitAmount > 0n}
                     />

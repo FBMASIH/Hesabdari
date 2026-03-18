@@ -177,12 +177,14 @@ export function JournalEntryListPage() {
             </Table>
           )}
 
-          <div className="flex items-center justify-between pt-4">
-            <span className="text-xs text-fg-tertiary">
-              {toPersianDigits(data?.total ?? 0)} {j.entryCount}
-            </span>
-            <Pagination currentPage={page} totalPages={totalPages} onPageChange={setPage} />
-          </div>
+          {entries.length > 0 && (
+            <div className="flex items-center justify-between pt-4">
+              <span className="text-xs text-fg-tertiary">
+                {toPersianDigits(data?.total ?? 0)} {j.entryCount}
+              </span>
+              <Pagination currentPage={page} totalPages={totalPages} onPageChange={setPage} />
+            </div>
+          )}
         </>
       )}
     </div>

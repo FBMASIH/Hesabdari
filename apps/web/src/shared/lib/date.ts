@@ -158,3 +158,106 @@ export function jalaliCurrentFiscalYear(date: Date = new Date()): string {
   const j = toJalali(date);
   return `سال مالی ${toPersianDigits(j.year)}`;
 }
+
+/** Convert Jalali date to Gregorian Date. */
+export function fromJalali(jy: number, jm: number, jd: number): Date {
+  let gy: number;
+  let adjJy = jy;
+  if (adjJy > 979) {
+    gy = 1600;
+    adjJy -= 979;
+  } else {
+    gy = 621;
+  }
+  let days =
+    365 * adjJy +
+    Math.floor(adjJy / 33) * 8 +
+    Math.floor((adjJy % 33 + 3) / 4) +
+    78 +
+    jd +
+    (jm < 7 ? (jm - 1) * 31 : (jm - 7) * 30 + 186);
+  gy += 400 * Math.floor(days / 146097);
+  days %= 146097;
+  if (days > 36524) {
+    gy += 100 * Math.floor(--days / 36524);
+    days %= 36524;
+    if (days >= 365) days++;
+  }
+  gy += 4 * Math.floor(days / 1461);
+  days %= 1461;
+  if (days > 365) {
+    gy += Math.floor((days - 1) / 365);
+    days = (days - 1) % 365;
+  }
+  const isLeap = gy % 4 === 0 && (gy % 100 !== 0 || gy % 400 === 0) ? 1 : 0;
+  let gm =
+    days < 31
+      ? 1
+      : days < 59 + isLeap
+        ? 2
+        : 0;
+  if (gm === 0) {
+    const gDaysInMonths = [0, 31, 29 + (1 - isLeap), 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
+    let remaining = days - 59 - isLeap;
+    for (gm = 3; gm <= 12; gm++) {
+      if (remaining < (gDaysInMonths[gm] ?? 0)) break;
+      remaining -= gDaysInMonths[gm] ?? 0;
+    }
+    days = remaining;
+  } else {
+    days = gm === 2 ? days - 31 : days;
+  }
+  const gd = days + 1;
+  return new Date(gy, gm - 1, gd);
+}
+
+/** Check if a Jalali year is a leap year. */
+export function isJalaliLeapYear(jy: number): boolean {
+  const breaks = [1, 5, 9, 13, 17, 22, 26, 30];
+  const r = jy % 33;
+  return breaks.includes(r);
+}
+
+/** Days in a Jalali month. */
+export function jalaliDaysInMonth(jy: number, jm: number): number {
+  if (jm <= 6) return 31;
+  if (jm <= 11) return 30;
+  return isJalaliLeapYear(jy) ? 30 : 29;
+}
+
+/** Get day of week for a Jalali date (0=Saturday, 6=Friday). */
+export function jalaliWeekDay(jy: number, jm: number, jd: number): number {
+  const d = fromJalali(jy, jm, jd);
+  return (d.getDay() + 1) % 7;
+}
+
+const LATIN_DIGITS: Record<string, string> = {
+  '\u06F0': '0', '\u06F1': '1', '\u06F2': '2', '\u06F3': '3', '\u06F4': '4',
+  '\u06F5': '5', '\u06F6': '6', '\u06F7': '7', '\u06F8': '8', '\u06F9': '9',
+};
+
+/** Convert a string with Persian digits to Latin digits. */
+function toLatinDigits(input: string): string {
+  return input.replace(/[\u06F0-\u06F9]/g, (d) => LATIN_DIGITS[d] ?? d);
+}
+
+/** Parse user input like "1405/01/15" or "۱۴۰۵/۰۱/۱۵" to JalaliDate, or null if invalid. */
+export function parseJalaliInput(input: string): JalaliDate | null {
+  const latin = toLatinDigits(input.trim());
+  const match = latin.match(/^(\d{4})\/(\d{1,2})\/(\d{1,2})$/);
+  if (!match) return null;
+  const jy = parseInt(match[1]!, 10);
+  const jm = parseInt(match[2]!, 10);
+  const jd = parseInt(match[3]!, 10);
+  if (jm < 1 || jm > 12) return null;
+  if (jd < 1 || jd > jalaliDaysInMonth(jy, jm)) return null;
+  return { year: jy, month: jm, day: jd };
+}
+
+/** Format a Date to ISO YYYY-MM-DD string. */
+export function toISODate(date: Date): string {
+  const y = date.getFullYear();
+  const m = String(date.getMonth() + 1).padStart(2, '0');
+  const d = String(date.getDate()).padStart(2, '0');
+  return `${y}-${m}-${d}`;
+}

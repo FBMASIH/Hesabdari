@@ -213,12 +213,14 @@ export function InvoiceListPage() {
           )}
 
           {/* Pagination */}
-          <div className="flex items-center justify-between pt-4">
-            <span className="text-xs text-fg-tertiary">
-              {toPersianDigits(data?.total ?? 0)} {inv.invoiceCount}
-            </span>
-            <Pagination currentPage={page} totalPages={totalPages} onPageChange={setPage} />
-          </div>
+          {invoices.length > 0 && (
+            <div className="flex items-center justify-between pt-4">
+              <span className="text-xs text-fg-tertiary">
+                {toPersianDigits(data?.total ?? 0)} {inv.invoiceCount}
+              </span>
+              <Pagination currentPage={page} totalPages={totalPages} onPageChange={setPage} />
+            </div>
+          )}
         </>
       )}
 

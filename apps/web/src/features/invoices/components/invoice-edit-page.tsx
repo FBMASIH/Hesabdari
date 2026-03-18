@@ -1,6 +1,6 @@
 'use client';
 
-import { Spinner, EmptyState } from '@hesabdari/ui';
+import { Spinner, EmptyState, IconDocument, IconBan } from '@hesabdari/ui';
 import { t } from '@/shared/lib/i18n';
 import { useInvoice } from '../hooks/use-invoices';
 import { InvoiceForm } from './invoice-form';
@@ -23,6 +23,7 @@ export function InvoiceEditPage({ invoiceId }: { invoiceId: string }) {
   if (isError || !invoice) {
     return (
       <EmptyState
+        icon={<IconDocument size={20} />}
         title="فاکتور یافت نشد"
         description={msgs.unexpectedError}
       />
@@ -32,6 +33,7 @@ export function InvoiceEditPage({ invoiceId }: { invoiceId: string }) {
   if (invoice.status !== 'DRAFT') {
     return (
       <EmptyState
+        icon={<IconBan size={20} />}
         title="ویرایش امکان‌پذیر نیست"
         description="فقط فاکتورهای پیش‌نویس قابل ویرایش هستند. برای اصلاح فاکتور تأیید شده، سند برگشت ثبت کنید."
       />

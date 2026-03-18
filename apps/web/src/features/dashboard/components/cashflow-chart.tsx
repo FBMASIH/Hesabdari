@@ -2,7 +2,7 @@ import { EmptyState, IconChart } from '@hesabdari/ui';
 import { t } from '@/shared/lib/i18n';
 
 const dash = t('dashboard');
-const msgs = t('messages');
+const common = t('common');
 
 export function CashflowChart() {
   return (
@@ -12,8 +12,8 @@ export function CashflowChart() {
         <p className="mt-0.5 text-xs text-fg-tertiary">{dash.moneyTrendSubtitle}</p>
       </div>
       <EmptyState
-        title={msgs.comingSoon}
-        description="نمودار جریان ورودی و خروجی پس از اتصال به گزارش‌ها فعال می‌شود"
+        title={common.noData}
+        description={dash.chartEmptyDescription}
         icon={<IconChart size={20} />}
       />
     </div>

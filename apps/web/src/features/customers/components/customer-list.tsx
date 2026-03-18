@@ -87,7 +87,7 @@ export function CustomerListPage() {
       <DataFilterBar
         searchValue={search}
         onSearchChange={(v) => { setSearch(v); setPage(1); }}
-        searchPlaceholder="جستجو نام یا کد مشتری..."
+        searchPlaceholder={cust.searchPlaceholder}
         filters={filters}
         onFilterToggle={(key) => { setActiveFilter(key); setPage(1); }}
       />
@@ -102,7 +102,7 @@ export function CustomerListPage() {
             <div className="glass-surface-static overflow-hidden rounded-2xl">
               <EmptyState
                 title={search ? common.noResults : common.noData}
-                description={search ? 'مشتری‌ای با این مشخصات یافت نشد' : 'هنوز مشتری ثبت نشده است'}
+                description={search ? cust.noCustomerFound : cust.noCustomerYet}
                 icon={<IconUsersGroup size={20} />}
                 action={!search ? (
                   <Button variant="default" size="sm" onClick={() => router.push('/customers/new')}>
@@ -151,10 +151,12 @@ export function CustomerListPage() {
             </Table>
           )}
 
-          <div className="flex items-center justify-between pt-4">
-            <span className="text-xs text-fg-tertiary">{toPersianDigits(data?.total ?? 0)} مشتری</span>
-            <Pagination currentPage={page} totalPages={totalPages} onPageChange={setPage} />
-          </div>
+          {customers.length > 0 && (
+            <div className="flex items-center justify-between pt-4">
+              <span className="text-xs text-fg-tertiary">{toPersianDigits(data?.total ?? 0)} {cust.customerCount}</span>
+              <Pagination currentPage={page} totalPages={totalPages} onPageChange={setPage} />
+            </div>
+          )}
         </>
       )}
 

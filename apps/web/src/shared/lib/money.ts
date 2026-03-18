@@ -29,7 +29,16 @@ export function formatMoney(
 ): string {
   const { unit = 'toman', showUnit = true, compact = false } = options;
 
-  let amount = typeof rialAmount === 'bigint' ? rialAmount : BigInt(rialAmount);
+  let amount: bigint;
+  if (typeof rialAmount === 'bigint') {
+    amount = rialAmount;
+  } else {
+    try {
+      amount = BigInt(rialAmount);
+    } catch {
+      return '—';
+    }
+  }
 
   if (unit === 'toman') {
     amount = amount / 10n;

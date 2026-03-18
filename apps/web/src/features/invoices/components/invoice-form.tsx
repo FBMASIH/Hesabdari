@@ -3,7 +3,7 @@
 import { useState, useCallback, useMemo, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import {
-  Button, Input, DateInput, FormField, FormLabel, FormErrorBanner,
+  Button, Input, DatePicker, MoneyInput, FormField, FormLabel, FormErrorBanner,
   Select, SelectTrigger, SelectContent, SelectItem,
   ConfirmDialog,
   IconClose, IconPlus,
@@ -236,11 +236,6 @@ export function InvoiceForm({ initialData }: InvoiceFormProps = {}) {
     }
   }
 
-  function parseBigInt(val: string): bigint {
-    const cleaned = val.replace(/[^\d]/g, '');
-    return cleaned ? BigInt(cleaned) * 10n : 0n; // User enters Toman, store as Rial
-  }
-
   return (
     <form
       method="post"
@@ -282,7 +277,7 @@ export function InvoiceForm({ initialData }: InvoiceFormProps = {}) {
           {/* Invoice date */}
           <FormField>
             <FormLabel>{inv.invoiceDate}</FormLabel>
-            <DateInput
+            <DatePicker
               value={invoiceDate}
               onChange={setInvoiceDate}
             />
@@ -291,7 +286,7 @@ export function InvoiceForm({ initialData }: InvoiceFormProps = {}) {
           {/* Due date */}
           <FormField>
             <FormLabel>{inv.dueDate}</FormLabel>
-            <DateInput
+            <DatePicker
               value={dueDate}
               onChange={setDueDate}
             />
@@ -353,35 +348,29 @@ export function InvoiceForm({ initialData }: InvoiceFormProps = {}) {
                     />
                   </td>
                   <td className="py-2 pe-3">
-                    <Input
-                      type="text"
-                      inputMode="numeric"
-                      value={line.unitPrice > 0n ? (line.unitPrice / 10n).toString() : ''}
-                      onChange={(e) => updateLine(line.id, 'unitPrice', parseBigInt(e.target.value))}
-                      className="h-8 rounded-lg text-xs ltr-text tabular-nums"
-                      dir="ltr"
+                    <MoneyInput
+                      value={line.unitPrice > 0n ? line.unitPrice.toString() : ''}
+                      onChange={(v) => updateLine(line.id, 'unitPrice', v ? BigInt(v) : 0n)}
+                      suffix="\uFDFC"
+                      className="h-8 rounded-lg text-xs"
                       placeholder="0"
                     />
                   </td>
                   <td className="py-2 pe-3">
-                    <Input
-                      type="text"
-                      inputMode="numeric"
-                      value={line.discount > 0n ? (line.discount / 10n).toString() : ''}
-                      onChange={(e) => updateLine(line.id, 'discount', parseBigInt(e.target.value))}
-                      className="h-8 rounded-lg text-xs ltr-text tabular-nums"
-                      dir="ltr"
+                    <MoneyInput
+                      value={line.discount > 0n ? line.discount.toString() : ''}
+                      onChange={(v) => updateLine(line.id, 'discount', v ? BigInt(v) : 0n)}
+                      suffix="\uFDFC"
+                      className="h-8 rounded-lg text-xs"
                       placeholder="0"
                     />
                   </td>
                   <td className="py-2 pe-3">
-                    <Input
-                      type="text"
-                      inputMode="numeric"
-                      value={line.tax > 0n ? (line.tax / 10n).toString() : ''}
-                      onChange={(e) => updateLine(line.id, 'tax', parseBigInt(e.target.value))}
-                      className="h-8 rounded-lg text-xs ltr-text tabular-nums"
-                      dir="ltr"
+                    <MoneyInput
+                      value={line.tax > 0n ? line.tax.toString() : ''}
+                      onChange={(v) => updateLine(line.id, 'tax', v ? BigInt(v) : 0n)}
+                      suffix="\uFDFC"
+                      className="h-8 rounded-lg text-xs"
                       placeholder="0"
                     />
                   </td>

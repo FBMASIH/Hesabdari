@@ -110,6 +110,7 @@ const fa = {
     lastName: 'نام خانوادگی',
     forgotPassword: 'فراموشی رمز عبور',
     resetPassword: 'بازنشانی رمز عبور',
+    passwordResetMessage: 'لینک بازنشانی رمز عبور به ایمیل شما ارسال خواهد شد',
     signInTitle: 'ورود به حسابداری',
     signInDescription: 'اطلاعات ورود خود را وارد کنید',
     welcomeBack: 'خوش آمدید!',
@@ -126,10 +127,10 @@ const fa = {
     noAccount: 'حساب کاربری ندارید؟',
     hasAccount: 'حساب کاربری دارید؟',
     signingUp: 'یه لحظه صبر کن...',
-    signUpSuccess: 'عالی! حسابت ساخته شد 🎉',
-    loginSuccess: 'خوش اومدی! داریم واردت می‌کنیم... ✨',
-    invalidCredentials: 'ایمیل یا رمز عبور درست نیست، یه بار دیگه امتحان کن 🔑',
-    emailExists: 'این ایمیل قبلاً ثبت شده، وارد شو یا ایمیل دیگه‌ای بزن 📧',
+    signUpSuccess: 'عالی! حسابت ساخته شد',
+    loginSuccess: 'خوش اومدی! داریم واردت می‌کنیم...',
+    invalidCredentials: 'ایمیل یا رمز عبور درست نیست، یه بار دیگه امتحان کن',
+    emailExists: 'این ایمیل قبلاً ثبت شده، وارد شو یا ایمیل دیگه‌ای بزن',
     signInWithApple: 'ورود با Apple',
     signInWithGoogle: 'ورود با Google',
     copyright: '© ۱۴۰۵ حسابداری. تمامی حقوق محفوظ است.',
@@ -176,6 +177,12 @@ const fa = {
     transferFunds: 'جابجایی بین بانک و صندوق',
     // Activity table
     recentActivity: 'آخرین فعالیت‌ها',
+    noActivityYet: 'هنوز فعالیتی ثبت نشده است',
+    // Chart empty
+    chartEmptyDescription: 'پس از ثبت تراکنش‌ها، نمودار جریان ورودی و خروجی نمایش داده می‌شود',
+    // Today tasks empty
+    noPendingTasks: 'عملیات معلقی وجود ندارد',
+    noPendingTasksDescription: 'چک سررسید یا فاکتور تأیید‌نشده‌ای نیست',
     // Money summary
     moneySummary: 'خلاصه پول',
     goodStatus: 'وضعیت خوب',
@@ -208,6 +215,8 @@ const fa = {
       revenue: 'درآمد',
       expense: 'هزینه',
     },
+    noAccountYet: 'هنوز حسابی در سرفصل‌ها ثبت نشده است',
+    accountUnit: 'حساب',
   },
 
   // ── Journal Entries ─────────────────────────────
@@ -334,6 +343,10 @@ const fa = {
     bankAccount: 'حساب بانکی',
     birthDate: 'تاریخ تولد',
     referrer: 'معرف',
+    searchPlaceholder: 'جستجو نام یا کد مشتری...',
+    noCustomerFound: 'مشتری‌ای با این مشخصات یافت نشد',
+    noCustomerYet: 'هنوز مشتری ثبت نشده است',
+    customerCount: 'مشتری',
   },
 
   // ── Vendors ─────────────────────────────────────
@@ -351,6 +364,10 @@ const fa = {
     economicCode: 'کد اقتصادی',
     postalCode: 'کد پستی',
     address: 'آدرس',
+    searchPlaceholder: 'جستجو نام یا کد تأمین‌کننده...',
+    noVendorFound: 'تأمین‌کننده‌ای با این مشخصات یافت نشد',
+    noVendorYet: 'هنوز تأمین‌کننده‌ای ثبت نشده است',
+    vendorCount: 'تأمین‌کننده',
   },
 
   // ── Treasury ────────────────────────────────────
@@ -376,8 +393,45 @@ const fa = {
       cancelled: 'ابطال شده',
       cleared: 'تسویه شده',
     },
-    openingBalance: 'مانده افتتاحیه',
+    openingBalance: 'مانده اول دوره',
     openingBalances: 'مانده‌های افتتاحیه',
+    // Bank accounts
+    bankAccountTitle: 'حساب‌های بانکی',
+    bankAccountSubtitle: 'مدیریت حساب‌های بانکی سازمان',
+    newBankAccount: 'حساب بانکی جدید',
+    bankAccountCode: 'کد حساب',
+    bankAccountName: 'نام حساب',
+    bankName: 'نام بانک',
+    branch: 'شعبه',
+    accountNumber: 'شماره حساب',
+    // Cashboxes
+    cashboxTitle: 'صندوق‌ها',
+    cashboxSubtitle: 'مدیریت صندوق‌های نقدی',
+    newCashbox: 'صندوق جدید',
+    cashboxCode: 'کد صندوق',
+    cashboxName: 'نام صندوق',
+    // Opening balance
+    openingBalanceDesc: 'مانده ابتدای دوره مالی',
+    balanceAmount: 'مبلغ',
+    balanceDate: 'تاریخ',
+    // Received cheques
+    receivedChequeTitle: 'چک‌های دریافتی',
+    receivedChequeSubtitle: 'مدیریت چک‌های دریافتی از مشتریان',
+    newReceivedCheque: 'چک دریافتی جدید',
+    drawer: 'صادرکننده',
+    chequeAmount: 'مبلغ چک',
+    chequeDate: 'تاریخ صدور',
+    chequeDueDate: 'تاریخ سررسید',
+    // Paid cheques
+    paidChequeTitle: 'چک‌های پرداختی',
+    paidChequeSubtitle: 'مدیریت چک‌های پرداختی به تأمین‌کنندگان',
+    newPaidCheque: 'چک پرداختی جدید',
+    paidChequeVendor: 'تأمین‌کننده',
+    // Search
+    searchBankAccount: 'جستجو حساب بانکی...',
+    searchCashbox: 'جستجو صندوق...',
+    searchReceivedCheque: 'جستجو شماره چک یا صادرکننده...',
+    searchPaidCheque: 'جستجو شماره چک...',
   },
 
   // ── Inventory ───────────────────────────────────
@@ -401,6 +455,54 @@ const fa = {
     },
   },
 
+  // ── Warehouse ─────────────────────────────────
+  warehouse: {
+    title: 'انبارها',
+    subtitle: 'مدیریت انبارها و مراکز نگهداری',
+    newWarehouse: 'انبار جدید',
+    newWarehouseSubtitle: 'اطلاعات انبار جدید را وارد کنید',
+    warehouseCode: 'کد انبار',
+    warehouseName: 'نام انبار',
+    costingMethod: 'روش ارزش‌گذاری',
+    costingMethods: {
+      FIFO: 'FIFO (اولین وارده، اولین صادره)',
+      LIFO: 'LIFO (آخرین وارده، اولین صادره)',
+      WEIGHTED_AVG: 'میانگین موزون',
+    },
+    searchPlaceholder: 'جستجو نام یا کد انبار...',
+    noWarehouseFound: 'انباری با این مشخصات یافت نشد',
+    noWarehouseYet: 'هنوز انباری ثبت نشده است',
+    warehouseCount: 'انبار',
+  },
+
+  // ── Products ───────────────────────────────────
+  product: {
+    title: 'کالاها و خدمات',
+    subtitle: 'مدیریت کالاها، خدمات و موجودی',
+    newProduct: 'کالای جدید',
+    newProductSubtitle: 'اطلاعات کالا یا خدمت جدید را وارد کنید',
+    productCode: 'کد کالا',
+    productName: 'نام کالا',
+    barcode: 'بارکد',
+    countingUnit: 'واحد شمارش',
+    majorUnit: 'واحد عمده',
+    minorUnit: 'واحد خرد',
+    qtyInMajor: 'تعداد در واحد عمده',
+    salePrice1: 'قیمت فروش ۱',
+    salePrice2: 'قیمت فروش ۲',
+    salePrice3: 'قیمت فروش ۳',
+    purchasePrice: 'قیمت خرید',
+    minStock: 'حداقل موجودی',
+    openingStock: 'موجودی اول دوره',
+    openingStockDesc: 'موجودی اولیه در هر انبار',
+    quantity: 'تعداد',
+    noWarehouseYet: 'ابتدا انبار ایجاد کنید',
+    searchPlaceholder: 'جستجو نام یا کد کالا...',
+    noProductFound: 'کالایی با این مشخصات یافت نشد',
+    noProductYet: 'هنوز کالایی ثبت نشده است',
+    productCount: 'کالا',
+  },
+
   // ── Reports ─────────────────────────────────────
   reports: {
     title: 'گزارش‌ها',
@@ -416,6 +518,9 @@ const fa = {
     toDate: 'تا تاریخ',
     fiscalPeriod: 'دوره مالی',
     generateReport: 'ایجاد گزارش',
+    selectReportType: 'نوع گزارش را انتخاب کنید',
+    selectReportTypeDescription: 'یکی از گزارش‌های بالا را انتخاب کنید تا بتوانید بازه زمانی و فیلترها را تنظیم کنید.',
+    reportSelectedDescription: 'بازه زمانی را انتخاب و دکمه ایجاد گزارش را بزنید.',
   },
 
   // ── Settings ────────────────────────────────────
@@ -436,30 +541,29 @@ const fa = {
 
   // ── Validation / Errors ─────────────────────────
   validation: {
-    required: 'اوه! این قسمت رو جا انداختی 😊',
-    invalidEmail: 'این ایمیل درست به نظر نمیاد ✉️',
-    minLength: (min: number) => `حداقل ${min} تا کاراکتر لازمه ✍️`,
-    maxLength: (max: number) => `خیلی طولانی شد! حداکثر ${max} کاراکتر ✂️`,
-    minValue: (min: number) => `عددش باید حداقل ${min} باشه 📊`,
-    positiveNumber: 'اینجا عدد مثبت لازمه 🔢',
-    invalidAmount: 'مبلغ وارد شده درست نیست 💰',
-    passwordMismatch: 'رمزها باهم مطابقت ندارن، دوباره چک کن 🔐',
-    duplicateCode: 'این کد قبلاً استفاده شده 🏷️',
-    unbalancedEntry: 'جمع بدهکار و بستانکار باید تراز باشه ⚖️',
+    required: 'این قسمت الزامی است',
+    invalidEmail: 'آدرس ایمیل معتبر نیست',
+    minLength: (min: number) => `حداقل ${min} کاراکتر لازمه`,
+    maxLength: (max: number) => `حداکثر ${max} کاراکتر مجاز است`,
+    minValue: (min: number) => `مقدار باید حداقل ${min} باشد`,
+    positiveNumber: 'عدد مثبت وارد کنید',
+    invalidAmount: 'مبلغ وارد شده معتبر نیست',
+    passwordMismatch: 'رمزها باهم مطابقت ندارن',
+    duplicateCode: 'این کد قبلاً استفاده شده',
+    unbalancedEntry: 'جمع بدهکار و بستانکار باید تراز باشد',
   },
 
   // ── Messages ────────────────────────────────────
   messages: {
-    saveSuccess: 'ذخیره شد! همه چیز امنه 💾',
-    deleteSuccess: 'حذف شد 🗑️',
-    deleteConfirm: 'مطمئنی می‌خوای حذفش کنی؟ 🤔',
-    deleteWarning: 'دقت کن، این کار برگشت‌پذیر نیست!',
-    networkError: 'ارتباط با سرور برقرار نشد، اینترنتت رو چک کن 🌐',
-    unexpectedError: 'یه مشکل پیش اومد، لطفاً دوباره تلاش کن 🔄',
-    sessionExpired: 'نشستت منقضی شده، دوباره وارد شو 🔑',
-    noPermission: 'دسترسی به این بخش رو نداری 🚫',
-    comingSoon: 'به‌زودی فعال می‌شه، منتظر باش! 🚀',
-    noOrgSelected: 'هنوز سازمانی انتخاب نشده، از تنظیمات انتخاب کن 🏢',
+    saveSuccess: 'با موفقیت ذخیره شد',
+    deleteSuccess: 'با موفقیت حذف شد',
+    deleteConfirm: 'آیا از حذف مطمئن هستید؟',
+    deleteWarning: 'این عملیات قابل بازگشت نیست',
+    networkError: 'ارتباط با سرور برقرار نشد',
+    unexpectedError: 'خطای غیرمنتظره رخ داد، لطفاً دوباره تلاش کنید',
+    sessionExpired: 'نشست شما منقضی شده، دوباره وارد شوید',
+    noPermission: 'دسترسی به این بخش مجاز نیست',
+    noOrgSelected: 'سازمانی انتخاب نشده است',
     fetchError: 'خطا در بارگذاری اطلاعات',
     retry: 'تلاش دوباره',
   },

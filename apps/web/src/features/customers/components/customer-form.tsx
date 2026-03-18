@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { createCustomerSchema, type CreateCustomerDto } from '@hesabdari/contracts';
-import { Input, Textarea, FormField, FormLabel, FormErrorBanner } from '@hesabdari/ui';
+import { Input, Textarea, MoneyInput, FormField, FormLabel, FormErrorBanner } from '@hesabdari/ui';
 import { t } from '@/shared/lib/i18n';
 import { FormSection, FormActions, DataPageHeader } from '@/features/shared';
 import { useAppToast } from '@/providers/toast-provider';
@@ -25,6 +25,8 @@ export function CustomerForm() {
   const {
     register,
     handleSubmit,
+    watch,
+    setValue,
     formState: { errors, isSubmitting },
   } = useForm<CreateCustomerDto>({
     resolver: zodResolver(createCustomerSchema),
@@ -84,7 +86,13 @@ export function CustomerForm() {
             </FormField>
             <FormField error={errors.creditLimit?.message}>
               <FormLabel>{cust.creditLimit} ({common.rial})</FormLabel>
-              <Input {...register('creditLimit')} placeholder="0" className="rounded-xl ltr-text tabular-nums" dir="ltr" inputMode="numeric" />
+              <MoneyInput
+                value={watch('creditLimit') ?? ''}
+                onChange={(v) => setValue('creditLimit', v, { shouldValidate: true })}
+                suffix="\uFDFC"
+                placeholder="0"
+                className="rounded-xl"
+              />
             </FormField>
           </div>
           <div className="mt-4">

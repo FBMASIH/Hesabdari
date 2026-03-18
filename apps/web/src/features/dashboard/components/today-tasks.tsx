@@ -1,9 +1,8 @@
-import { EmptyState, IconDocument, IconUpload, IconDownload, IconTransfer } from '@hesabdari/ui';
+import Link from 'next/link';
+import { EmptyState, IconDocument, IconUpload, IconDownload, IconTransfer, IconClipboardList } from '@hesabdari/ui';
 import { t } from '@/shared/lib/i18n';
 
 const dash = t('dashboard');
-const msgs = t('messages');
-const common = t('common');
 
 interface QuickAction {
   label: string;
@@ -43,8 +42,9 @@ export function TodayTasks() {
       <div className="mb-5">
         <span className="text-xs font-medium text-fg-tertiary mb-2 block">{dash.pendingTasks}</span>
         <EmptyState
-          title={common.noData}
-          description={msgs.comingSoon}
+          icon={<IconClipboardList size={18} />}
+          title={dash.noPendingTasks}
+          description={dash.noPendingTasksDescription}
           className="py-4"
         />
       </div>
@@ -54,9 +54,9 @@ export function TodayTasks() {
         <span className="text-xs font-medium text-fg-tertiary mb-2 block">{dash.quickActions}</span>
         <div className="grid grid-cols-2 gap-2">
           {quickActions.map((action) => (
-            <a
+            <Link
               key={action.label}
-              href={action.href}
+              href={action.href as '/invoices/new' | '/journal-entries/new'}
               className="flex flex-col items-center gap-1.5 rounded-xl px-2 py-3 text-center transition-colors hover:bg-bg-primary/60"
             >
               <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary-subtle text-brand-deep">
@@ -65,7 +65,7 @@ export function TodayTasks() {
               <span className="text-xs font-medium leading-tight text-fg-secondary">
                 {action.label}
               </span>
-            </a>
+            </Link>
           ))}
         </div>
       </div>

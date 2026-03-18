@@ -1,12 +1,13 @@
 'use client';
 
 import {
-  Badge, Skeleton, EmptyState,
+  Badge, Skeleton, EmptyState, IconDocument,
   Table, TableHeader, TableBody, TableRow, TableHead, TableCell,
 } from '@hesabdari/ui';
 import { t } from '@/shared/lib/i18n';
 import { formatMoney } from '@/shared/lib/money';
 import { formatISOToJalali } from '@/shared/lib/date';
+import { DataErrorState } from '@/features/shared';
 import { useInvoices, type InvoiceDto } from '@/features/invoices/hooks/use-invoices';
 
 const dash = t('dashboard');
@@ -26,7 +27,7 @@ const statusLabel: Record<string, string> = {
 };
 
 export function ActivityTable() {
-  const { data, isLoading } = useInvoices({ page: 1, pageSize: 5 });
+  const { data, isLoading, isError, error, refetch } = useInvoices({ page: 1, pageSize: 5 });
   const invoices = data?.data ?? [];
 
   return (
@@ -48,14 +49,19 @@ export function ActivityTable() {
         </div>
       )}
 
-      {!isLoading && invoices.length === 0 && (
+      {!isLoading && isError && (
+        <DataErrorState error={error} onRetry={() => refetch()} />
+      )}
+
+      {!isLoading && !isError && invoices.length === 0 && (
         <EmptyState
+          icon={<IconDocument size={20} />}
           title={common.noData}
-          description="هنوز فعالیتی ثبت نشده است"
+          description={dash.noActivityYet}
         />
       )}
 
-      {!isLoading && invoices.length > 0 && (
+      {!isLoading && !isError && invoices.length > 0 && (
         <Table>
           <TableHeader>
             <TableRow>
