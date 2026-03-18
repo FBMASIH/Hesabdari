@@ -22,7 +22,7 @@ export function UtilityBar() {
       {/* Brand — right side in RTL */}
       <div className="flex items-center gap-3">
         <div
-          className="flex h-9 w-9 items-center justify-center rounded-xl bg-brand-deep text-sm font-bold text-primary-fg"
+          className="flex h-9 w-9 items-center justify-center rounded-xl bg-brand-deep text-sm font-bold text-primary-fg shadow-[0_1px_4px_rgba(74,141,184,0.3)]"
         >
           T
         </div>
@@ -34,7 +34,7 @@ export function UtilityBar() {
 
       {/* Search */}
       <div className="relative flex-1 max-w-lg mx-4">
-        <div className="glass-surface-static flex h-9 items-center rounded-xl px-4">
+        <div className="glass-surface flex h-9 items-center rounded-xl px-4">
           <IconMagnifer size={16} className="text-fg-tertiary flex-shrink-0" />
           <input
             type="text"
@@ -42,7 +42,7 @@ export function UtilityBar() {
             aria-label={common.search}
             className="flex-1 bg-transparent px-3 text-sm text-fg-primary placeholder:text-fg-tertiary focus:outline-none"
           />
-          <kbd className="hidden sm:inline-flex h-5 items-center rounded border border-border-primary px-1.5 text-xs text-fg-tertiary">
+          <kbd className="hidden sm:inline-flex h-5 items-center rounded-md border border-border-secondary bg-bg-tertiary/40 px-1.5 text-[10px] text-fg-tertiary">
             ⌘K
           </kbd>
         </div>
@@ -60,7 +60,7 @@ export function UtilityBar() {
         <button
           type="button"
           onClick={handleLogout}
-          className="glass-surface-static flex h-9 items-center gap-2 rounded-xl px-4 text-sm text-fg-secondary hover:text-danger-default transition-colors"
+          className="glass-surface flex h-9 items-center gap-2 rounded-xl px-4 text-sm text-fg-secondary hover:text-danger-default"
           title={nav.logout}
         >
           <IconLogout size={16} />

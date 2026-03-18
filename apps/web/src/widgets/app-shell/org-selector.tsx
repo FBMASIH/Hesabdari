@@ -70,14 +70,14 @@ export function OrgSelector() {
       <button
         type="button"
         onClick={() => setOpen(!open)}
-        className="glass-surface-static flex h-9 items-center gap-2 rounded-xl px-4 text-sm text-fg-secondary hover:text-fg-primary transition-colors"
+        className="glass-surface flex h-9 items-center gap-2 rounded-xl px-4 text-sm text-fg-secondary hover:text-fg-primary"
       >
         <IconBuildings size={16} />
         {displayName}
         <IconChevronDown size={14} />
       </button>
       {open && (
-        <div className="absolute z-modal mt-1 w-56 rounded-lg border border-border-primary bg-bg-primary shadow-lg">
+        <div className="absolute z-modal mt-1.5 w-56 rounded-xl border-[0.5px] border-border-primary bg-bg-secondary/95 shadow-lg backdrop-blur-xl">
           {orgs.map((org) => (
             <button
               key={org.id}
@@ -88,7 +88,7 @@ export function OrgSelector() {
                 // Invalidate all queries to refetch with new org context
                 queryClient.invalidateQueries();
               }}
-              className={cn('flex w-full items-center justify-between px-3 py-2 text-sm transition-colors hover:bg-bg-secondary',
+              className={cn('flex w-full items-center justify-between rounded-lg px-3 py-2 text-sm transition-colors hover:bg-bg-tertiary/50',
                 org.id === organizationId ? 'text-primary-default font-medium' : 'text-fg-primary'
               )}
             >

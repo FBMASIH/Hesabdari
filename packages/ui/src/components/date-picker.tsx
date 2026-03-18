@@ -117,6 +117,15 @@ export function DatePicker({ className, value, onChange, hasError, placeholder =
   const containerRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
+  // Sync viewYear/viewMonth when value changes externally (only when calendar is closed)
+  useEffect(() => {
+    if (value && !open) {
+      const d = toJalali(parseISO(value) ?? new Date());
+      setViewYear(d.jy);
+      setViewMonth(d.jm);
+    }
+  }, [value, open]);
+
   // Sync display text from value prop
   useEffect(() => {
     if (value) {

@@ -19,7 +19,7 @@ export function AuthTabs({ mode, onModeChange }: AuthTabsProps) {
     <div
       role="tablist"
       aria-label="حالت احراز هویت"
-      className="mt-6 flex h-[38px] rounded-full bg-bg-tertiary p-[3px]"
+      className="flex h-[38px] rounded-full bg-bg-tertiary p-[3px]"
     >
       <button
         type="button"

@@ -57,9 +57,9 @@ export function TodayTasks() {
             <Link
               key={action.label}
               href={action.href as '/invoices/new' | '/journal-entries/new'}
-              className="flex flex-col items-center gap-1.5 rounded-xl px-2 py-3 text-center transition-colors hover:bg-bg-primary/60"
+              className="flex flex-col items-center gap-1.5 rounded-xl px-2 py-3 text-center transition-all duration-150 hover:bg-bg-tertiary/50 hover:shadow-xs active:scale-[0.97]"
             >
-              <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary-subtle text-brand-deep">
+              <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary-subtle text-brand-deep shadow-xs">
                 {action.icon}
               </div>
               <span className="text-xs font-medium leading-tight text-fg-secondary">

@@ -41,7 +41,8 @@ export const SelectContent = forwardRef<
     <SelectPrimitive.Content
       ref={ref}
       className={cn(
-        'relative z-modal max-h-96 min-w-[8rem] overflow-hidden rounded-md border border-border-primary bg-bg-primary text-fg-primary shadow-lg',
+        'relative z-modal max-h-96 min-w-[8rem] overflow-hidden rounded-xl border-[0.5px] border-border-primary bg-bg-secondary/95 text-fg-primary shadow-lg backdrop-blur-xl',
+        'data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95',
         position === 'popper' && 'translate-y-1',
         className,
       )}
@@ -70,7 +71,7 @@ export const SelectItem = forwardRef<
     ref={ref}
     className={cn(
       'relative flex w-full cursor-default select-none items-center rounded-sm py-1.5 ps-8 pe-2 text-sm outline-none',
-      'focus:bg-bg-secondary focus:text-fg-primary',
+      'focus:bg-bg-tertiary/50 focus:text-fg-primary',
       'data-[disabled]:pointer-events-none data-[disabled]:opacity-50',
       className,
     )}

@@ -139,21 +139,21 @@ export const darkBrand: BrandTokens = {
 
 export const lightGlass: GlassTokens = {
   bg: 'rgba(247, 248, 240, 0.78)',
-  bgHover: 'rgba(247, 248, 240, 0.88)',
+  bgHover: 'rgba(255, 255, 255, 0.92)',
   border: 'rgba(53, 88, 114, 0.08)',
   borderActive: 'rgba(74, 141, 184, 0.35)',
-  shadow: '0 0 0 0.5px rgba(0,0,0,0.04), 0 4px 16px rgba(0,0,0,0.04)',
-  shadowHover: '0 0 0 0.5px rgba(0,0,0,0.06), 0 8px 24px rgba(0,0,0,0.06)',
+  shadow: '0 0 0 0.5px rgba(0,0,0,0.04), 0 2px 8px rgba(0,0,0,0.03), 0 4px 16px rgba(0,0,0,0.03)',
+  shadowHover: '0 0 0 0.5px rgba(0,0,0,0.06), 0 4px 12px rgba(0,0,0,0.05), 0 12px 32px -4px rgba(0,0,0,0.08)',
   blur: '20px',
 };
 
 export const darkGlass: GlassTokens = {
-  bg: 'rgba(44, 44, 46, 0.78)',
-  bgHover: 'rgba(44, 44, 46, 0.88)',
+  bg: 'rgba(26, 40, 48, 0.82)',
+  bgHover: 'rgba(36, 53, 64, 0.92)',
   border: 'rgba(255, 255, 255, 0.08)',
   borderActive: 'rgba(10, 132, 255, 0.3)',
-  shadow: '0 0 0 0.5px rgba(0,0,0,0.2), 0 4px 16px rgba(0,0,0,0.15)',
-  shadowHover: '0 0 0 0.5px rgba(0,0,0,0.25), 0 8px 24px rgba(0,0,0,0.2)',
+  shadow: '0 0 0 0.5px rgba(0,0,0,0.3), 0 2px 8px rgba(0,0,0,0.12), 0 4px 16px rgba(0,0,0,0.1)',
+  shadowHover: '0 0 0 0.5px rgba(0,0,0,0.35), 0 4px 12px rgba(0,0,0,0.15), 0 12px 32px -4px rgba(0,0,0,0.2)',
   blur: '20px',
 };
 

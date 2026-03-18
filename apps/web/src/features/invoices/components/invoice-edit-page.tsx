@@ -6,8 +6,8 @@ import { useInvoice } from '../hooks/use-invoices';
 import { InvoiceForm } from './invoice-form';
 import { DataPageHeader } from '@/features/shared';
 
-const msgs = t('messages');
 const inv = t('invoice');
+const msgs = t('messages');
 
 export function InvoiceEditPage({ invoiceId }: { invoiceId: string }) {
   const { data: invoice, isLoading, isError } = useInvoice(invoiceId);
@@ -24,7 +24,7 @@ export function InvoiceEditPage({ invoiceId }: { invoiceId: string }) {
     return (
       <EmptyState
         icon={<IconDocument size={20} />}
-        title="فاکتور یافت نشد"
+        title={inv.notFound}
         description={msgs.unexpectedError}
       />
     );
@@ -34,8 +34,8 @@ export function InvoiceEditPage({ invoiceId }: { invoiceId: string }) {
     return (
       <EmptyState
         icon={<IconBan size={20} />}
-        title="ویرایش امکان‌پذیر نیست"
-        description="فقط فاکتورهای پیش‌نویس قابل ویرایش هستند. برای اصلاح فاکتور تأیید شده، سند برگشت ثبت کنید."
+        title={inv.editNotAllowed}
+        description={inv.editNotAllowedDescription}
       />
     );
   }

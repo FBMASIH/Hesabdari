@@ -23,7 +23,7 @@ export function KpiStrip() {
   return (
     <div className="flex gap-4 pb-4">
       {kpiItems.map((item) => (
-        <div key={item.label} className="glass-surface-static flex flex-1 flex-col gap-1.5 rounded-2xl px-5 py-4">
+        <div key={item.label} className="glass-interactive flex flex-1 flex-col gap-1.5 rounded-2xl px-5 py-4 cursor-default">
           <span className="text-xs font-medium text-fg-tertiary">{item.label}</span>
           <span className="text-lg font-bold tabular-nums text-fg-primary">{item.value}</span>
           <span className="text-[11px] text-fg-tertiary">{item.sub}</span>

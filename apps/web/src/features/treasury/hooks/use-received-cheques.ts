@@ -23,6 +23,7 @@ export interface CreateReceivedChequeInput {
   chequeNumber: string;
   sayadiNumber?: string;
   customerId: string;
+  currencyId?: string;
   amount: string;
   date: string;
   dueDate: string;

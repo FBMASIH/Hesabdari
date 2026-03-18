@@ -36,6 +36,7 @@ export {
   ToastTitle,
   ToastDescription,
   ToastViewport,
+  ToastClose,
 } from './components/toast';
 export { ErrorBoundary } from './components/error-boundary';
 export { Skeleton, type SkeletonProps } from './components/skeleton';

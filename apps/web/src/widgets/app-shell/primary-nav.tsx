@@ -32,8 +32,8 @@ export function PrimaryNav() {
               className={cn(
                 'rounded-xl px-5 py-2 text-sm font-medium transition-all duration-200',
                 isActive
-                  ? 'bg-bg-secondary text-fg-primary shadow-sm'
-                  : 'text-fg-secondary hover:text-fg-primary hover:bg-bg-secondary/40',
+                  ? 'bg-bg-secondary text-fg-primary shadow-sm shadow-[0_1px_3px_rgba(0,0,0,0.06),0_0_0_0.5px_rgba(0,0,0,0.04)]'
+                  : 'text-fg-secondary hover:text-fg-primary hover:bg-bg-secondary/50 active:bg-bg-secondary/30',
               )}
             >
               {tab.label}

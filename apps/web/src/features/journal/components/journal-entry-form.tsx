@@ -121,6 +121,12 @@ export function JournalEntryForm() {
   async function handleSubmit(asDraft: boolean) {
     setFormError(null);
 
+    // Period is required for both draft and post
+    if (!activePeriodId) {
+      setFormError(`${common.currentPeriod}: ${val.required}`);
+      return;
+    }
+
     if (!asDraft) {
       const errors = validate();
       if (errors.length > 0) {
@@ -232,8 +238,8 @@ export function JournalEntryForm() {
                 <th className="py-2 pe-3 text-start text-xs font-medium text-fg-tertiary w-8">#</th>
                 <th className="py-2 pe-3 text-start text-xs font-medium text-fg-tertiary min-w-[180px]">{acct.account}</th>
                 <th className="py-2 pe-3 text-start text-xs font-medium text-fg-tertiary min-w-[140px]">{common.description}</th>
-                <th className="py-2 pe-3 text-start text-xs font-medium text-fg-tertiary w-36">{acct.debit} ({common.toman})</th>
-                <th className="py-2 pe-3 text-start text-xs font-medium text-fg-tertiary w-36">{acct.credit} ({common.toman})</th>
+                <th className="py-2 pe-3 text-start text-xs font-medium text-fg-tertiary w-36">{acct.debit} ({common.rial})</th>
+                <th className="py-2 pe-3 text-start text-xs font-medium text-fg-tertiary w-36">{acct.credit} ({common.rial})</th>
                 <th className="py-2 w-10" />
               </tr>
             </thead>

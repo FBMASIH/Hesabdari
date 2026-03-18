@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useMemo } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import {
   Input, MoneyInput, FormField, FormLabel, FormErrorBanner,
@@ -71,7 +71,7 @@ export function ProductForm({ initialData }: ProductFormProps = {}) {
   const [stockRows, setStockRows] = useState<StockRow[]>([]);
 
   // Sync stock rows when warehouses load
-  useMemo(() => {
+  useEffect(() => {
     if (warehouses.length > 0 && stockRows.length === 0) {
       setStockRows(
         warehouses.map((w) => ({
@@ -82,7 +82,7 @@ export function ProductForm({ initialData }: ProductFormProps = {}) {
         })),
       );
     }
-  }, [warehouses, stockRows.length]);
+  }, [warehouses]);
 
   function updateStockRow(warehouseId: string, field: 'quantity' | 'purchasePrice', value: string) {
     setStockRows((prev) =>
@@ -232,7 +232,7 @@ export function ProductForm({ initialData }: ProductFormProps = {}) {
         </FormSection>
 
         {/* ── Section 2: Pricing ── */}
-        <FormSection title="قیمت‌گذاری">
+        <FormSection title={prod.pricing}>
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
             <FormField>
               <FormLabel>{prod.salePrice1}</FormLabel>

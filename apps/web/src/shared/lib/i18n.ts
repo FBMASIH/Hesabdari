@@ -322,6 +322,9 @@ const fa = {
     cancelledToast: (num: string) => `فاکتور ${num} ابطال شد`,
     viewInvoiceAriaLabel: (num: string) => `مشاهده فاکتور ${num}`,
     invoiceCount: 'فاکتور',
+    notFound: 'فاکتور یافت نشد',
+    editNotAllowed: 'ویرایش امکان‌پذیر نیست',
+    editNotAllowedDescription: 'فقط فاکتورهای پیش‌نویس قابل ویرایش هستند. برای اصلاح فاکتور تأیید شده، سند برگشت ثبت کنید.',
   },
 
   // ── Customers ───────────────────────────────────
@@ -431,7 +434,17 @@ const fa = {
     searchBankAccount: 'جستجو حساب بانکی...',
     searchCashbox: 'جستجو صندوق...',
     searchReceivedCheque: 'جستجو شماره چک یا صادرکننده...',
+    searchVendor: 'جستجو تأمین‌کننده...',
     searchPaidCheque: 'جستجو شماره چک...',
+    // Empty states
+    noBankAccountFound: 'حساب بانکی با این مشخصات یافت نشد',
+    noBankAccountYet: 'هنوز حساب بانکی ثبت نشده است',
+    noCashboxFound: 'صندوقی با این مشخصات یافت نشد',
+    noCashboxYet: 'هنوز صندوقی ثبت نشده است',
+    noReceivedChequeFound: 'چکی با این مشخصات یافت نشد',
+    noReceivedChequeYet: 'هنوز چک دریافتی ثبت نشده است',
+    noPaidChequeFound: 'چکی با این مشخصات یافت نشد',
+    noPaidChequeYet: 'هنوز چک پرداختی ثبت نشده است',
   },
 
   // ── Inventory ───────────────────────────────────
@@ -488,6 +501,7 @@ const fa = {
     majorUnit: 'واحد عمده',
     minorUnit: 'واحد خرد',
     qtyInMajor: 'تعداد در واحد عمده',
+    pricing: 'قیمت‌گذاری',
     salePrice1: 'قیمت فروش ۱',
     salePrice2: 'قیمت فروش ۲',
     salePrice3: 'قیمت فروش ۳',

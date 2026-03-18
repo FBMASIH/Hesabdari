@@ -16,22 +16,22 @@ import { cn } from '../lib/utils';
  *   link         — Underline text link.
  */
 const buttonVariants = cva(
-  'inline-flex items-center justify-center whitespace-nowrap rounded-xl text-[13px] font-medium transition-all duration-100 focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-brand-deep/25 disabled:pointer-events-none disabled:opacity-40',
+  'inline-flex items-center justify-center whitespace-nowrap rounded-xl text-[13px] font-medium transition-all duration-150 focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-brand-deep/25 disabled:pointer-events-none disabled:opacity-40',
   {
     variants: {
       variant: {
         default:
-          'bg-brand-deep text-primary-fg shadow-sm hover:brightness-110 active:brightness-90',
+          'bg-brand-deep text-primary-fg shadow-[0_1px_3px_rgba(0,0,0,0.12),0_2px_8px_-1px_rgba(74,141,184,0.3)] hover:shadow-[0_2px_6px_rgba(0,0,0,0.12),0_6px_16px_-2px_rgba(74,141,184,0.35)] hover:brightness-110 active:shadow-[0_1px_2px_rgba(0,0,0,0.12)] active:brightness-95 active:translate-y-px',
         secondary:
-          'bg-bg-tertiary text-fg-primary hover:brightness-95 active:brightness-90',
+          'bg-bg-tertiary text-fg-primary shadow-xs hover:shadow-sm hover:brightness-[0.97] active:shadow-xs active:brightness-95 active:translate-y-px',
         outline:
-          'border border-border-primary bg-bg-secondary text-fg-primary shadow-xs hover:bg-bg-tertiary active:brightness-95',
+          'border border-border-primary bg-bg-secondary text-fg-primary shadow-xs hover:bg-bg-tertiary hover:shadow-sm active:shadow-xs active:translate-y-px',
         ghost:
           'text-fg-secondary hover:bg-bg-tertiary hover:text-fg-primary active:bg-bg-secondary',
         destructive:
-          'bg-danger-default text-danger-fg shadow-sm hover:brightness-110 active:brightness-90',
+          'bg-danger-default text-danger-fg shadow-[0_1px_3px_rgba(0,0,0,0.12),0_2px_8px_-1px_rgba(255,59,48,0.3)] hover:shadow-[0_2px_6px_rgba(0,0,0,0.12),0_6px_16px_-2px_rgba(255,59,48,0.35)] hover:brightness-110 active:shadow-[0_1px_2px_rgba(0,0,0,0.12)] active:brightness-95 active:translate-y-px',
         danger:
-          'bg-danger-subtle text-danger-default hover:brightness-95 active:brightness-90',
+          'bg-danger-subtle text-danger-default hover:brightness-[0.97] active:brightness-95',
         link:
           'text-brand-deep underline-offset-4 hover:underline',
       },

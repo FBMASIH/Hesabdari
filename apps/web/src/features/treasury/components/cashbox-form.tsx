@@ -8,6 +8,7 @@ import { t } from '@/shared/lib/i18n';
 import { FormSection, FormActions, DataPageHeader } from '@/features/shared';
 import { useAppToast } from '@/providers/toast-provider';
 import { useCreateCashbox, type CreateCashboxInput } from '../hooks/use-cashboxes';
+import { useDefaultCurrencyId } from '@/features/shared/hooks/use-currencies';
 import { ApiError } from '@hesabdari/api-client';
 
 const tr = t('treasury');
@@ -19,6 +20,7 @@ export function CashboxForm() {
   const { showToast } = useAppToast();
   const createMutation = useCreateCashbox();
   const [formError, setFormError] = useState<string | null>(null);
+  const currencyId = useDefaultCurrencyId();
 
   const {
     register,
@@ -32,8 +34,11 @@ export function CashboxForm() {
   const onSubmit = async (data: CreateCashboxInput) => {
     setFormError(null);
     try {
-      const payload = { ...data };
-      if (!payload.openingBalance?.amount) {
+      const payload = {
+        ...data,
+        currencyId: currencyId ?? '00000000-0000-0000-0000-000000000001',
+      };
+      if (!payload.openingBalance?.amount || !payload.openingBalance?.date) {
         delete payload.openingBalance;
       }
       await createMutation.mutateAsync(payload);
@@ -71,7 +76,7 @@ export function CashboxForm() {
                   <Checkbox
                     id="isActive"
                     checked={field.value}
-                    onCheckedChange={field.onChange}
+                    onCheckedChange={(checked) => field.onChange(checked === true)}
                   />
                 )}
               />

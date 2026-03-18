@@ -9,6 +9,8 @@ import { FormSection, FormActions, DataPageHeader, SearchableSelect } from '@/fe
 import { useAppToast } from '@/providers/toast-provider';
 import { useCreatePaidCheque, type CreatePaidChequeInput } from '../hooks/use-paid-cheques';
 import { useBankAccounts } from '../hooks/use-bank-accounts';
+import { useVendors } from '@/features/vendors/hooks/use-vendors';
+import { useDefaultCurrencyId } from '@/features/shared/hooks/use-currencies';
 import { ApiError } from '@hesabdari/api-client';
 
 const tr = t('treasury');
@@ -21,6 +23,8 @@ export function PaidChequeForm() {
   const createMutation = useCreatePaidCheque();
   const [formError, setFormError] = useState<string | null>(null);
   const bankList = useBankAccounts({ pageSize: 100 });
+  const vendorList = useVendors({ pageSize: 100 });
+  const currencyId = useDefaultCurrencyId();
 
   const {
     register,
@@ -34,7 +38,7 @@ export function PaidChequeForm() {
   const onSubmit = async (data: CreatePaidChequeInput) => {
     setFormError(null);
     try {
-      const payload = { ...data };
+      const payload = { ...data, currencyId: currencyId ?? '00000000-0000-0000-0000-000000000001' };
       if (!payload.vendorId) {
         delete payload.vendorId;
       }
@@ -52,6 +56,12 @@ export function PaidChequeForm() {
     id: b.id,
     label: b.name,
     sublabel: b.code,
+  }));
+
+  const vendorOptions = (vendorList.data?.data ?? []).map((v) => ({
+    id: v.id,
+    label: v.name,
+    sublabel: v.code,
   }));
 
   return (
@@ -84,6 +94,22 @@ export function PaidChequeForm() {
                     options={bankOptions}
                     isLoading={bankList.isLoading}
                     placeholder={tr.searchBankAccount}
+                  />
+                )}
+              />
+            </FormField>
+            <FormField error={errors.vendorId?.message}>
+              <FormLabel>{tr.paidChequeVendor}</FormLabel>
+              <Controller
+                name="vendorId"
+                control={control}
+                render={({ field }) => (
+                  <SearchableSelect
+                    value={field.value ?? ''}
+                    onChange={(id) => { field.onChange(id); }}
+                    options={vendorOptions}
+                    isLoading={vendorList.isLoading}
+                    placeholder={tr.searchVendor}
                   />
                 )}
               />

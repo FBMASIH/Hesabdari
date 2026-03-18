@@ -75,7 +75,7 @@ export const useAuthStore = create<AuthState>((set) => ({
           },
           body: JSON.stringify({ refreshToken }),
         });
-      } catch (_err) {
+      } catch {
         // Logout is best-effort — local state is already cleared
       }
     }

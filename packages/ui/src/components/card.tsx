@@ -1,13 +1,13 @@
 import { forwardRef, type HTMLAttributes } from 'react';
 import { cn } from '../lib/utils';
 
-/** macOS-style card — surface panel, hairline border, layered shadow */
+/** macOS-style card — surface panel, hairline border, layered shadow, hover lift */
 export const Card = forwardRef<HTMLDivElement, HTMLAttributes<HTMLDivElement>>(
   ({ className, ...props }, ref) => (
     <div
       ref={ref}
       className={cn(
-        'rounded-[10px] border-[0.5px] border-border-secondary bg-bg-secondary shadow-sm',
+        'rounded-xl border-[0.5px] border-border-secondary bg-bg-secondary shadow-sm transition-[box-shadow,border-color] duration-200 hover:shadow-card-hover hover:border-border-primary/80',
         className,
       )}
       {...props}

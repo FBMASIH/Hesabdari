@@ -49,7 +49,7 @@ export function Pagination({ currentPage, totalPages, onPageChange, className, n
             className={cn(
               'flex h-8 w-8 items-center justify-center rounded-lg tabular-nums text-sm font-medium transition-colors',
               page === currentPage
-                ? 'bg-brand-deep text-primary-fg'
+                ? 'bg-brand-deep text-primary-fg shadow-[0_1px_3px_rgba(74,141,184,0.3)]'
                 : 'text-fg-secondary hover:bg-bg-secondary',
             )}
           >

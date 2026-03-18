@@ -9,6 +9,7 @@ import { FormSection, FormActions, DataPageHeader, SearchableSelect } from '@/fe
 import { useAppToast } from '@/providers/toast-provider';
 import { useCreateReceivedCheque, type CreateReceivedChequeInput } from '../hooks/use-received-cheques';
 import { useCustomers } from '@/features/customers/hooks/use-customers';
+import { useDefaultCurrencyId } from '@/features/shared/hooks/use-currencies';
 import { ApiError } from '@hesabdari/api-client';
 
 const tr = t('treasury');
@@ -21,6 +22,7 @@ export function ReceivedChequeForm() {
   const createMutation = useCreateReceivedCheque();
   const [formError, setFormError] = useState<string | null>(null);
   const customerList = useCustomers({ pageSize: 100 });
+  const currencyId = useDefaultCurrencyId();
 
   const {
     register,
@@ -34,7 +36,7 @@ export function ReceivedChequeForm() {
   const onSubmit = async (data: CreateReceivedChequeInput) => {
     setFormError(null);
     try {
-      await createMutation.mutateAsync(data);
+      await createMutation.mutateAsync({ ...data, currencyId: currencyId ?? '00000000-0000-0000-0000-000000000001' });
       showToast({ title: msgs.saveSuccess, variant: 'success' });
       router.back();
     } catch (err) {

@@ -151,7 +151,7 @@ export function AuthForm() {
       {formError && <FormErrorBanner message={formError} className="mt-4" />}
 
       {mode === 'sign-in' && (
-        <form method="post" noValidate onSubmit={loginForm.handleSubmit(handleLogin)} className="mt-5 space-y-4">
+        <form key="sign-in" method="post" noValidate onSubmit={loginForm.handleSubmit(handleLogin)} className="auth-form-enter mt-5 space-y-4">
           <FormField error={loginForm.formState.errors.email?.message}>
             <FormLabel htmlFor="login-email" className="mb-1.5 text-[12px]">
               {auth.email}
@@ -208,7 +208,7 @@ export function AuthForm() {
       )}
 
       {mode === 'sign-up' && (
-        <form method="post" noValidate onSubmit={registerForm.handleSubmit(handleRegister)} className="mt-5 space-y-4">
+        <form key="sign-up" method="post" noValidate onSubmit={registerForm.handleSubmit(handleRegister)} className="auth-form-enter mt-5 space-y-4">
           <div className="grid grid-cols-2 gap-3">
             <FormField error={registerForm.formState.errors.firstName?.message}>
               <FormLabel htmlFor="reg-firstName" className="mb-1.5 text-[12px]">{auth.firstName}</FormLabel>

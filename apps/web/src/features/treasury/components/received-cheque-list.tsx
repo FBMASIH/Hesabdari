@@ -117,7 +117,7 @@ export function ReceivedChequeListPage() {
             <div className="glass-surface-static overflow-hidden rounded-2xl">
               <EmptyState
                 title={search || statusFilter ? common.noResults : common.noData}
-                description={search || statusFilter ? 'چکی با این مشخصات یافت نشد' : 'هنوز چک دریافتی ثبت نشده است'}
+                description={search || statusFilter ? tr.noReceivedChequeFound : tr.noReceivedChequeYet}
                 icon={<IconDocument size={20} />}
                 action={!search && !statusFilter ? (
                   <Button variant="default" size="sm" onClick={() => router.push('/received-cheques/new')}>
@@ -154,7 +154,7 @@ export function ReceivedChequeListPage() {
                     </TableCell>
                     <TableCell>
                       <div className="flex items-center gap-1">
-                        <Button variant="outline" size="xs"><IconPen size={12} /> {common.edit}</Button>
+                        <Button variant="outline" size="xs" onClick={() => router.push(`/received-cheques/${row.id}/edit` as never)}><IconPen size={12} /> {common.edit}</Button>
                         <Button variant="danger" size="xs" disabled={deleteMutation.isPending} onClick={() => setDeleteTarget(row)}>
                           <IconTrash size={12} /> {common.delete}
                         </Button>

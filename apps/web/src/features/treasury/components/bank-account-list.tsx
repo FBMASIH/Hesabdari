@@ -101,7 +101,7 @@ export function BankAccountListPage() {
             <div className="glass-surface-static overflow-hidden rounded-2xl">
               <EmptyState
                 title={search ? common.noResults : common.noData}
-                description={search ? 'حساب بانکی با این مشخصات یافت نشد' : 'هنوز حساب بانکی ثبت نشده است'}
+                description={search ? tr.noBankAccountFound : tr.noBankAccountYet}
                 icon={<IconWallet size={20} />}
                 action={!search ? (
                   <Button variant="default" size="sm" onClick={() => router.push('/bank-accounts/new')}>
@@ -138,7 +138,7 @@ export function BankAccountListPage() {
                     </TableCell>
                     <TableCell>
                       <div className="flex items-center gap-1">
-                        <Button variant="outline" size="xs"><IconPen size={12} /> {common.edit}</Button>
+                        <Button variant="outline" size="xs" onClick={() => router.push(`/bank-accounts/${row.id}/edit` as never)}><IconPen size={12} /> {common.edit}</Button>
                         <Button variant="danger" size="xs" disabled={deleteMutation.isPending} onClick={() => setDeleteTarget(row)}>
                           <IconTrash size={12} /> {common.delete}
                         </Button>

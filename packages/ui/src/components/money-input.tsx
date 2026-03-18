@@ -87,7 +87,7 @@ export const MoneyInput = forwardRef<HTMLInputElement, MoneyInputProps>(
               }
             }
           }
-          if (digitsBefore === 0) newPos = 0;
+          if (digitsBefore === 0 && cleaned.length === 0) newPos = 0;
 
           el.setSelectionRange(newPos, newPos);
         });

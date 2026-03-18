@@ -84,17 +84,17 @@ export function VendorForm() {
               <FormLabel>{vnd.postalCode}</FormLabel>
               <Input {...register('postalCode')} className="rounded-xl ltr-text" dir="ltr" />
             </FormField>
+            <FormField error={errors.creditLimit?.message}>
+              <FormLabel>{common.creditLimit} ({common.rial})</FormLabel>
+              <MoneyInput
+                value={watch('creditLimit') ?? ''}
+                onChange={(v) => setValue('creditLimit', v, { shouldValidate: true })}
+                suffix="\uFDFC"
+                placeholder="0"
+                className="rounded-xl"
+              />
+            </FormField>
           </div>
-          <FormField error={errors.creditLimit?.message}>
-            <FormLabel>{common.creditLimit} ({common.rial})</FormLabel>
-            <MoneyInput
-              value={watch('creditLimit') ?? ''}
-              onChange={(v) => setValue('creditLimit', v, { shouldValidate: true })}
-              suffix="\uFDFC"
-              placeholder="0"
-              className="rounded-xl"
-            />
-          </FormField>
           <div className="mt-4">
             <FormField error={errors.address?.message}>
               <FormLabel>{vnd.address}</FormLabel>

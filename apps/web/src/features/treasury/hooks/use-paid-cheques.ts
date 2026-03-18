@@ -25,6 +25,7 @@ export interface CreatePaidChequeInput {
   sayadiNumber?: string;
   vendorId?: string;
   bankAccountId: string;
+  currencyId?: string;
   amount: string;
   date: string;
   dueDate: string;

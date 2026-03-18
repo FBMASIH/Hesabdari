@@ -21,7 +21,7 @@ export interface CreateBankAccountInput {
   code: string;
   name: string;
   accountNumber: string;
-  bankId: string;
+  bankId?: string;
   branch?: string;
   currencyId?: string;
   isActive?: boolean;

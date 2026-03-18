@@ -140,7 +140,7 @@ export function WarehouseListPage() {
                     </TableCell>
                     <TableCell>
                       <div className="flex items-center gap-1">
-                        <Button variant="outline" size="xs"><IconPen size={12} /> {common.edit}</Button>
+                        <Button variant="outline" size="xs" onClick={() => router.push(`/warehouses/${row.id}/edit` as never)}><IconPen size={12} /> {common.edit}</Button>
                         <Button variant="danger" size="xs" disabled={deleteMutation.isPending} onClick={() => setDeleteTarget(row)}>
                           <IconTrash size={12} /> {common.delete}
                         </Button>
