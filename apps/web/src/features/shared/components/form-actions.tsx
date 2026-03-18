@@ -34,20 +34,18 @@ export function FormActions({
   trailing,
 }: FormActionsProps) {
   return (
-    <div className="flex items-center gap-3 pt-5">
-      <Button
-        type="button"
-        variant="outline"
-        onClick={onCancel}
-        disabled={isSubmitting}
-      >
-        {common.cancel}
+    <div className="flex items-center gap-3 pt-2">
+      {/* Primary CTA — start side (right in RTL) */}
+      <Button type="submit" disabled={isSubmitting || submitDisabled} size="lg" className="gap-2">
+        {isSubmitting && <Spinner size="sm" />}
+        {submitLabel}
       </Button>
 
       {secondaryAction && (
         <Button
           type="button"
           variant="secondary"
+          size="lg"
           onClick={secondaryAction.onClick}
           disabled={isSubmitting || secondaryAction.disabled}
         >
@@ -59,13 +57,9 @@ export function FormActions({
 
       <div className="flex-1" />
 
-      <Button
-        type="submit"
-        disabled={isSubmitting || submitDisabled}
-        className="gap-2"
-      >
-        {isSubmitting && <Spinner size="sm" />}
-        {submitLabel}
+      {/* Cancel — end side (left in RTL) */}
+      <Button type="button" variant="ghost" onClick={onCancel} disabled={isSubmitting}>
+        {common.cancel}
       </Button>
     </div>
   );

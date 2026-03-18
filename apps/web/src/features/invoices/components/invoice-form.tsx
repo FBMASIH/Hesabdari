@@ -333,7 +333,7 @@ export function InvoiceForm({ initialData }: InvoiceFormProps = {}) {
         </div>
 
         {/* Party */}
-        <div className="mt-4 max-w-sm">
+        <div className="mt-5 max-w-md">
           <FormField>
             <FormLabel>{partyLabel}</FormLabel>
             <SearchableSelect
@@ -454,27 +454,27 @@ export function InvoiceForm({ initialData }: InvoiceFormProps = {}) {
       </FormSection>
 
       {/* ── Totals ── */}
-      <div className="glass-surface-static rounded-2xl p-5">
-        <div className="flex flex-col gap-2 sm:items-end">
-          <div className="flex items-center justify-between gap-8 text-sm sm:min-w-[300px]">
+      <div className="glass-surface-static rounded-2xl p-6">
+        <div className="flex flex-col gap-2.5 sm:items-start sm:max-w-sm">
+          <div className="flex items-center justify-between gap-8 text-sm w-full">
             <span className="text-fg-secondary">{inv.subtotal}</span>
             <span className="tabular-nums font-medium text-fg-primary">
               {formatMoney(totals.subtotal)}
             </span>
           </div>
-          <div className="flex items-center justify-between gap-8 text-sm sm:min-w-[300px]">
+          <div className="flex items-center justify-between gap-8 text-sm w-full">
             <span className="text-fg-secondary">{inv.totalDiscount}</span>
             <span className="tabular-nums text-danger-default">
               {totals.totalDiscount > 0n ? `−${formatMoney(totals.totalDiscount)}` : '—'}
             </span>
           </div>
-          <div className="flex items-center justify-between gap-8 text-sm sm:min-w-[300px]">
+          <div className="flex items-center justify-between gap-8 text-sm w-full">
             <span className="text-fg-secondary">{inv.totalTax}</span>
             <span className="tabular-nums text-fg-primary">
               {totals.totalTax > 0n ? formatMoney(totals.totalTax) : '—'}
             </span>
           </div>
-          <div className="flex items-center justify-between gap-8 border-t border-border-secondary pt-2 sm:min-w-[300px]">
+          <div className="flex items-center justify-between gap-8 border-t border-border-secondary pt-2 w-full">
             <span className="text-base font-semibold text-fg-primary">{inv.grandTotal}</span>
             <span className="tabular-nums text-base font-bold text-fg-primary">
               {formatMoney(totals.grandTotal)}
