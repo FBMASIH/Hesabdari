@@ -3,9 +3,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import {
-  Badge,
   Button,
-  Pagination,
   EmptyState,
   ConfirmDialog,
   Table,
@@ -13,19 +11,27 @@ import {
   TableBody,
   TableRow,
   TableHead,
+  SortableTableHead,
   TableCell,
   IconPlus,
   IconUsersGroup,
-  IconPen,
-  IconTrash,
 } from '@hesabdari/ui';
 import { t } from '@/shared/lib/i18n';
 import { formatMoney } from '@/shared/lib/money';
-import { toPersianDigits } from '@/shared/lib/date';
-import { DataPageHeader, DataFilterBar, DataTableSkeleton, DataErrorState, type FilterPill } from '@/features/shared';
+import {
+  DataPageHeader,
+  DataFilterBar,
+  DataTableSkeleton,
+  DataErrorState,
+  TableRowActions,
+  ActiveBadge,
+  TablePaginationFooter,
+  type FilterPill,
+} from '@/features/shared';
 import { useAppToast } from '@/providers/toast-provider';
 import { useCustomers, useDeleteCustomer, type CustomerDto } from '../hooks/use-customers';
 import { useDebounce } from '@/shared/hooks/use-debounce';
+import { useTableSort } from '@/shared/hooks/use-table-sort';
 import { ApiError } from '@hesabdari/api-client';
 
 const cust = t('customer');
@@ -65,12 +71,16 @@ export function CustomerListPage() {
         setDeleteTarget(null);
       },
       onError: (err) => {
-        showToast({ title: err instanceof ApiError ? err.message : msgs.unexpectedError, variant: 'error' });
+        showToast({
+          title: err instanceof ApiError ? err.message : msgs.unexpectedError,
+          variant: 'error',
+        });
       },
     });
   }
 
   const customers = data?.data ?? [];
+  const { sort, toggleSort, sorted } = useTableSort(customers);
   const totalPages = data ? Math.ceil(data.total / data.pageSize) : 0;
 
   return (
@@ -86,10 +96,16 @@ export function CustomerListPage() {
       />
       <DataFilterBar
         searchValue={search}
-        onSearchChange={(v) => { setSearch(v); setPage(1); }}
+        onSearchChange={(v) => {
+          setSearch(v);
+          setPage(1);
+        }}
         searchPlaceholder={cust.searchPlaceholder}
         filters={filters}
-        onFilterToggle={(key) => { setActiveFilter(key); setPage(1); }}
+        onFilterToggle={(key) => {
+          setActiveFilter(key);
+          setPage(1);
+        }}
       />
 
       {isLoading && <DataTableSkeleton columns={6} rows={5} />}
@@ -104,46 +120,63 @@ export function CustomerListPage() {
                 title={search ? common.noResults : common.noData}
                 description={search ? cust.noCustomerFound : cust.noCustomerYet}
                 icon={<IconUsersGroup size={20} />}
-                action={!search ? (
-                  <Button variant="default" size="sm" onClick={() => router.push('/customers/new')}>
-                    <IconPlus size={14} /> {cust.newCustomer}
-                  </Button>
-                ) : undefined}
+                action={
+                  !search ? (
+                    <Button
+                      variant="default"
+                      size="sm"
+                      onClick={() => router.push('/customers/new')}
+                    >
+                      <IconPlus size={14} /> {cust.newCustomer}
+                    </Button>
+                  ) : undefined
+                }
               />
             </div>
           ) : (
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead>{cust.customerCode}</TableHead>
-                  <TableHead>{cust.customerName}</TableHead>
-                  <TableHead>{cust.phone}</TableHead>
-                  <TableHead>{cust.creditLimit}</TableHead>
-                  <TableHead>{common.status}</TableHead>
+                  <SortableTableHead sortKey="code" sort={sort} onSort={toggleSort}>
+                    {cust.customerCode}
+                  </SortableTableHead>
+                  <SortableTableHead sortKey="name" sort={sort} onSort={toggleSort}>
+                    {cust.customerName}
+                  </SortableTableHead>
+                  <SortableTableHead sortKey="phone1" sort={sort} onSort={toggleSort}>
+                    {cust.phone}
+                  </SortableTableHead>
+                  <SortableTableHead sortKey="creditLimit" sort={sort} onSort={toggleSort}>
+                    {cust.creditLimit}
+                  </SortableTableHead>
+                  <SortableTableHead sortKey="isActive" sort={sort} onSort={toggleSort}>
+                    {common.status}
+                  </SortableTableHead>
                   <TableHead>{common.actions}</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {customers.map((row) => (
+                {sorted.map((row) => (
                   <TableRow key={row.id}>
-                    <TableCell className="font-medium ltr-text" dir="ltr">{row.code}</TableCell>
+                    <TableCell className="font-medium ltr-text" dir="ltr">
+                      {row.code}
+                    </TableCell>
                     <TableCell>{row.name}</TableCell>
-                    <TableCell className="text-fg-secondary ltr-text" dir="ltr">{row.phone1 ?? '—'}</TableCell>
+                    <TableCell className="text-fg-secondary ltr-text" dir="ltr">
+                      {row.phone1 ?? '—'}
+                    </TableCell>
                     <TableCell className="tabular-nums">
                       {row.creditLimit ? formatMoney(row.creditLimit, { showUnit: false }) : '—'}
                     </TableCell>
                     <TableCell>
-                      <Badge variant={row.isActive ? 'success' : 'danger'}>
-                        {row.isActive ? common.active : common.inactive}
-                      </Badge>
+                      <ActiveBadge isActive={row.isActive} />
                     </TableCell>
                     <TableCell>
-                      <div className="flex items-center gap-1">
-                        <Button variant="outline" size="xs"><IconPen size={12} /> {common.edit}</Button>
-                        <Button variant="danger" size="xs" disabled={deleteMutation.isPending} onClick={() => setDeleteTarget(row)}>
-                          <IconTrash size={12} /> {common.delete}
-                        </Button>
-                      </div>
+                      <TableRowActions
+                        onEdit={() => router.push(`/customers/${row.id}/edit`)}
+                        onDelete={() => setDeleteTarget(row)}
+                        deleteDisabled={deleteMutation.isPending}
+                      />
                     </TableCell>
                   </TableRow>
                 ))}
@@ -152,19 +185,26 @@ export function CustomerListPage() {
           )}
 
           {customers.length > 0 && (
-            <div className="flex items-center justify-between pt-4">
-              <span className="text-xs text-fg-tertiary">{toPersianDigits(data?.total ?? 0)} {cust.customerCount}</span>
-              <Pagination currentPage={page} totalPages={totalPages} onPageChange={setPage} />
-            </div>
+            <TablePaginationFooter
+              total={data?.total ?? 0}
+              unitLabel={cust.customerCount}
+              currentPage={page}
+              totalPages={totalPages}
+              onPageChange={setPage}
+            />
           )}
         </>
       )}
 
       <ConfirmDialog
         open={deleteTarget !== null}
-        onOpenChange={(open) => { if (!open) setDeleteTarget(null); }}
+        onOpenChange={(open) => {
+          if (!open) setDeleteTarget(null);
+        }}
         title={msgs.deleteConfirm}
-        description={deleteTarget ? `${deleteTarget.name} (${deleteTarget.code}) ${msgs.deleteWarning}` : ''}
+        description={
+          deleteTarget ? `${deleteTarget.name} (${deleteTarget.code}) ${msgs.deleteWarning}` : ''
+        }
         confirmLabel={common.delete}
         variant="danger"
         onConfirm={handleDelete}

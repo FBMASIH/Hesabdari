@@ -3,9 +3,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import {
-  Badge,
   Button,
-  Pagination,
   EmptyState,
   ConfirmDialog,
   Table,
@@ -14,17 +12,29 @@ import {
   TableRow,
   TableHead,
   TableCell,
+  SortableTableHead,
   IconPlus,
   IconWallet,
-  IconPen,
-  IconTrash,
 } from '@hesabdari/ui';
 import { t } from '@/shared/lib/i18n';
-import { toPersianDigits } from '@/shared/lib/date';
-import { DataPageHeader, DataFilterBar, DataTableSkeleton, DataErrorState, type FilterPill } from '@/features/shared';
+import {
+  DataPageHeader,
+  DataFilterBar,
+  DataTableSkeleton,
+  DataErrorState,
+  TableRowActions,
+  ActiveBadge,
+  TablePaginationFooter,
+  type FilterPill,
+} from '@/features/shared';
 import { useAppToast } from '@/providers/toast-provider';
-import { useBankAccounts, useDeleteBankAccount, type BankAccountDto } from '../hooks/use-bank-accounts';
+import {
+  useBankAccounts,
+  useDeleteBankAccount,
+  type BankAccountDto,
+} from '../hooks/use-bank-accounts';
 import { useDebounce } from '@/shared/hooks/use-debounce';
+import { useTableSort } from '@/shared/hooks/use-table-sort';
 import { ApiError } from '@hesabdari/api-client';
 
 const tr = t('treasury');
@@ -64,12 +74,16 @@ export function BankAccountListPage() {
         setDeleteTarget(null);
       },
       onError: (err) => {
-        showToast({ title: err instanceof ApiError ? err.message : msgs.unexpectedError, variant: 'error' });
+        showToast({
+          title: err instanceof ApiError ? err.message : msgs.unexpectedError,
+          variant: 'error',
+        });
       },
     });
   }
 
   const items = data?.data ?? [];
+  const { sort, toggleSort, sorted } = useTableSort(items);
   const totalPages = data ? Math.ceil(data.total / data.pageSize) : 0;
 
   return (
@@ -85,10 +99,16 @@ export function BankAccountListPage() {
       />
       <DataFilterBar
         searchValue={search}
-        onSearchChange={(v) => { setSearch(v); setPage(1); }}
+        onSearchChange={(v) => {
+          setSearch(v);
+          setPage(1);
+        }}
         searchPlaceholder={tr.searchBankAccount}
         filters={filters}
-        onFilterToggle={(key) => { setActiveFilter(key); setPage(1); }}
+        onFilterToggle={(key) => {
+          setActiveFilter(key);
+          setPage(1);
+        }}
       />
 
       {isLoading && <DataTableSkeleton columns={6} rows={5} />}
@@ -103,46 +123,65 @@ export function BankAccountListPage() {
                 title={search ? common.noResults : common.noData}
                 description={search ? tr.noBankAccountFound : tr.noBankAccountYet}
                 icon={<IconWallet size={20} />}
-                action={!search ? (
-                  <Button variant="default" size="sm" onClick={() => router.push('/bank-accounts/new')}>
-                    <IconPlus size={14} /> {tr.newBankAccount}
-                  </Button>
-                ) : undefined}
+                action={
+                  !search ? (
+                    <Button
+                      variant="default"
+                      size="sm"
+                      onClick={() => router.push('/bank-accounts/new')}
+                    >
+                      <IconPlus size={14} /> {tr.newBankAccount}
+                    </Button>
+                  ) : undefined
+                }
               />
             </div>
           ) : (
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead>{tr.bankAccountCode}</TableHead>
-                  <TableHead>{tr.bankAccountName}</TableHead>
-                  <TableHead>{tr.bankName}</TableHead>
-                  <TableHead>{tr.accountNumber}</TableHead>
-                  <TableHead>{tr.branch}</TableHead>
-                  <TableHead>{common.status}</TableHead>
+                  <SortableTableHead sortKey="code" sort={sort} onSort={toggleSort}>
+                    {tr.bankAccountCode}
+                  </SortableTableHead>
+                  <SortableTableHead sortKey="name" sort={sort} onSort={toggleSort}>
+                    {tr.bankAccountName}
+                  </SortableTableHead>
+                  <SortableTableHead sortKey="bank.name" sort={sort} onSort={toggleSort}>
+                    {tr.bankName}
+                  </SortableTableHead>
+                  <SortableTableHead sortKey="accountNumber" sort={sort} onSort={toggleSort}>
+                    {tr.accountNumber}
+                  </SortableTableHead>
+                  <SortableTableHead sortKey="branch" sort={sort} onSort={toggleSort}>
+                    {tr.branch}
+                  </SortableTableHead>
+                  <SortableTableHead sortKey="isActive" sort={sort} onSort={toggleSort}>
+                    {common.status}
+                  </SortableTableHead>
                   <TableHead>{common.actions}</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {items.map((row) => (
+                {sorted.map((row) => (
                   <TableRow key={row.id}>
-                    <TableCell className="font-medium ltr-text" dir="ltr">{row.code}</TableCell>
+                    <TableCell className="font-medium ltr-text" dir="ltr">
+                      {row.code}
+                    </TableCell>
                     <TableCell>{row.name}</TableCell>
                     <TableCell>{row.bank.name}</TableCell>
-                    <TableCell className="ltr-text" dir="ltr">{row.accountNumber}</TableCell>
+                    <TableCell className="ltr-text" dir="ltr">
+                      {row.accountNumber}
+                    </TableCell>
                     <TableCell>{row.branch || '—'}</TableCell>
                     <TableCell>
-                      <Badge variant={row.isActive ? 'success' : 'danger'}>
-                        {row.isActive ? common.active : common.inactive}
-                      </Badge>
+                      <ActiveBadge isActive={row.isActive} />
                     </TableCell>
                     <TableCell>
-                      <div className="flex items-center gap-1">
-                        <Button variant="outline" size="xs" onClick={() => router.push(`/bank-accounts/${row.id}/edit` as never)}><IconPen size={12} /> {common.edit}</Button>
-                        <Button variant="danger" size="xs" disabled={deleteMutation.isPending} onClick={() => setDeleteTarget(row)}>
-                          <IconTrash size={12} /> {common.delete}
-                        </Button>
-                      </div>
+                      <TableRowActions
+                        onEdit={() => router.push(`/bank-accounts/${row.id}/edit` as never)}
+                        onDelete={() => setDeleteTarget(row)}
+                        deleteDisabled={deleteMutation.isPending}
+                      />
                     </TableCell>
                   </TableRow>
                 ))}
@@ -151,19 +190,26 @@ export function BankAccountListPage() {
           )}
 
           {items.length > 0 && (
-            <div className="flex items-center justify-between pt-4">
-              <span className="text-xs text-fg-tertiary">{toPersianDigits(data?.total ?? 0)} {tr.bankAccount}</span>
-              <Pagination currentPage={page} totalPages={totalPages} onPageChange={setPage} />
-            </div>
+            <TablePaginationFooter
+              total={data?.total ?? 0}
+              unitLabel={tr.bankAccount}
+              currentPage={page}
+              totalPages={totalPages}
+              onPageChange={setPage}
+            />
           )}
         </>
       )}
 
       <ConfirmDialog
         open={deleteTarget !== null}
-        onOpenChange={(open) => { if (!open) setDeleteTarget(null); }}
+        onOpenChange={(open) => {
+          if (!open) setDeleteTarget(null);
+        }}
         title={msgs.deleteConfirm}
-        description={deleteTarget ? `${deleteTarget.name} (${deleteTarget.code}) ${msgs.deleteWarning}` : ''}
+        description={
+          deleteTarget ? `${deleteTarget.name} (${deleteTarget.code}) ${msgs.deleteWarning}` : ''
+        }
         confirmLabel={common.delete}
         variant="danger"
         onConfirm={handleDelete}

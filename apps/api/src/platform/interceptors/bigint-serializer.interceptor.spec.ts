@@ -14,12 +14,12 @@ function mockHandler(data: unknown): CallHandler {
 const mockContext = {} as ExecutionContext;
 
 describe('BigIntSerializerInterceptor', () => {
-  it('should convert BigInt to number', async () => {
+  it('should convert BigInt to string', async () => {
     const interceptor = createInterceptor();
     const result = await lastValueFrom(
       interceptor.intercept(mockContext, mockHandler({ amount: 150000n })),
     );
-    expect(result).toEqual({ amount: 150000 });
+    expect(result).toEqual({ amount: '150000' });
   });
 
   it('should handle nested objects with BigInt', async () => {
@@ -39,10 +39,10 @@ describe('BigIntSerializerInterceptor', () => {
     );
     expect(result).toEqual({
       id: 'abc',
-      totalAmount: 500000,
+      totalAmount: '500000',
       lines: [
-        { lineNumber: 1, amount: 200000, description: 'Item A' },
-        { lineNumber: 2, amount: 300000, description: 'Item B' },
+        { lineNumber: 1, amount: '200000', description: 'Item A' },
+        { lineNumber: 2, amount: '300000', description: 'Item B' },
       ],
     });
   });
@@ -69,7 +69,7 @@ describe('BigIntSerializerInterceptor', () => {
     const result = await lastValueFrom(
       interceptor.intercept(mockContext, mockHandler([{ amount: 1000n }, { amount: 2000n }])),
     );
-    expect(result).toEqual([{ amount: 1000 }, { amount: 2000 }]);
+    expect(result).toEqual([{ amount: '1000' }, { amount: '2000' }]);
   });
 
   it('should pass through primitive values unchanged', async () => {
@@ -104,9 +104,9 @@ describe('BigIntSerializerInterceptor', () => {
       id: 'prod-1',
       code: 'P001',
       name: 'Test Product',
-      salePrice1: 1500000,
-      salePrice2: 1400000,
-      salePrice3: 1300000,
+      salePrice1: '1500000',
+      salePrice2: '1400000',
+      salePrice3: '1300000',
       isActive: true,
     });
   });

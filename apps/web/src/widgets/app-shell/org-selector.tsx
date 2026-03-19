@@ -2,9 +2,10 @@
 
 import { useEffect, useRef, useState } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
-import { cn, IconBuildings, IconChevronDown } from '@hesabdari/ui';
+import { cn, IconBuildings, IconChevronDown, IconDangerTriangle } from '@hesabdari/ui';
 import { apiClient } from '@/shared/lib/api';
 import { useAuthStore } from '@/shared/hooks/use-auth';
+import { DROPDOWN_PANEL } from '@/shared/styles';
 
 interface UserOrg {
   id: string;
@@ -23,6 +24,8 @@ export function OrgSelector() {
   const queryClient = useQueryClient();
   const [orgs, setOrgs] = useState<UserOrg[]>([]);
   const [open, setOpen] = useState(false);
+  const [error, setError] = useState(false);
+  const [retryCount, setRetryCount] = useState(0);
 
   const hasFetched = useRef(false);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -42,6 +45,7 @@ export function OrgSelector() {
   useEffect(() => {
     if (!isAuthenticated || hasFetched.current) return;
     hasFetched.current = true;
+    setError(false);
     apiClient
       .get<{ organizations: UserOrg[] }>('/api/v1/auth/profile')
       .then((profile) => {
@@ -52,17 +56,33 @@ export function OrgSelector() {
         }
       })
       .catch(() => {
-        // Organization load failed — non-blocking, OrgSelector handles empty state
+        setError(true);
       });
-  }, [isAuthenticated, organizationId, setOrganizationId]);
+  }, [isAuthenticated, organizationId, setOrganizationId, retryCount]);
 
   const currentOrg = orgs.find((o) => o.id === organizationId);
   const displayName = currentOrg?.name ?? 'سازمان';
 
-  if (orgs.length <= 1) {
+  if (error && orgs.length === 0) {
     return (
-      <span className="text-sm text-fg-secondary">{displayName}</span>
+      <button
+        type="button"
+        onClick={() => {
+          hasFetched.current = false;
+          setRetryCount((c) => c + 1);
+        }}
+        className="glass-surface-static flex h-9 items-center gap-2 rounded-xl px-3 text-sm text-fg-tertiary hover:text-fg-secondary transition-colors"
+        title="خطا در بارگذاری — کلیک برای تلاش مجدد"
+        aria-label="خطا در بارگذاری — کلیک برای تلاش مجدد"
+      >
+        <IconDangerTriangle size={14} className="text-warning-default" />
+        <span className="hidden sm:inline">سازمان</span>
+      </button>
     );
+  }
+
+  if (orgs.length <= 1) {
+    return <span className="text-sm text-fg-secondary">{displayName}</span>;
   }
 
   return (
@@ -70,6 +90,9 @@ export function OrgSelector() {
       <button
         type="button"
         onClick={() => setOpen(!open)}
+        aria-expanded={open}
+        aria-haspopup="listbox"
+        aria-label="انتخاب سازمان"
         className="glass-surface flex h-9 items-center gap-2 rounded-xl px-4 text-sm text-fg-secondary hover:text-fg-primary"
       >
         <IconBuildings size={16} />
@@ -77,24 +100,38 @@ export function OrgSelector() {
         <IconChevronDown size={14} />
       </button>
       {open && (
-        <div className="absolute z-modal mt-1.5 w-56 rounded-xl border-[0.5px] border-border-primary bg-bg-secondary/95 shadow-lg backdrop-blur-xl">
+        <div
+          role="listbox"
+          aria-label="انتخاب سازمان"
+          className={cn('absolute z-dropdown mt-1.5 w-56', DROPDOWN_PANEL)}
+        >
           {orgs.map((org) => (
-            <button
+            <div
               key={org.id}
-              type="button"
+              role="option"
+              aria-selected={org.id === organizationId}
+              tabIndex={-1}
               onClick={() => {
                 setOrganizationId(org.id);
                 setOpen(false);
-                // Invalidate all queries to refetch with new org context
                 queryClient.invalidateQueries();
               }}
-              className={cn('flex w-full items-center justify-between rounded-lg px-3 py-2 text-sm transition-colors hover:bg-bg-tertiary/50',
-                org.id === organizationId ? 'text-primary-default font-medium' : 'text-fg-primary'
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                  e.preventDefault();
+                  setOrganizationId(org.id);
+                  setOpen(false);
+                  queryClient.invalidateQueries();
+                }
+              }}
+              className={cn(
+                'flex w-full cursor-pointer items-center justify-between rounded-lg px-3 py-2 text-sm transition-colors hover:bg-bg-tertiary/50',
+                org.id === organizationId ? 'text-fg-primary font-medium' : 'text-fg-secondary',
               )}
             >
               <span>{org.name}</span>
               <span className="text-xs text-fg-tertiary">{org.role}</span>
-            </button>
+            </div>
           ))}
         </div>
       )}

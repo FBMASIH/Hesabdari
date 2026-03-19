@@ -3,9 +3,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import {
-  Badge,
   Button,
-  Pagination,
   EmptyState,
   ConfirmDialog,
   Table,
@@ -14,17 +12,25 @@ import {
   TableRow,
   TableHead,
   TableCell,
+  SortableTableHead,
   IconPlus,
   IconBuildings,
-  IconPen,
-  IconTrash,
 } from '@hesabdari/ui';
 import { t } from '@/shared/lib/i18n';
-import { toPersianDigits } from '@/shared/lib/date';
-import { DataPageHeader, DataFilterBar, DataTableSkeleton, DataErrorState, type FilterPill } from '@/features/shared';
+import {
+  DataPageHeader,
+  DataFilterBar,
+  DataTableSkeleton,
+  DataErrorState,
+  TableRowActions,
+  ActiveBadge,
+  TablePaginationFooter,
+  type FilterPill,
+} from '@/features/shared';
 import { useAppToast } from '@/providers/toast-provider';
 import { useWarehouses, useDeleteWarehouse, type WarehouseDto } from '../hooks/use-warehouses';
 import { useDebounce } from '@/shared/hooks/use-debounce';
+import { useTableSort } from '@/shared/hooks/use-table-sort';
 import { ApiError } from '@hesabdari/api-client';
 
 const wh = t('warehouse');
@@ -70,12 +76,16 @@ export function WarehouseListPage() {
         setDeleteTarget(null);
       },
       onError: (err) => {
-        showToast({ title: err instanceof ApiError ? err.message : msgs.unexpectedError, variant: 'error' });
+        showToast({
+          title: err instanceof ApiError ? err.message : msgs.unexpectedError,
+          variant: 'error',
+        });
       },
     });
   }
 
   const warehouses = data?.data ?? [];
+  const { sort, toggleSort, sorted } = useTableSort(warehouses);
   const totalPages = data ? Math.ceil(data.total / data.pageSize) : 0;
 
   return (
@@ -91,10 +101,16 @@ export function WarehouseListPage() {
       />
       <DataFilterBar
         searchValue={search}
-        onSearchChange={(v) => { setSearch(v); setPage(1); }}
+        onSearchChange={(v) => {
+          setSearch(v);
+          setPage(1);
+        }}
         searchPlaceholder={wh.searchPlaceholder}
         filters={filters}
-        onFilterToggle={(key) => { setActiveFilter(key); setPage(1); }}
+        onFilterToggle={(key) => {
+          setActiveFilter(key);
+          setPage(1);
+        }}
       />
 
       {isLoading && <DataTableSkeleton columns={5} rows={5} />}
@@ -109,42 +125,55 @@ export function WarehouseListPage() {
                 title={search ? common.noResults : common.noData}
                 description={search ? wh.noWarehouseFound : wh.noWarehouseYet}
                 icon={<IconBuildings size={20} />}
-                action={!search ? (
-                  <Button variant="default" size="sm" onClick={() => router.push('/warehouses/new')}>
-                    <IconPlus size={14} /> {wh.newWarehouse}
-                  </Button>
-                ) : undefined}
+                action={
+                  !search ? (
+                    <Button
+                      variant="default"
+                      size="sm"
+                      onClick={() => router.push('/warehouses/new')}
+                    >
+                      <IconPlus size={14} /> {wh.newWarehouse}
+                    </Button>
+                  ) : undefined
+                }
               />
             </div>
           ) : (
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead>{wh.warehouseCode}</TableHead>
-                  <TableHead>{wh.warehouseName}</TableHead>
-                  <TableHead>{wh.costingMethod}</TableHead>
-                  <TableHead>{common.status}</TableHead>
+                  <SortableTableHead sortKey="code" sort={sort} onSort={toggleSort}>
+                    {wh.warehouseCode}
+                  </SortableTableHead>
+                  <SortableTableHead sortKey="name" sort={sort} onSort={toggleSort}>
+                    {wh.warehouseName}
+                  </SortableTableHead>
+                  <SortableTableHead sortKey="costingMethod" sort={sort} onSort={toggleSort}>
+                    {wh.costingMethod}
+                  </SortableTableHead>
+                  <SortableTableHead sortKey="isActive" sort={sort} onSort={toggleSort}>
+                    {common.status}
+                  </SortableTableHead>
                   <TableHead>{common.actions}</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {warehouses.map((row) => (
+                {sorted.map((row) => (
                   <TableRow key={row.id}>
-                    <TableCell className="font-medium ltr-text" dir="ltr">{row.code}</TableCell>
+                    <TableCell className="font-medium ltr-text" dir="ltr">
+                      {row.code}
+                    </TableCell>
                     <TableCell>{row.name}</TableCell>
                     <TableCell>{COSTING_METHOD_LABELS[row.costingMethod]}</TableCell>
                     <TableCell>
-                      <Badge variant={row.isActive ? 'success' : 'danger'}>
-                        {row.isActive ? common.active : common.inactive}
-                      </Badge>
+                      <ActiveBadge isActive={row.isActive} />
                     </TableCell>
                     <TableCell>
-                      <div className="flex items-center gap-1">
-                        <Button variant="outline" size="xs" onClick={() => router.push(`/warehouses/${row.id}/edit` as never)}><IconPen size={12} /> {common.edit}</Button>
-                        <Button variant="danger" size="xs" disabled={deleteMutation.isPending} onClick={() => setDeleteTarget(row)}>
-                          <IconTrash size={12} /> {common.delete}
-                        </Button>
-                      </div>
+                      <TableRowActions
+                        onEdit={() => router.push(`/warehouses/${row.id}/edit` as never)}
+                        onDelete={() => setDeleteTarget(row)}
+                        deleteDisabled={deleteMutation.isPending}
+                      />
                     </TableCell>
                   </TableRow>
                 ))}
@@ -153,19 +182,26 @@ export function WarehouseListPage() {
           )}
 
           {warehouses.length > 0 && (
-            <div className="flex items-center justify-between pt-4">
-              <span className="text-xs text-fg-tertiary">{toPersianDigits(data?.total ?? 0)} {wh.warehouseCount}</span>
-              <Pagination currentPage={page} totalPages={totalPages} onPageChange={setPage} />
-            </div>
+            <TablePaginationFooter
+              total={data?.total ?? 0}
+              unitLabel={wh.warehouseCount}
+              currentPage={page}
+              totalPages={totalPages}
+              onPageChange={setPage}
+            />
           )}
         </>
       )}
 
       <ConfirmDialog
         open={deleteTarget !== null}
-        onOpenChange={(open) => { if (!open) setDeleteTarget(null); }}
+        onOpenChange={(open) => {
+          if (!open) setDeleteTarget(null);
+        }}
         title={msgs.deleteConfirm}
-        description={deleteTarget ? `${deleteTarget.name} (${deleteTarget.code}) ${msgs.deleteWarning}` : ''}
+        description={
+          deleteTarget ? `${deleteTarget.name} (${deleteTarget.code}) ${msgs.deleteWarning}` : ''
+        }
         confirmLabel={common.delete}
         variant="danger"
         onConfirm={handleDelete}

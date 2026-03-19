@@ -2,6 +2,7 @@
 
 import { useState, useMemo } from 'react';
 import { Input, Spinner, cn } from '@hesabdari/ui';
+import { DROPDOWN_PANEL } from '@/shared/styles';
 
 export interface SearchableSelectOption {
   id: string;
@@ -39,9 +40,7 @@ export function SearchableSelect({
   const filtered = useMemo(() => {
     if (!query) return options;
     const q = query.toLowerCase();
-    return options.filter(
-      (o) => o.label.includes(q) || (o.sublabel?.includes(q) ?? false),
-    );
+    return options.filter((o) => o.label.includes(q) || (o.sublabel?.includes(q) ?? false));
   }, [options, query]);
 
   function handleSelect(id: string) {
@@ -53,7 +52,7 @@ export function SearchableSelect({
   return (
     <div className={cn('relative', className)}>
       <Input
-        value={open ? query : selectedOption?.label ?? ''}
+        value={open ? query : (selectedOption?.label ?? '')}
         onChange={(e) => {
           setQuery(e.target.value);
           if (!open) setOpen(true);
@@ -72,7 +71,9 @@ export function SearchableSelect({
         </div>
       )}
       {open && (
-        <div className="absolute z-modal mt-1 max-h-48 w-full overflow-auto rounded-lg border border-border-primary bg-bg-primary shadow-lg">
+        <div
+          className={cn('absolute z-dropdown mt-1.5 max-h-48 w-full overflow-auto', DROPDOWN_PANEL)}
+        >
           {filtered.length === 0 ? (
             <div className="px-3 py-2 text-xs text-fg-tertiary">نتیجه‌ای یافت نشد</div>
           ) : (
@@ -82,13 +83,14 @@ export function SearchableSelect({
                 type="button"
                 onMouseDown={(e) => e.preventDefault()}
                 onClick={() => handleSelect(opt.id)}
-                className={cn('flex w-full items-center gap-2 px-3 py-2 text-start text-xs transition-colors hover:bg-bg-secondary',
-                  value === opt.id ? 'bg-primary-subtle text-primary-default' : 'text-fg-primary'
+                className={cn(
+                  'flex w-full items-center gap-2 rounded-lg px-3 py-2 text-start text-sm transition-colors hover:bg-bg-tertiary/50',
+                  value === opt.id
+                    ? 'bg-primary-subtle text-primary-default font-medium'
+                    : 'text-fg-primary',
                 )}
               >
-                {opt.sublabel && (
-                  <span className="text-fg-tertiary">{opt.sublabel}</span>
-                )}
+                {opt.sublabel && <span className="text-fg-tertiary">{opt.sublabel}</span>}
                 {opt.label}
               </button>
             ))

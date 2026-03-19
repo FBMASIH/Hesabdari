@@ -3,6 +3,7 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { apiClient } from '@/shared/lib/api';
 import { orgPath, toQueryParams, type PaginatedResponse } from '@/shared/lib/query-helpers';
+import { STALE_TIME } from '@/shared/config/query-config';
 import type { CreateWarehouseDto } from '@hesabdari/contracts';
 
 export interface WarehouseDto {
@@ -32,10 +33,8 @@ export function useWarehouses(params: WarehouseListParams = {}) {
   return useQuery({
     queryKey: warehouseKeys.list(params),
     queryFn: () =>
-      apiClient.get<PaginatedResponse<WarehouseDto>>(
-        orgPath('/warehouses'),
-        toQueryParams(params),
-      ),
+      apiClient.get<PaginatedResponse<WarehouseDto>>(orgPath('/warehouses'), toQueryParams(params)),
+    staleTime: STALE_TIME.MASTER_DATA,
   });
 }
 
@@ -53,8 +52,7 @@ export function useCreateWarehouse() {
 export function useDeleteWarehouse() {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (id: string) =>
-      apiClient.delete(orgPath(`/warehouses/${id}`)),
+    mutationFn: (id: string) => apiClient.delete(orgPath(`/warehouses/${id}`)),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: warehouseKeys.lists() });
     },

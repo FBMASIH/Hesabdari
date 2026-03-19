@@ -3,6 +3,7 @@
 import { useQuery } from '@tanstack/react-query';
 import { apiClient } from '@/shared/lib/api';
 import { orgPath } from '@/shared/lib/query-helpers';
+import { STALE_TIME } from '@/shared/config/query-config';
 
 export interface PeriodDto {
   id: string;
@@ -22,7 +23,7 @@ export function usePeriods() {
   return useQuery({
     queryKey: periodKeys.list(),
     queryFn: () => apiClient.get<PeriodDto[]>(orgPath('/periods')),
-    staleTime: 5 * 60 * 1000,
+    staleTime: STALE_TIME.MASTER_DATA,
   });
 }
 

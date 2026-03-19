@@ -13,13 +13,18 @@ export interface DataErrorStateProps {
 }
 
 export function DataErrorState({ error, onRetry, className }: DataErrorStateProps) {
-  const message = error instanceof ApiError
-    ? error.message
-    : error instanceof Error
+  const rawMessage =
+    error instanceof ApiError
       ? error.message
-      : typeof error === 'string'
-        ? error
-        : msgs.networkError;
+      : error instanceof Error
+        ? error.message
+        : typeof error === 'string'
+          ? error
+          : msgs.networkError;
+
+  // Avoid leaking English error messages in the Persian UI
+  const isLikelyEnglish = /^[A-Za-z\s.,!?:;'"()-]+$/.test(rawMessage);
+  const message = isLikelyEnglish ? msgs.networkError : rawMessage;
 
   return (
     <div className={className ?? 'glass-surface-static overflow-hidden rounded-2xl'}>

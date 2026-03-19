@@ -12,6 +12,7 @@ import {
 import { t } from '@/shared/lib/i18n';
 import { formatMoney } from '@/shared/lib/money';
 import { toPersianDigits } from '@/shared/lib/date';
+import { ICON_CIRCLE, LINK_HOVER, GLASS_PANEL } from '@/shared/styles';
 
 const dash = t('dashboard');
 const common = t('common');
@@ -97,9 +98,7 @@ export function ManagementView() {
           >
             <div className="flex items-center justify-between">
               <span className="text-[11px] font-medium text-fg-tertiary">{stat.label}</span>
-              <div className={`flex h-8 w-8 items-center justify-center rounded-xl ${stat.color}`}>
-                {stat.icon}
-              </div>
+              <div className={`${ICON_CIRCLE} ${stat.color}`}>{stat.icon}</div>
             </div>
             <span className="text-xl font-bold tabular-nums text-fg-primary leading-tight">
               {stat.value}
@@ -114,7 +113,7 @@ export function ManagementView() {
       <div className="grid grid-cols-1 gap-3 lg:grid-cols-5">
         {/* Chart */}
         <div className="lg:col-span-3">
-          <div className="glass-surface-static flex h-full flex-col rounded-2xl p-5">
+          <div className={GLASS_PANEL}>
             <div className="mb-3">
               <h2 className="text-base font-semibold text-fg-primary">{dash.moneyTrend}</h2>
               <p className="mt-0.5 text-xs text-fg-tertiary">{dash.moneyTrendSubtitle}</p>
@@ -132,16 +131,16 @@ export function ManagementView() {
 
         {/* Entity quick links */}
         <div className="lg:col-span-2">
-          <div className="glass-surface-static flex h-full flex-col gap-2 rounded-2xl p-5">
+          <div className={`${GLASS_PANEL} gap-2`}>
             <h2 className="mb-1 text-base font-semibold text-fg-primary">{common.viewAll}</h2>
             {entities.map((entity) => (
               <Link
                 key={entity.label}
                 href={entity.href as never}
-                className="flex items-center justify-between rounded-xl px-3 py-2.5 transition-all duration-150 hover:bg-bg-tertiary/50 hover:shadow-xs active:scale-[0.98]"
+                className={`flex items-center justify-between rounded-xl px-3 py-2.5 ${LINK_HOVER}`}
               >
                 <div className="flex items-center gap-2.5">
-                  <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary-subtle text-brand-deep shadow-xs">
+                  <div className={`${ICON_CIRCLE} bg-primary-subtle text-brand-deep shadow-xs`}>
                     {entity.icon}
                   </div>
                   <span className="text-sm font-medium text-fg-primary">{entity.label}</span>

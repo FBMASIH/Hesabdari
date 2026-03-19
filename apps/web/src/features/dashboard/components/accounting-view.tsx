@@ -14,6 +14,7 @@ import {
 import { t } from '@/shared/lib/i18n';
 import { formatMoney } from '@/shared/lib/money';
 import { toPersianDigits } from '@/shared/lib/date';
+import { ICON_CIRCLE, LINK_HOVER, GLASS_PANEL } from '@/shared/styles';
 
 const acct = t('accounting');
 const journal = t('journal');
@@ -88,9 +89,7 @@ export function AccountingView() {
           >
             <div className="flex items-center justify-between">
               <span className="text-[11px] font-medium text-fg-tertiary">{card.label}</span>
-              <div className={`flex h-8 w-8 items-center justify-center rounded-xl ${card.color}`}>
-                {card.icon}
-              </div>
+              <div className={`${ICON_CIRCLE} ${card.color}`}>{card.icon}</div>
             </div>
             <div className="flex items-baseline justify-between">
               <div className="flex flex-col">
@@ -114,7 +113,7 @@ export function AccountingView() {
       <div className="grid grid-cols-1 gap-3 lg:grid-cols-5">
         {/* Journal entries status */}
         <div className="lg:col-span-3">
-          <div className="glass-surface-static flex h-full flex-col rounded-2xl p-5">
+          <div className={GLASS_PANEL}>
             <div className="mb-3">
               <h2 className="text-base font-semibold text-fg-primary">{journal.title}</h2>
               <p className="mt-0.5 text-xs text-fg-tertiary">{journal.subtitle}</p>
@@ -155,14 +154,14 @@ export function AccountingView() {
 
         {/* Report shortcuts */}
         <div className="lg:col-span-2">
-          <div className="glass-surface-static flex h-full flex-col rounded-2xl p-5">
+          <div className={GLASS_PANEL}>
             <h2 className="mb-2 text-base font-semibold text-fg-primary">{reports.title}</h2>
             <div className="flex flex-col gap-1">
               {reportLinks.map((link) => (
                 <Link
                   key={link.label}
                   href={link.href as never}
-                  className="flex items-center gap-2.5 rounded-xl px-3 py-2.5 transition-all duration-150 hover:bg-bg-tertiary/50 hover:shadow-xs active:scale-[0.98]"
+                  className={`flex items-center gap-2.5 rounded-xl px-3 py-2.5 ${LINK_HOVER}`}
                 >
                   <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-primary-subtle text-brand-deep shadow-xs">
                     {link.icon}

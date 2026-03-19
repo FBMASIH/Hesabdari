@@ -218,7 +218,7 @@ export function JournalEntryForm() {
         e.preventDefault();
         handleSubmit(false);
       }}
-      className="flex flex-col gap-5"
+      className="flex flex-col gap-5 animate-stagger"
     >
       {formError && <FormErrorBanner message={formError} />}
 

@@ -3,7 +3,16 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { type ReactNode } from 'react';
-import { cn, IconHome, IconCart, IconBag, IconWallet, IconBox, IconChart } from '@hesabdari/ui';
+import {
+  cn,
+  IconHome,
+  IconCart,
+  IconBag,
+  IconWallet,
+  IconBox,
+  IconChart,
+  IconSettings,
+} from '@hesabdari/ui';
 import { t } from '@/shared/lib/i18n';
 
 const nav = t('nav');
@@ -15,6 +24,7 @@ const tabs: { label: string; href: string; icon: ReactNode }[] = [
   { label: nav.money, href: '/accounting', icon: <IconWallet size={18} /> },
   { label: nav.products, href: '/products', icon: <IconBox size={18} /> },
   { label: nav.reports, href: '/reports', icon: <IconChart size={18} /> },
+  { label: nav.settings, href: '/settings', icon: <IconSettings size={18} /> },
 ];
 
 export function PrimaryNav() {
@@ -32,6 +42,7 @@ export function PrimaryNav() {
             <Link
               key={tab.href}
               href={tab.href as never}
+              aria-current={isActive ? 'page' : undefined}
               className={cn(
                 'flex items-center gap-2 rounded-xl px-4 py-2 text-[13px] font-medium transition-all duration-200',
                 isActive

@@ -3,8 +3,15 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { apiClient } from '@/shared/lib/api';
 import { orgPath, toQueryParams, type PaginatedResponse } from '@/shared/lib/query-helpers';
+import { STALE_TIME } from '@/shared/config/query-config';
 
-export type ReceivedChequeStatus = 'OPEN' | 'DEPOSITED' | 'CASHED' | 'RETURNED' | 'BOUNCED' | 'CANCELLED';
+export type ReceivedChequeStatus =
+  | 'OPEN'
+  | 'DEPOSITED'
+  | 'CASHED'
+  | 'RETURNED'
+  | 'BOUNCED'
+  | 'CANCELLED';
 
 export interface ReceivedChequeDto {
   id: string;
@@ -52,6 +59,7 @@ export function useReceivedCheques(params: ReceivedChequeListParams = {}) {
         orgPath('/received-cheques'),
         toQueryParams(params),
       ),
+    staleTime: STALE_TIME.TRANSACTIONAL,
   });
 }
 
@@ -69,8 +77,7 @@ export function useCreateReceivedCheque() {
 export function useDeleteReceivedCheque() {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (id: string) =>
-      apiClient.delete(orgPath(`/received-cheques/${id}`)),
+    mutationFn: (id: string) => apiClient.delete(orgPath(`/received-cheques/${id}`)),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: receivedChequeKeys.lists() });
     },

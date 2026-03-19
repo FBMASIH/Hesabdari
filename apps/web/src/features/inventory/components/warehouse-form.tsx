@@ -6,8 +6,15 @@ import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { createWarehouseSchema, type CreateWarehouseDto } from '@hesabdari/contracts';
 import {
-  Input, Checkbox, FormField, FormLabel, FormErrorBanner,
-  Select, SelectTrigger, SelectContent, SelectItem,
+  Input,
+  Checkbox,
+  FormField,
+  FormLabel,
+  FormErrorBanner,
+  Select,
+  SelectTrigger,
+  SelectContent,
+  SelectItem,
 } from '@hesabdari/ui';
 import { t } from '@/shared/lib/i18n';
 import { FormSection, FormActions, DataPageHeader } from '@/features/shared';
@@ -55,7 +62,7 @@ export function WarehouseForm() {
   };
 
   return (
-    <div className="flex flex-col">
+    <div className="flex flex-col animate-stagger">
       <DataPageHeader title={wh.newWarehouse} subtitle={wh.newWarehouseSubtitle} />
 
       <form method="post" onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-5">
@@ -65,7 +72,12 @@ export function WarehouseForm() {
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
             <FormField error={errors.code?.message}>
               <FormLabel>{wh.warehouseCode}</FormLabel>
-              <Input {...register('code')} placeholder="W-001" className="rounded-xl ltr-text" dir="ltr" />
+              <Input
+                {...register('code')}
+                placeholder="W-001"
+                className="rounded-xl ltr-text"
+                dir="ltr"
+              />
             </FormField>
             <FormField error={errors.name?.message}>
               <FormLabel>{wh.warehouseName}</FormLabel>
@@ -83,7 +95,9 @@ export function WarehouseForm() {
                     </SelectTrigger>
                     <SelectContent>
                       {COSTING_OPTIONS.map((o) => (
-                        <SelectItem key={o.value} value={o.value}>{o.label}</SelectItem>
+                        <SelectItem key={o.value} value={o.value}>
+                          {o.label}
+                        </SelectItem>
                       ))}
                     </SelectContent>
                   </Select>
@@ -103,7 +117,10 @@ export function WarehouseForm() {
                 />
               )}
             />
-            <label htmlFor="isActive" className="text-sm text-fg-primary cursor-pointer select-none">
+            <label
+              htmlFor="isActive"
+              className="text-sm text-fg-primary cursor-pointer select-none"
+            >
               {common.active}
             </label>
           </div>

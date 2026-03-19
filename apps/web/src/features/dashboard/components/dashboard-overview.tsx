@@ -15,7 +15,7 @@ export function DashboardOverview() {
   const [dateRange, setDateRange] = useState<DateRange>('thisWeek');
 
   return (
-    <div className="flex flex-col gap-5">
+    <div className="flex flex-col gap-5 animate-stagger">
       {/* 1. Page title + mode controls */}
       <PageHeader
         activeMode={activeMode}

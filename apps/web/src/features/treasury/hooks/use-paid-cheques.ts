@@ -3,6 +3,7 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { apiClient } from '@/shared/lib/api';
 import { orgPath, toQueryParams, type PaginatedResponse } from '@/shared/lib/query-helpers';
+import { STALE_TIME } from '@/shared/config/query-config';
 
 export type PaidChequeStatus = 'OPEN' | 'CLEARED' | 'RETURNED' | 'CANCELLED';
 
@@ -54,6 +55,7 @@ export function usePaidCheques(params: PaidChequeListParams = {}) {
         orgPath('/paid-cheques'),
         toQueryParams(params),
       ),
+    staleTime: STALE_TIME.TRANSACTIONAL,
   });
 }
 
@@ -71,8 +73,7 @@ export function useCreatePaidCheque() {
 export function useDeletePaidCheque() {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (id: string) =>
-      apiClient.delete(orgPath(`/paid-cheques/${id}`)),
+    mutationFn: (id: string) => apiClient.delete(orgPath(`/paid-cheques/${id}`)),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: paidChequeKeys.lists() });
     },

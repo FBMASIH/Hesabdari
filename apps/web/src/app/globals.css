@@ -10,12 +10,19 @@
 @import './theme-vars.css';
 @import './theme-tokens.css';
 
-/* ── Non-token typography ──────────────────────── */
+/* ── Non-token typography + animation tokens ──── */
 :root {
   --font-family-sans:
     var(--font-vazirmatn), -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Segoe UI', system-ui,
     sans-serif;
   --font-family-mono: 'SF Mono', 'JetBrains Mono', 'Fira Code', monospace;
+
+  /* Animation timing — single source of truth */
+  --anim-fast: 150ms;
+  --anim-normal: 250ms;
+  --anim-slow: 350ms;
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
 body {
@@ -148,6 +155,126 @@ body {
 /* ── Selection color ─────────────────────────── */
 ::selection {
   background: var(--color-primary-subtle);
+}
+
+/* ── Animation Keyframes ───────────────────────── */
+
+/* Fade + rise — page content entrance */
+@keyframes fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Simple opacity fade */
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* Scale + fade — dropdown / popover entrance */
+@keyframes scale-in {
+  from {
+    opacity: 0;
+    transform: scale(0.96) translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+/* Gradient sweep — polished skeleton loading */
+@keyframes shimmer {
+  from {
+    background-position: 200% 0;
+  }
+  to {
+    background-position: -200% 0;
+  }
+}
+
+/* ── Animation Utilities ──────────────────────── */
+
+/* Page-level entrance — apply to page content wrappers */
+.animate-page-in {
+  animation: fade-up var(--anim-normal) var(--ease-out-expo) both;
+}
+
+/* Staggered entrance for child elements */
+.animate-stagger > * {
+  animation: fade-up var(--anim-normal) var(--ease-out-expo) both;
+}
+.animate-stagger > :nth-child(1) {
+  animation-delay: 0ms;
+}
+.animate-stagger > :nth-child(2) {
+  animation-delay: 50ms;
+}
+.animate-stagger > :nth-child(3) {
+  animation-delay: 100ms;
+}
+.animate-stagger > :nth-child(4) {
+  animation-delay: 150ms;
+}
+.animate-stagger > :nth-child(5) {
+  animation-delay: 200ms;
+}
+.animate-stagger > :nth-child(6) {
+  animation-delay: 250ms;
+}
+.animate-stagger > :nth-child(7) {
+  animation-delay: 300ms;
+}
+.animate-stagger > :nth-child(8) {
+  animation-delay: 350ms;
+}
+
+/* Dropdown / popover entrance */
+.animate-dropdown {
+  animation: scale-in var(--anim-fast) var(--ease-out-expo) both;
+  transform-origin: top;
+}
+
+/* Simple fade-in */
+.animate-fade-in {
+  animation: fade-in var(--anim-normal) var(--ease-out-expo) both;
+}
+
+/* Collapsible panel — CSS Grid smooth height animation */
+.collapsible {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows var(--anim-normal) var(--ease-out-expo);
+}
+
+.collapsible[data-expanded='true'] {
+  grid-template-rows: 1fr;
+}
+
+.collapsible > .collapsible-content {
+  overflow: hidden;
+}
+
+/* Enhanced shimmer for skeleton loading */
+.animate-shimmer {
+  background: linear-gradient(
+    90deg,
+    var(--color-bg-tertiary) 0%,
+    color-mix(in srgb, var(--color-bg-tertiary) 40%, var(--color-bg-secondary)) 50%,
+    var(--color-bg-tertiary) 100%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 2s ease-in-out infinite;
 }
 
 /* ── Toast — macOS Notification Center style ── */
@@ -559,6 +686,187 @@ body {
   }
 }
 
+/* ── Spotlight / Command Palette ─────────────── */
+
+.spotlight-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding-top: 12vh;
+  background: color-mix(in srgb, var(--color-bg-inverse) 35%, transparent);
+  backdrop-filter: blur(6px) saturate(120%);
+  -webkit-backdrop-filter: blur(6px) saturate(120%);
+  animation: fade-in 180ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.spotlight-container {
+  width: 100%;
+  max-width: 580px;
+  border-radius: 16px;
+  background: color-mix(in srgb, var(--color-bg-secondary) 92%, transparent);
+  backdrop-filter: blur(40px) saturate(200%);
+  -webkit-backdrop-filter: blur(40px) saturate(200%);
+  border: 0.5px solid color-mix(in srgb, var(--color-fg-primary) 8%, transparent);
+  box-shadow:
+    0 0 0 0.5px rgba(0, 0, 0, 0.06),
+    0 8px 40px -4px rgba(0, 0, 0, 0.18),
+    0 24px 80px -8px rgba(0, 0, 0, 0.14),
+    inset 0 0.5px 0 rgba(255, 255, 255, 0.08);
+  overflow: hidden;
+  animation: spotlight-panel-in 240ms cubic-bezier(0.16, 1, 0.3, 1);
+  transform-origin: top center;
+}
+
+/* ── Spotlight input area ── */
+.spotlight-input-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 18px;
+  border-bottom: 0.5px solid color-mix(in srgb, var(--color-fg-primary) 6%, transparent);
+}
+
+.spotlight-input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  outline: none;
+  font-size: 15px;
+  line-height: 1.5;
+  color: var(--color-fg-primary);
+  caret-color: var(--brand-deep);
+}
+
+.spotlight-input::placeholder {
+  color: var(--color-fg-tertiary);
+}
+
+.spotlight-kbd {
+  display: inline-flex;
+  align-items: center;
+  height: 22px;
+  padding: 0 6px;
+  border-radius: 6px;
+  border: 0.5px solid color-mix(in srgb, var(--color-fg-primary) 10%, transparent);
+  background: color-mix(in srgb, var(--color-bg-tertiary) 60%, transparent);
+  font-size: 10px;
+  font-family: var(--font-family-sans);
+  color: var(--color-fg-tertiary);
+  flex-shrink: 0;
+}
+
+/* ── Results list ── */
+.spotlight-results {
+  max-height: 380px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: 6px;
+}
+
+.spotlight-results::-webkit-scrollbar {
+  width: 6px;
+}
+
+.spotlight-results::-webkit-scrollbar-thumb {
+  background: color-mix(in srgb, var(--color-fg-primary) 10%, transparent);
+  border-radius: 3px;
+}
+
+/* ── Group headers ── */
+.spotlight-group-label {
+  padding: 8px 10px 4px;
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--color-fg-tertiary);
+  letter-spacing: 0.02em;
+  user-select: none;
+}
+
+/* ── Result items ── */
+.spotlight-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 8px 10px;
+  border-radius: 10px;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  transition:
+    background 100ms ease,
+    box-shadow 100ms ease;
+  font-family: inherit;
+}
+
+.spotlight-item-active {
+  background: color-mix(in srgb, var(--brand-deep) 8%, transparent);
+  box-shadow: inset 0 0 0 0.5px color-mix(in srgb, var(--brand-deep) 12%, transparent);
+}
+
+.spotlight-item-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  flex-shrink: 0;
+  transition:
+    background 120ms ease,
+    color 120ms ease;
+}
+
+/* ── Empty state ── */
+.spotlight-empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 32px 16px;
+}
+
+/* ── Footer hints ── */
+.spotlight-footer {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 8px 18px;
+  border-top: 0.5px solid color-mix(in srgb, var(--color-fg-primary) 6%, transparent);
+}
+
+.spotlight-hint-key {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 4px;
+  border-radius: 4px;
+  border: 0.5px solid color-mix(in srgb, var(--color-fg-primary) 10%, transparent);
+  background: color-mix(in srgb, var(--color-bg-tertiary) 50%, transparent);
+  font-size: 10px;
+  font-family: var(--font-family-sans);
+  color: var(--color-fg-tertiary);
+  line-height: 1;
+}
+
+@keyframes spotlight-panel-in {
+  from {
+    opacity: 0;
+    transform: scale(0.96) translateY(-8px);
+  }
+  40% {
+    opacity: 1;
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
 /* ── Accessibility: respect reduced motion ──── */
 @media (prefers-reduced-motion: reduce) {
   .auth-blob,
@@ -583,6 +891,28 @@ body {
   }
 
   .toast-root[data-swipe='cancel'] {
+    transition: none;
+  }
+
+  .spotlight-overlay,
+  .spotlight-container {
+    animation: none;
+  }
+
+  /* App-wide animation utilities */
+  .animate-page-in,
+  .animate-stagger > *,
+  .animate-dropdown,
+  .animate-fade-in {
+    animation: none;
+  }
+
+  .animate-shimmer {
+    animation: none;
+    background: var(--color-bg-tertiary);
+  }
+
+  .collapsible {
     transition: none;
   }
 }

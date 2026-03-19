@@ -21,20 +21,17 @@ import { FormSection, FormActions, DataPageHeader } from '@/features/shared';
 import { useAppToast } from '@/providers/toast-provider';
 import {
   useCreateProduct,
+  useUpdateProduct,
   useSaveProductStocks,
   type CreateProductPayload,
   type ProductDetailDto,
 } from '../hooks/use-products-crud';
 import { useWarehouses, type WarehouseDto } from '../hooks/use-warehouses';
 
-// ── i18n ────────────────────────────────────────────
-
 const prod = t('product');
 const common = t('common');
 const msgs = t('messages');
 const val = t('validation');
-
-// ── Types ───────────────────────────────────────────
 
 interface StockRow {
   warehouseId: string;
@@ -47,15 +44,14 @@ interface ProductFormProps {
   initialData?: ProductDetailDto;
 }
 
-// ── Component ───────────────────────────────────────
-
 export function ProductForm({ initialData }: ProductFormProps = {}) {
   const router = useRouter();
   const { showToast } = useAppToast();
+  const isEditing = !!initialData?.id;
   const createMutation = useCreateProduct();
+  const updateMutation = useUpdateProduct();
   const saveStocksMutation = useSaveProductStocks();
 
-  // Form state
   const [code, setCode] = useState(initialData?.code ?? '');
   const [name, setName] = useState(initialData?.name ?? '');
   const [barcode, setBarcode] = useState(initialData?.barcode ?? '');
@@ -72,14 +68,11 @@ export function ProductForm({ initialData }: ProductFormProps = {}) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [formError, setFormError] = useState<string | null>(null);
 
-  // Warehouse data for opening stock
   const warehouseQuery = useWarehouses({ pageSize: 100, isActive: true });
   const warehouses: WarehouseDto[] = warehouseQuery.data?.data ?? [];
 
-  // Stock rows — one per warehouse
   const [stockRows, setStockRows] = useState<StockRow[]>([]);
 
-  // Sync stock rows when warehouses load
   useEffect(() => {
     if (warehouses.length > 0 && stockRows.length === 0) {
       setStockRows(
@@ -91,7 +84,7 @@ export function ProductForm({ initialData }: ProductFormProps = {}) {
         })),
       );
     }
-  }, [warehouses]);
+  }, [warehouses, stockRows.length]);
 
   function updateStockRow(warehouseId: string, field: 'quantity' | 'purchasePrice', value: string) {
     setStockRows((prev) =>
@@ -99,7 +92,6 @@ export function ProductForm({ initialData }: ProductFormProps = {}) {
     );
   }
 
-  // Validation
   function validate(): string[] {
     const errors: string[] = [];
     if (!code.trim()) errors.push(`${prod.productCode}: ${val.required}`);
@@ -133,21 +125,25 @@ export function ProductForm({ initialData }: ProductFormProps = {}) {
         salePrice3: salePrice3 || undefined,
       };
 
-      const created = await createMutation.mutateAsync(payload);
+      if (isEditing && initialData?.id) {
+        await updateMutation.mutateAsync({ id: initialData.id, data: payload });
+      } else {
+        const created = await createMutation.mutateAsync(payload);
 
-      // Save opening stock if any row has a non-zero quantity
-      const filledStocks = stockRows.filter((r) => r.quantity && parseInt(r.quantity, 10) > 0);
-      if (filledStocks.length > 0) {
-        await saveStocksMutation.mutateAsync({
-          productId: created.id,
-          data: {
-            stocks: filledStocks.map((r) => ({
-              warehouseId: r.warehouseId,
-              quantity: parseInt(r.quantity, 10),
-              purchasePrice: r.purchasePrice || '0',
-            })),
-          },
-        });
+        // Opening stock only on create — never re-post on edit
+        const filledStocks = stockRows.filter((r) => r.quantity && parseInt(r.quantity, 10) > 0);
+        if (filledStocks.length > 0) {
+          await saveStocksMutation.mutateAsync({
+            productId: created.id,
+            data: {
+              stocks: filledStocks.map((r) => ({
+                warehouseId: r.warehouseId,
+                quantity: parseInt(r.quantity, 10),
+                purchasePrice: r.purchasePrice || '0',
+              })),
+            },
+          });
+        }
       }
 
       showToast({ title: msgs.saveSuccess, variant: 'success' });
@@ -162,13 +158,17 @@ export function ProductForm({ initialData }: ProductFormProps = {}) {
   }
 
   return (
-    <div className="flex flex-col">
-      <DataPageHeader title={prod.newProduct} subtitle={prod.newProductSubtitle} />
+    <div className="flex flex-col gap-5 animate-stagger">
+      <DataPageHeader
+        title={isEditing ? (prod.editProduct ?? 'ویرایش کالا') : prod.newProduct}
+        subtitle={
+          isEditing ? (prod.editProductSubtitle ?? 'ویرایش اطلاعات کالا') : prod.newProductSubtitle
+        }
+      />
 
       <form method="post" onSubmit={handleSubmit} className="flex flex-col gap-5">
         {formError && <FormErrorBanner message={formError} />}
 
-        {/* ── Section 1: Basic Info ── */}
         <FormSection title={common.basicInfo}>
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
             <FormField>
@@ -240,7 +240,6 @@ export function ProductForm({ initialData }: ProductFormProps = {}) {
           </div>
         </FormSection>
 
-        {/* ── Section 2: Pricing ── */}
         <FormSection title={prod.pricing}>
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
             <FormField>
@@ -273,59 +272,61 @@ export function ProductForm({ initialData }: ProductFormProps = {}) {
           </div>
         </FormSection>
 
-        {/* ── Section 3: Opening Stock ── */}
-        <FormSection title={prod.openingStock} description={prod.openingStockDesc}>
-          {warehouseQuery.isLoading && <p className="text-sm text-fg-tertiary">{common.loading}</p>}
+        {!isEditing && (
+          <FormSection title={prod.openingStock} description={prod.openingStockDesc}>
+            {warehouseQuery.isLoading && (
+              <p className="text-sm text-fg-tertiary">{common.loading}</p>
+            )}
 
-          {!warehouseQuery.isLoading && warehouses.length === 0 && (
-            <p className="text-sm text-fg-tertiary">{prod.noWarehouseYet}</p>
-          )}
+            {!warehouseQuery.isLoading && warehouses.length === 0 && (
+              <p className="text-sm text-fg-tertiary">{prod.noWarehouseYet}</p>
+            )}
 
-          {!warehouseQuery.isLoading && warehouses.length > 0 && (
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>{t('inventory').warehouse}</TableHead>
-                  <TableHead>{prod.quantity}</TableHead>
-                  <TableHead>{prod.purchasePrice}</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {stockRows.map((row) => (
-                  <TableRow key={row.warehouseId}>
-                    <TableCell className="text-fg-primary font-medium">
-                      {row.warehouseName}
-                    </TableCell>
-                    <TableCell>
-                      <Input
-                        type="number"
-                        min={0}
-                        value={row.quantity}
-                        onChange={(e) =>
-                          updateStockRow(row.warehouseId, 'quantity', e.target.value)
-                        }
-                        className="h-8 w-24 rounded-lg text-center text-xs ltr-text"
-                        dir="ltr"
-                        placeholder="0"
-                      />
-                    </TableCell>
-                    <TableCell>
-                      <MoneyInput
-                        value={row.purchasePrice}
-                        onChange={(v) => updateStockRow(row.warehouseId, 'purchasePrice', v)}
-                        suffix={common.rial}
-                        placeholder="0"
-                        className="h-8 w-36 text-xs"
-                      />
-                    </TableCell>
+            {!warehouseQuery.isLoading && warehouses.length > 0 && (
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>{t('inventory').warehouse}</TableHead>
+                    <TableHead>{prod.quantity}</TableHead>
+                    <TableHead>{prod.purchasePrice}</TableHead>
                   </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          )}
-        </FormSection>
+                </TableHeader>
+                <TableBody>
+                  {stockRows.map((row) => (
+                    <TableRow key={row.warehouseId}>
+                      <TableCell className="text-fg-primary font-medium">
+                        {row.warehouseName}
+                      </TableCell>
+                      <TableCell>
+                        <Input
+                          type="number"
+                          min={0}
+                          value={row.quantity}
+                          onChange={(e) =>
+                            updateStockRow(row.warehouseId, 'quantity', e.target.value)
+                          }
+                          className="h-8 w-24 rounded-lg text-center text-xs ltr-text"
+                          dir="ltr"
+                          placeholder="0"
+                        />
+                      </TableCell>
+                      <TableCell>
+                        <MoneyInput
+                          value={row.purchasePrice}
+                          onChange={(v) => updateStockRow(row.warehouseId, 'purchasePrice', v)}
+                          suffix={common.rial}
+                          placeholder="0"
+                          className="h-8 w-36 text-xs"
+                        />
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            )}
+          </FormSection>
+        )}
 
-        {/* ── Actions ── */}
         <FormActions
           submitLabel={common.save}
           onCancel={() => router.back()}

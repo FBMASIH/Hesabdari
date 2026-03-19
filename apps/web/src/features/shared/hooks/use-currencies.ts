@@ -2,6 +2,7 @@
 
 import { useQuery } from '@tanstack/react-query';
 import { apiClient } from '@/shared/lib/api';
+import { STALE_TIME } from '@/shared/config/query-config';
 
 export interface CurrencyDto {
   id: string;
@@ -22,7 +23,7 @@ export function useCurrencies() {
   return useQuery({
     queryKey: currencyKeys.list(),
     queryFn: () => apiClient.get<CurrencyDto[]>('/api/v1/currencies'),
-    staleTime: 5 * 60 * 1000, // Currencies rarely change
+    staleTime: STALE_TIME.MASTER_DATA,
   });
 }
 

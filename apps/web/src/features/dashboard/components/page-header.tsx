@@ -3,6 +3,7 @@
 import { useState, useRef, useEffect } from 'react';
 import { cn, IconCalendar } from '@hesabdari/ui';
 import { t } from '@/shared/lib/i18n';
+import { DROPDOWN_PANEL } from '@/shared/styles';
 
 const dash = t('dashboard');
 const common = t('common');
@@ -104,27 +105,38 @@ export function PageHeader({
           {dateMenuOpen && (
             <div
               role="listbox"
-              className="absolute start-0 top-full z-50 mt-1.5 min-w-[140px] overflow-hidden rounded-xl border-[0.5px] border-border-primary bg-bg-secondary/95 shadow-lg backdrop-blur-xl"
+              aria-label="بازه زمانی"
+              className={cn(
+                'absolute start-0 top-full z-dropdown mt-1.5 min-w-[140px]',
+                DROPDOWN_PANEL,
+              )}
             >
               {dateRanges.map((range) => (
-                <button
-                  type="button"
+                <div
                   role="option"
                   aria-selected={dateRange === range.key}
+                  tabIndex={-1}
                   key={range.key}
                   onClick={() => {
                     onDateRangeChange(range.key);
                     setDateMenuOpen(false);
                   }}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                      e.preventDefault();
+                      onDateRangeChange(range.key);
+                      setDateMenuOpen(false);
+                    }
+                  }}
                   className={cn(
-                    'flex w-full items-center px-3 py-2 text-xs font-medium transition-colors',
+                    'flex w-full cursor-pointer items-center rounded-lg px-3 py-2 text-sm transition-colors',
                     dateRange === range.key
-                      ? 'bg-primary-subtle text-fg-primary'
+                      ? 'bg-primary-subtle text-fg-primary font-medium'
                       : 'text-fg-secondary hover:bg-bg-tertiary/50 hover:text-fg-primary',
                   )}
                 >
                   {range.label}
-                </button>
+                </div>
               ))}
             </div>
           )}

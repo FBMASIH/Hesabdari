@@ -3,6 +3,7 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { apiClient } from '@/shared/lib/api';
 import { orgPath, toQueryParams, type PaginatedResponse } from '@/shared/lib/query-helpers';
+import { STALE_TIME } from '@/shared/config/query-config';
 import type { CreateVendorDto } from '@hesabdari/contracts';
 
 export interface VendorDto {
@@ -36,20 +37,38 @@ export function useVendors(params: VendorListParams = {}) {
   return useQuery({
     queryKey: vendorKeys.list(params),
     queryFn: () =>
-      apiClient.get<PaginatedResponse<VendorDto>>(
-        orgPath('/vendors'),
-        toQueryParams(params),
-      ),
+      apiClient.get<PaginatedResponse<VendorDto>>(orgPath('/vendors'), toQueryParams(params)),
+    staleTime: STALE_TIME.MASTER_DATA,
   });
 }
 
 export function useCreateVendor() {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (data: CreateVendorDto) =>
-      apiClient.post<VendorDto>(orgPath('/vendors'), data),
+    mutationFn: (data: CreateVendorDto) => apiClient.post<VendorDto>(orgPath('/vendors'), data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: vendorKeys.lists() });
+    },
+  });
+}
+
+export function useVendor(id: string) {
+  return useQuery({
+    queryKey: vendorKeys.detail(id),
+    queryFn: () => apiClient.get<VendorDto>(orgPath(`/vendors/${id}`)),
+    enabled: !!id,
+    staleTime: STALE_TIME.MASTER_DATA,
+  });
+}
+
+export function useUpdateVendor() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({ id, data }: { id: string; data: Partial<CreateVendorDto> }) =>
+      apiClient.put<VendorDto>(orgPath(`/vendors/${id}`), data),
+    onSuccess: (_data, variables) => {
+      queryClient.invalidateQueries({ queryKey: vendorKeys.lists() });
+      queryClient.invalidateQueries({ queryKey: vendorKeys.detail(variables.id) });
     },
   });
 }
@@ -57,8 +76,7 @@ export function useCreateVendor() {
 export function useDeleteVendor() {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (id: string) =>
-      apiClient.delete(orgPath(`/vendors/${id}`)),
+    mutationFn: (id: string) => apiClient.delete(orgPath(`/vendors/${id}`)),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: vendorKeys.lists() });
     },

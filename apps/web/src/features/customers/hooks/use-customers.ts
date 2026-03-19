@@ -3,6 +3,7 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { apiClient } from '@/shared/lib/api';
 import { orgPath, toQueryParams, type PaginatedResponse } from '@/shared/lib/query-helpers';
+import { STALE_TIME } from '@/shared/config/query-config';
 import type { CreateCustomerDto } from '@hesabdari/contracts';
 
 export interface CustomerDto {
@@ -36,19 +37,27 @@ export function useCustomers(params: CustomerListParams = {}) {
   return useQuery({
     queryKey: customerKeys.list(params),
     queryFn: () =>
-      apiClient.get<PaginatedResponse<CustomerDto>>(
-        orgPath('/customers'),
-        toQueryParams(params),
-      ),
+      apiClient.get<PaginatedResponse<CustomerDto>>(orgPath('/customers'), toQueryParams(params)),
+    staleTime: STALE_TIME.MASTER_DATA,
   });
 }
 
 export function useCustomerSearch(q: string) {
   return useQuery({
     queryKey: customerKeys.search(q),
-    queryFn: () =>
-      apiClient.get<CustomerDto[]>(orgPath('/customers/search'), { q }),
+    queryFn: () => apiClient.get<CustomerDto[]>(orgPath('/customers/search'), { q }),
     enabled: q.length >= 1,
+    staleTime: STALE_TIME.SEARCH,
+  });
+}
+
+/** Fetch a single customer by ID. */
+export function useCustomer(id: string) {
+  return useQuery({
+    queryKey: customerKeys.detail(id),
+    queryFn: () => apiClient.get<CustomerDto>(orgPath(`/customers/${id}`)),
+    enabled: !!id,
+    staleTime: STALE_TIME.MASTER_DATA,
   });
 }
 
@@ -63,11 +72,23 @@ export function useCreateCustomer() {
   });
 }
 
+/** Update an existing customer. */
+export function useUpdateCustomer() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({ id, data }: { id: string; data: Partial<CreateCustomerDto> }) =>
+      apiClient.put<CustomerDto>(orgPath(`/customers/${id}`), data),
+    onSuccess: (_data, variables) => {
+      queryClient.invalidateQueries({ queryKey: customerKeys.lists() });
+      queryClient.invalidateQueries({ queryKey: customerKeys.detail(variables.id) });
+    },
+  });
+}
+
 export function useDeleteCustomer() {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (id: string) =>
-      apiClient.delete(orgPath(`/customers/${id}`)),
+    mutationFn: (id: string) => apiClient.delete(orgPath(`/customers/${id}`)),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: customerKeys.lists() });
     },

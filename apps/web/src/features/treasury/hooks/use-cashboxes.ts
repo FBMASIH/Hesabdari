@@ -3,6 +3,7 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { apiClient } from '@/shared/lib/api';
 import { orgPath, toQueryParams, type PaginatedResponse } from '@/shared/lib/query-helpers';
+import { STALE_TIME } from '@/shared/config/query-config';
 
 export interface CashboxDto {
   id: string;
@@ -44,19 +45,17 @@ export function useCashboxes(params: CashboxListParams = {}) {
   return useQuery({
     queryKey: cashboxKeys.list(params),
     queryFn: () =>
-      apiClient.get<PaginatedResponse<CashboxDto>>(
-        orgPath('/cashboxes'),
-        toQueryParams(params),
-      ),
+      apiClient.get<PaginatedResponse<CashboxDto>>(orgPath('/cashboxes'), toQueryParams(params)),
+    staleTime: STALE_TIME.MASTER_DATA,
   });
 }
 
 export function useCashboxSearch(q: string) {
   return useQuery({
     queryKey: cashboxKeys.search(q),
-    queryFn: () =>
-      apiClient.get<CashboxDto[]>(orgPath('/cashboxes/search'), { q }),
+    queryFn: () => apiClient.get<CashboxDto[]>(orgPath('/cashboxes/search'), { q }),
     enabled: q.length >= 1,
+    staleTime: STALE_TIME.SEARCH,
   });
 }
 
@@ -74,8 +73,7 @@ export function useCreateCashbox() {
 export function useDeleteCashbox() {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (id: string) =>
-      apiClient.delete(orgPath(`/cashboxes/${id}`)),
+    mutationFn: (id: string) => apiClient.delete(orgPath(`/cashboxes/${id}`)),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: cashboxKeys.lists() });
     },

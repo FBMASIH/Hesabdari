@@ -3,6 +3,7 @@
 import { useQuery } from '@tanstack/react-query';
 import { apiClient } from '@/shared/lib/api';
 import { orgPath, toQueryParams, type PaginatedResponse } from '@/shared/lib/query-helpers';
+import { STALE_TIME } from '@/shared/config/query-config';
 
 export interface ProductDto {
   id: string;
@@ -26,14 +27,11 @@ export const productKeys = {
   list: (params: ProductListParams) => [...productKeys.lists(), params] as const,
 };
 
-/** Fetch paginated product list. */
 export function useProducts(params: ProductListParams = {}) {
   return useQuery({
     queryKey: productKeys.list(params),
     queryFn: () =>
-      apiClient.get<PaginatedResponse<ProductDto>>(
-        orgPath('/products'),
-        toQueryParams(params),
-      ),
+      apiClient.get<PaginatedResponse<ProductDto>>(orgPath('/products'), toQueryParams(params)),
+    staleTime: STALE_TIME.MASTER_DATA,
   });
 }

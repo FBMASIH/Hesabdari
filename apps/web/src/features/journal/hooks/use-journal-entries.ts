@@ -3,6 +3,7 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { apiClient } from '@/shared/lib/api';
 import { orgPath, toQueryParams, type PaginatedResponse } from '@/shared/lib/query-helpers';
+import { STALE_TIME } from '@/shared/config/query-config';
 
 // ── API response types ──────────────────────────────
 
@@ -55,6 +56,7 @@ export function useJournalEntries(params: JournalListParams = {}) {
         orgPath('/journal-entries'),
         toQueryParams(params),
       ),
+    staleTime: STALE_TIME.TRANSACTIONAL,
   });
 }
 
@@ -63,6 +65,7 @@ export function useJournalEntry(id: string) {
     queryKey: journalKeys.detail(id),
     queryFn: () => apiClient.get<JournalEntryDto>(orgPath(`/journal-entries/${id}`)),
     enabled: !!id,
+    staleTime: STALE_TIME.TRANSACTIONAL,
   });
 }
 
