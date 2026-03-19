@@ -59,10 +59,8 @@ export function useInvoices(params: InvoiceListParams = {}) {
   return useQuery({
     queryKey: invoiceKeys.list(params),
     queryFn: () =>
-      apiClient.get<PaginatedResponse<InvoiceDto>>(
-        orgPath('/invoices'),
-        toQueryParams(params),
-      ),
+      apiClient.get<PaginatedResponse<InvoiceDto>>(orgPath('/invoices'), toQueryParams(params)),
+    staleTime: 2 * 60 * 1000, // TRANSACTIONAL
   });
 }
 
@@ -71,6 +69,7 @@ export function useInvoice(id: string) {
     queryKey: invoiceKeys.detail(id),
     queryFn: () => apiClient.get<InvoiceDto>(orgPath(`/invoices/${id}`)),
     enabled: !!id,
+    staleTime: 2 * 60 * 1000, // TRANSACTIONAL
   });
 }
 
@@ -99,8 +98,7 @@ export function useUpdateInvoice() {
 export function useConfirmInvoice() {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (id: string) =>
-      apiClient.post<InvoiceDto>(orgPath(`/invoices/${id}/confirm`)),
+    mutationFn: (id: string) => apiClient.post<InvoiceDto>(orgPath(`/invoices/${id}/confirm`)),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: invoiceKeys.all });
     },
@@ -110,8 +108,7 @@ export function useConfirmInvoice() {
 export function useCancelInvoice() {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (id: string) =>
-      apiClient.post<InvoiceDto>(orgPath(`/invoices/${id}/cancel`)),
+    mutationFn: (id: string) => apiClient.post<InvoiceDto>(orgPath(`/invoices/${id}/cancel`)),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: invoiceKeys.all });
     },

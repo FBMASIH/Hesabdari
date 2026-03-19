@@ -26,14 +26,11 @@ export const productKeys = {
   list: (params: ProductListParams) => [...productKeys.lists(), params] as const,
 };
 
-/** Fetch paginated product list. */
 export function useProducts(params: ProductListParams = {}) {
   return useQuery({
     queryKey: productKeys.list(params),
     queryFn: () =>
-      apiClient.get<PaginatedResponse<ProductDto>>(
-        orgPath('/products'),
-        toQueryParams(params),
-      ),
+      apiClient.get<PaginatedResponse<ProductDto>>(orgPath('/products'), toQueryParams(params)),
+    staleTime: 5 * 60 * 1000, // MASTER_DATA
   });
 }

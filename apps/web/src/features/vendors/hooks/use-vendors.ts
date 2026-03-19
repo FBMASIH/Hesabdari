@@ -36,20 +36,38 @@ export function useVendors(params: VendorListParams = {}) {
   return useQuery({
     queryKey: vendorKeys.list(params),
     queryFn: () =>
-      apiClient.get<PaginatedResponse<VendorDto>>(
-        orgPath('/vendors'),
-        toQueryParams(params),
-      ),
+      apiClient.get<PaginatedResponse<VendorDto>>(orgPath('/vendors'), toQueryParams(params)),
+    staleTime: 5 * 60 * 1000, // MASTER_DATA
   });
 }
 
 export function useCreateVendor() {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (data: CreateVendorDto) =>
-      apiClient.post<VendorDto>(orgPath('/vendors'), data),
+    mutationFn: (data: CreateVendorDto) => apiClient.post<VendorDto>(orgPath('/vendors'), data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: vendorKeys.lists() });
+    },
+  });
+}
+
+export function useVendor(id: string) {
+  return useQuery({
+    queryKey: vendorKeys.detail(id),
+    queryFn: () => apiClient.get<VendorDto>(orgPath(`/vendors/${id}`)),
+    enabled: !!id,
+    staleTime: 5 * 60 * 1000, // MASTER_DATA
+  });
+}
+
+export function useUpdateVendor() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({ id, data }: { id: string; data: Partial<CreateVendorDto> }) =>
+      apiClient.put<VendorDto>(orgPath(`/vendors/${id}`), data),
+    onSuccess: (_data, variables) => {
+      queryClient.invalidateQueries({ queryKey: vendorKeys.lists() });
+      queryClient.invalidateQueries({ queryKey: vendorKeys.detail(variables.id) });
     },
   });
 }
@@ -57,8 +75,7 @@ export function useCreateVendor() {
 export function useDeleteVendor() {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (id: string) =>
-      apiClient.delete(orgPath(`/vendors/${id}`)),
+    mutationFn: (id: string) => apiClient.delete(orgPath(`/vendors/${id}`)),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: vendorKeys.lists() });
     },

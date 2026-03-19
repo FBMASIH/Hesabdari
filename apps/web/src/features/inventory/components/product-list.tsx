@@ -3,9 +3,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import {
-  Badge,
   Button,
-  Pagination,
   EmptyState,
   ConfirmDialog,
   Table,
@@ -14,18 +12,30 @@ import {
   TableRow,
   TableHead,
   TableCell,
+  SortableTableHead,
   IconPlus,
   IconDelivery,
-  IconPen,
-  IconTrash,
 } from '@hesabdari/ui';
 import { t } from '@/shared/lib/i18n';
 import { formatMoney } from '@/shared/lib/money';
-import { toPersianDigits } from '@/shared/lib/date';
-import { DataPageHeader, DataFilterBar, DataTableSkeleton, DataErrorState, type FilterPill } from '@/features/shared';
+import {
+  DataPageHeader,
+  DataFilterBar,
+  DataTableSkeleton,
+  DataErrorState,
+  TableRowActions,
+  ActiveBadge,
+  TablePaginationFooter,
+  type FilterPill,
+} from '@/features/shared';
 import { useAppToast } from '@/providers/toast-provider';
-import { useProductsList, useDeleteProduct, type ProductDetailDto } from '../hooks/use-products-crud';
+import {
+  useProductsList,
+  useDeleteProduct,
+  type ProductDetailDto,
+} from '../hooks/use-products-crud';
 import { useDebounce } from '@/shared/hooks/use-debounce';
+import { useTableSort } from '@/shared/hooks/use-table-sort';
 import { ApiError } from '@hesabdari/api-client';
 
 const prod = t('product');
@@ -65,12 +75,16 @@ export function ProductListPage() {
         setDeleteTarget(null);
       },
       onError: (err) => {
-        showToast({ title: err instanceof ApiError ? err.message : msgs.unexpectedError, variant: 'error' });
+        showToast({
+          title: err instanceof ApiError ? err.message : msgs.unexpectedError,
+          variant: 'error',
+        });
       },
     });
   }
 
   const products = data?.data ?? [];
+  const { sort, toggleSort, sorted } = useTableSort(products);
   const totalPages = data ? Math.ceil(data.total / data.pageSize) : 0;
 
   return (
@@ -86,10 +100,16 @@ export function ProductListPage() {
       />
       <DataFilterBar
         searchValue={search}
-        onSearchChange={(v) => { setSearch(v); setPage(1); }}
+        onSearchChange={(v) => {
+          setSearch(v);
+          setPage(1);
+        }}
         searchPlaceholder={prod.searchPlaceholder}
         filters={filters}
-        onFilterToggle={(key) => { setActiveFilter(key); setPage(1); }}
+        onFilterToggle={(key) => {
+          setActiveFilter(key);
+          setPage(1);
+        }}
       />
 
       {isLoading && <DataTableSkeleton columns={6} rows={5} />}
@@ -104,46 +124,63 @@ export function ProductListPage() {
                 title={search ? common.noResults : common.noData}
                 description={search ? prod.noProductFound : prod.noProductYet}
                 icon={<IconDelivery size={20} />}
-                action={!search ? (
-                  <Button variant="default" size="sm" onClick={() => router.push('/products/new')}>
-                    <IconPlus size={14} /> {prod.newProduct}
-                  </Button>
-                ) : undefined}
+                action={
+                  !search ? (
+                    <Button
+                      variant="default"
+                      size="sm"
+                      onClick={() => router.push('/products/new')}
+                    >
+                      <IconPlus size={14} /> {prod.newProduct}
+                    </Button>
+                  ) : undefined
+                }
               />
             </div>
           ) : (
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead>{prod.productCode}</TableHead>
-                  <TableHead>{prod.productName}</TableHead>
-                  <TableHead>{prod.countingUnit}</TableHead>
-                  <TableHead>{prod.salePrice1}</TableHead>
-                  <TableHead>{common.status}</TableHead>
+                  <SortableTableHead sortKey="code" sort={sort} onSort={toggleSort}>
+                    {prod.productCode}
+                  </SortableTableHead>
+                  <SortableTableHead sortKey="name" sort={sort} onSort={toggleSort}>
+                    {prod.productName}
+                  </SortableTableHead>
+                  <SortableTableHead sortKey="countingUnit" sort={sort} onSort={toggleSort}>
+                    {prod.countingUnit}
+                  </SortableTableHead>
+                  <SortableTableHead sortKey="salePrice1" sort={sort} onSort={toggleSort}>
+                    {prod.salePrice1}
+                  </SortableTableHead>
+                  <SortableTableHead sortKey="isActive" sort={sort} onSort={toggleSort}>
+                    {common.status}
+                  </SortableTableHead>
                   <TableHead>{common.actions}</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {products.map((row) => (
+                {sorted.map((row) => (
                   <TableRow key={row.id}>
-                    <TableCell className="font-medium ltr-text" dir="ltr">{row.code}</TableCell>
+                    <TableCell className="font-medium ltr-text" dir="ltr">
+                      {row.code}
+                    </TableCell>
                     <TableCell>{row.name}</TableCell>
                     <TableCell className="text-fg-secondary">{row.countingUnit}</TableCell>
                     <TableCell className="tabular-nums">
-                      {row.salePrice1 && row.salePrice1 !== '0' ? formatMoney(row.salePrice1, { showUnit: false }) : '—'}
+                      {row.salePrice1 && row.salePrice1 !== '0'
+                        ? formatMoney(row.salePrice1, { showUnit: false })
+                        : '—'}
                     </TableCell>
                     <TableCell>
-                      <Badge variant={row.isActive ? 'success' : 'danger'}>
-                        {row.isActive ? common.active : common.inactive}
-                      </Badge>
+                      <ActiveBadge isActive={row.isActive} />
                     </TableCell>
                     <TableCell>
-                      <div className="flex items-center gap-1">
-                        <Button variant="outline" size="xs" onClick={() => router.push(`/products/${row.id}/edit` as never)}><IconPen size={12} /> {common.edit}</Button>
-                        <Button variant="danger" size="xs" disabled={deleteMutation.isPending} onClick={() => setDeleteTarget(row)}>
-                          <IconTrash size={12} /> {common.delete}
-                        </Button>
-                      </div>
+                      <TableRowActions
+                        onEdit={() => router.push(`/products/${row.id}/edit`)}
+                        onDelete={() => setDeleteTarget(row)}
+                        deleteDisabled={deleteMutation.isPending}
+                      />
                     </TableCell>
                   </TableRow>
                 ))}
@@ -152,19 +189,26 @@ export function ProductListPage() {
           )}
 
           {products.length > 0 && (
-            <div className="flex items-center justify-between pt-4">
-              <span className="text-xs text-fg-tertiary">{toPersianDigits(data?.total ?? 0)} {prod.productCount}</span>
-              <Pagination currentPage={page} totalPages={totalPages} onPageChange={setPage} />
-            </div>
+            <TablePaginationFooter
+              total={data?.total ?? 0}
+              unitLabel={prod.productCount}
+              currentPage={page}
+              totalPages={totalPages}
+              onPageChange={setPage}
+            />
           )}
         </>
       )}
 
       <ConfirmDialog
         open={deleteTarget !== null}
-        onOpenChange={(open) => { if (!open) setDeleteTarget(null); }}
+        onOpenChange={(open) => {
+          if (!open) setDeleteTarget(null);
+        }}
         title={msgs.deleteConfirm}
-        description={deleteTarget ? `${deleteTarget.name} (${deleteTarget.code}) ${msgs.deleteWarning}` : ''}
+        description={
+          deleteTarget ? `${deleteTarget.name} (${deleteTarget.code}) ${msgs.deleteWarning}` : ''
+        }
         confirmLabel={common.delete}
         variant="danger"
         onConfirm={handleDelete}

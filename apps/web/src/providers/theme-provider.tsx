@@ -2,7 +2,11 @@
 
 import { createContext, useContext, useEffect, useState, type ReactNode } from 'react';
 
-type Theme = 'light' | 'dark' | 'system';
+export type Theme = 'light' | 'dark' | 'system';
+
+function isTheme(value: string): value is Theme {
+  return value === 'light' || value === 'dark' || value === 'system';
+}
 
 interface ThemeContextValue {
   theme: Theme;
@@ -22,7 +26,13 @@ function getInitialState(): { theme: Theme; resolved: 'light' | 'dark' } {
     return { theme: 'system', resolved: 'light' };
   }
 
-  const stored = (localStorage.getItem('theme') as Theme | null) ?? 'system';
+  let raw: string | null = null;
+  try {
+    raw = localStorage.getItem('theme');
+  } catch {
+    /* storage unavailable */
+  }
+  const stored: Theme = raw && isTheme(raw) ? raw : 'system';
   const preSet = document.documentElement.getAttribute('data-theme');
   const resolved = preSet === 'dark' ? 'dark' : 'light';
 
@@ -34,7 +44,7 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
   const [theme, setTheme] = useState<Theme>(initial.theme);
   const [resolvedTheme, setResolvedTheme] = useState<'light' | 'dark'>(initial.resolved);
 
-  useEffect(() => {
+  useEffect((): (() => void) | void => {
     const resolve = (): 'light' | 'dark' => {
       if (theme === 'system') {
         return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
@@ -45,7 +55,22 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
     const resolved = resolve();
     setResolvedTheme(resolved);
     document.documentElement.setAttribute('data-theme', resolved);
-    localStorage.setItem('theme', theme);
+    try {
+      localStorage.setItem('theme', theme);
+    } catch {
+      /* storage unavailable */
+    }
+
+    const mq = window.matchMedia('(prefers-color-scheme: dark)');
+    if (theme === 'system') {
+      const listener = () => {
+        const r = mq.matches ? 'dark' : 'light';
+        setResolvedTheme(r);
+        document.documentElement.setAttribute('data-theme', r);
+      };
+      mq.addEventListener('change', listener);
+      return () => mq.removeEventListener('change', listener);
+    }
   }, [theme]);
 
   return (

@@ -32,10 +32,8 @@ export function useWarehouses(params: WarehouseListParams = {}) {
   return useQuery({
     queryKey: warehouseKeys.list(params),
     queryFn: () =>
-      apiClient.get<PaginatedResponse<WarehouseDto>>(
-        orgPath('/warehouses'),
-        toQueryParams(params),
-      ),
+      apiClient.get<PaginatedResponse<WarehouseDto>>(orgPath('/warehouses'), toQueryParams(params)),
+    staleTime: 5 * 60 * 1000, // MASTER_DATA
   });
 }
 
@@ -53,8 +51,7 @@ export function useCreateWarehouse() {
 export function useDeleteWarehouse() {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (id: string) =>
-      apiClient.delete(orgPath(`/warehouses/${id}`)),
+    mutationFn: (id: string) => apiClient.delete(orgPath(`/warehouses/${id}`)),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: warehouseKeys.lists() });
     },

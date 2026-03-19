@@ -96,7 +96,7 @@ export function BankAccountForm() {
   };
 
   return (
-    <div className="flex flex-col">
+    <div className="flex flex-col animate-stagger">
       <DataPageHeader title={tr.newBankAccount} subtitle={tr.bankAccountSubtitle} />
 
       <form method="post" onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-5">

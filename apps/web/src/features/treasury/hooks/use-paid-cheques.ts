@@ -54,6 +54,7 @@ export function usePaidCheques(params: PaidChequeListParams = {}) {
         orgPath('/paid-cheques'),
         toQueryParams(params),
       ),
+    staleTime: 2 * 60 * 1000, // TRANSACTIONAL
   });
 }
 
@@ -71,8 +72,7 @@ export function useCreatePaidCheque() {
 export function useDeletePaidCheque() {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (id: string) =>
-      apiClient.delete(orgPath(`/paid-cheques/${id}`)),
+    mutationFn: (id: string) => apiClient.delete(orgPath(`/paid-cheques/${id}`)),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: paidChequeKeys.lists() });
     },

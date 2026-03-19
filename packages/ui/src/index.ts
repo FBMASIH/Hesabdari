@@ -28,7 +28,18 @@ export {
   CardFooter,
 } from './components/card';
 export { Badge, type BadgeProps } from './components/badge';
-export { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from './components/table';
+export {
+  Table,
+  TableHeader,
+  TableBody,
+  TableRow,
+  TableHead,
+  TableCell,
+  SortableTableHead,
+  type SortDirection,
+  type SortState,
+  type SortableTableHeadProps,
+} from './components/table';
 export { FormField, FormLabel, FormMessage, type FormFieldProps } from './components/form-field';
 export {
   ToastProvider,
@@ -53,4 +64,3 @@ export { cn } from './lib/utils';
 
 // Icons — Solar Linear style, tree-shakeable
 export * from './icons';
-

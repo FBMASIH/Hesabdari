@@ -36,19 +36,27 @@ export function useCustomers(params: CustomerListParams = {}) {
   return useQuery({
     queryKey: customerKeys.list(params),
     queryFn: () =>
-      apiClient.get<PaginatedResponse<CustomerDto>>(
-        orgPath('/customers'),
-        toQueryParams(params),
-      ),
+      apiClient.get<PaginatedResponse<CustomerDto>>(orgPath('/customers'), toQueryParams(params)),
+    staleTime: 5 * 60 * 1000, // MASTER_DATA
   });
 }
 
 export function useCustomerSearch(q: string) {
   return useQuery({
     queryKey: customerKeys.search(q),
-    queryFn: () =>
-      apiClient.get<CustomerDto[]>(orgPath('/customers/search'), { q }),
+    queryFn: () => apiClient.get<CustomerDto[]>(orgPath('/customers/search'), { q }),
     enabled: q.length >= 1,
+    staleTime: 30 * 1000, // SEARCH
+  });
+}
+
+/** Fetch a single customer by ID. */
+export function useCustomer(id: string) {
+  return useQuery({
+    queryKey: customerKeys.detail(id),
+    queryFn: () => apiClient.get<CustomerDto>(orgPath(`/customers/${id}`)),
+    enabled: !!id,
+    staleTime: 5 * 60 * 1000, // MASTER_DATA
   });
 }
 
@@ -63,11 +71,23 @@ export function useCreateCustomer() {
   });
 }
 
+/** Update an existing customer. */
+export function useUpdateCustomer() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({ id, data }: { id: string; data: Partial<CreateCustomerDto> }) =>
+      apiClient.put<CustomerDto>(orgPath(`/customers/${id}`), data),
+    onSuccess: (_data, variables) => {
+      queryClient.invalidateQueries({ queryKey: customerKeys.lists() });
+      queryClient.invalidateQueries({ queryKey: customerKeys.detail(variables.id) });
+    },
+  });
+}
+
 export function useDeleteCustomer() {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (id: string) =>
-      apiClient.delete(orgPath(`/customers/${id}`)),
+    mutationFn: (id: string) => apiClient.delete(orgPath(`/customers/${id}`)),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: customerKeys.lists() });
     },

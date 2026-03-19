@@ -55,15 +55,16 @@ export function useBankAccounts(params: BankAccountListParams = {}) {
         orgPath('/bank-accounts'),
         toQueryParams(params),
       ),
+    staleTime: 5 * 60 * 1000, // MASTER_DATA
   });
 }
 
 export function useBankAccountSearch(q: string) {
   return useQuery({
     queryKey: bankAccountKeys.search(q),
-    queryFn: () =>
-      apiClient.get<BankAccountDto[]>(orgPath('/bank-accounts/search'), { q }),
+    queryFn: () => apiClient.get<BankAccountDto[]>(orgPath('/bank-accounts/search'), { q }),
     enabled: q.length >= 1,
+    staleTime: 30 * 1000, // SEARCH
   });
 }
 
@@ -81,8 +82,7 @@ export function useCreateBankAccount() {
 export function useDeleteBankAccount() {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (id: string) =>
-      apiClient.delete(orgPath(`/bank-accounts/${id}`)),
+    mutationFn: (id: string) => apiClient.delete(orgPath(`/bank-accounts/${id}`)),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: bankAccountKeys.lists() });
     },

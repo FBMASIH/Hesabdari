@@ -9,17 +9,23 @@ import { Input, Textarea, MoneyInput, FormField, FormLabel, FormErrorBanner } fr
 import { t } from '@/shared/lib/i18n';
 import { FormSection, FormActions, DataPageHeader } from '@/features/shared';
 import { useAppToast } from '@/providers/toast-provider';
-import { useCreateCustomer } from '../hooks/use-customers';
+import { useCreateCustomer, useUpdateCustomer, type CustomerDto } from '../hooks/use-customers';
 import { ApiError } from '@hesabdari/api-client';
 
 const cust = t('customer');
 const common = t('common');
 const msgs = t('messages');
 
-export function CustomerForm() {
+interface CustomerFormProps {
+  initialData?: CustomerDto;
+}
+
+export function CustomerForm({ initialData }: CustomerFormProps = {}) {
   const router = useRouter();
   const { showToast } = useAppToast();
   const createMutation = useCreateCustomer();
+  const updateMutation = useUpdateCustomer();
+  const isEditing = !!initialData?.id;
   const [formError, setFormError] = useState<string | null>(null);
 
   const {
@@ -30,13 +36,27 @@ export function CustomerForm() {
     formState: { errors, isSubmitting },
   } = useForm<CreateCustomerDto>({
     resolver: zodResolver(createCustomerSchema),
-    defaultValues: { isActive: true },
+    defaultValues: initialData
+      ? {
+          code: initialData.code,
+          name: initialData.name,
+          phone1: initialData.phone1 ?? undefined,
+          address: initialData.address ?? undefined,
+          creditLimit: initialData.creditLimit ?? undefined,
+          nationalId: initialData.nationalId ?? undefined,
+          isActive: initialData.isActive,
+        }
+      : { isActive: true },
   });
 
-  const onSubmit = async (data: CreateCustomerDto) => {
+  async function onSubmit(data: CreateCustomerDto) {
     setFormError(null);
     try {
-      await createMutation.mutateAsync(data);
+      if (isEditing) {
+        await updateMutation.mutateAsync({ id: initialData.id, data });
+      } else {
+        await createMutation.mutateAsync(data);
+      }
       showToast({ title: msgs.saveSuccess, variant: 'success' });
       router.back();
     } catch (err) {
@@ -44,11 +64,14 @@ export function CustomerForm() {
       setFormError(msg);
       showToast({ title: msg, variant: 'error' });
     }
-  };
+  }
 
   return (
-    <div className="flex flex-col">
-      <DataPageHeader title={cust.newCustomer} subtitle={cust.newCustomerSubtitle} />
+    <div className="flex flex-col gap-5 animate-stagger">
+      <DataPageHeader
+        title={isEditing ? cust.editCustomer : cust.newCustomer}
+        subtitle={isEditing ? cust.editCustomerSubtitle : cust.newCustomerSubtitle}
+      />
 
       <form method="post" onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-5">
         {formError && <FormErrorBanner message={formError} />}
@@ -127,7 +150,7 @@ export function CustomerForm() {
         <FormActions
           submitLabel={common.save}
           onCancel={() => router.back()}
-          isSubmitting={isSubmitting || createMutation.isPending}
+          isSubmitting={isSubmitting || createMutation.isPending || updateMutation.isPending}
         />
       </form>
     </div>

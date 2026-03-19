@@ -82,7 +82,7 @@ export function PaidChequeForm() {
   }));
 
   return (
-    <div className="flex flex-col">
+    <div className="flex flex-col animate-stagger">
       <DataPageHeader title={tr.newPaidCheque} subtitle={tr.paidChequeSubtitle} />
 
       <form method="post" onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-5">

@@ -55,6 +55,7 @@ export function useJournalEntries(params: JournalListParams = {}) {
         orgPath('/journal-entries'),
         toQueryParams(params),
       ),
+    staleTime: 2 * 60 * 1000, // TRANSACTIONAL
   });
 }
 
@@ -63,6 +64,7 @@ export function useJournalEntry(id: string) {
     queryKey: journalKeys.detail(id),
     queryFn: () => apiClient.get<JournalEntryDto>(orgPath(`/journal-entries/${id}`)),
     enabled: !!id,
+    staleTime: 2 * 60 * 1000, // TRANSACTIONAL
   });
 }
 

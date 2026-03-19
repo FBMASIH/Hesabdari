@@ -22,5 +22,6 @@ export function useAccounts() {
   return useQuery({
     queryKey: accountKeys.list(),
     queryFn: () => apiClient.get<AccountDto[]>(orgPath('/accounts')),
+    staleTime: 5 * 60 * 1000, // MASTER_DATA
   });
 }

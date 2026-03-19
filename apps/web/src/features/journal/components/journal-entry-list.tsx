@@ -5,7 +5,6 @@ import { useRouter } from 'next/navigation';
 import {
   Badge,
   Button,
-  Pagination,
   EmptyState,
   Table,
   TableHeader,
@@ -13,17 +12,24 @@ import {
   TableRow,
   TableHead,
   TableCell,
+  SortableTableHead,
   IconPlus,
   IconBook,
 } from '@hesabdari/ui';
 import { t } from '@/shared/lib/i18n';
 import { formatMoney } from '@/shared/lib/money';
 import { formatISOToJalali, toPersianDigits } from '@/shared/lib/date';
-import { DataPageHeader, DataFilterBar, DataTableSkeleton, DataErrorState, type FilterPill } from '@/features/shared';
+import {
+  DataPageHeader,
+  DataFilterBar,
+  DataTableSkeleton,
+  DataErrorState,
+  TablePaginationFooter,
+  type FilterPill,
+} from '@/features/shared';
 import { useJournalEntries, type JournalEntryDto } from '../hooks/use-journal-entries';
 import { useDebounce } from '@/shared/hooks/use-debounce';
-
-// ── i18n lookups ────────────────────────────────────
+import { useTableSort } from '@/shared/hooks/use-table-sort';
 
 const j = t('journal');
 const acct = t('accounting');
@@ -42,8 +48,6 @@ const statusVariant: Record<JournalEntryStatus, 'warning' | 'success' | 'danger'
   POSTED: 'success',
   REVERSED: 'danger',
 };
-
-// ── Component ───────────────────────────────────────
 
 export function JournalEntryListPage() {
   const router = useRouter();
@@ -73,9 +77,9 @@ export function JournalEntryListPage() {
   }
 
   const entries = data?.data ?? [];
+  const { sort, toggleSort, sorted } = useTableSort(entries);
   const totalPages = data ? Math.ceil(data.total / data.pageSize) : 0;
 
-  /** Sum debit/credit from journal lines. */
   function entryTotals(entry: JournalEntryDto) {
     let totalDebit = 0n;
     let totalCredit = 0n;
@@ -99,7 +103,10 @@ export function JournalEntryListPage() {
       />
       <DataFilterBar
         searchValue={search}
-        onSearchChange={(v) => { setSearch(v); setPage(1); }}
+        onSearchChange={(v) => {
+          setSearch(v);
+          setPage(1);
+        }}
         searchPlaceholder={j.searchPlaceholder}
         filters={filters}
         onFilterToggle={handleFilterToggle}
@@ -117,28 +124,42 @@ export function JournalEntryListPage() {
                 title={search || statusFilter ? common.noResults : common.noData}
                 description={search ? j.noEntryFound : j.noEntryYet}
                 icon={<IconBook size={20} />}
-                action={!search && !statusFilter ? (
-                  <Button variant="default" size="sm" onClick={() => router.push('/journal-entries/new')}>
-                    <IconPlus size={14} /> {j.newEntry}
-                  </Button>
-                ) : undefined}
+                action={
+                  !search && !statusFilter ? (
+                    <Button
+                      variant="default"
+                      size="sm"
+                      onClick={() => router.push('/journal-entries/new')}
+                    >
+                      <IconPlus size={14} /> {j.newEntry}
+                    </Button>
+                  ) : undefined
+                }
               />
             </div>
           ) : (
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead>{j.entryNumber}</TableHead>
-                  <TableHead>{j.entryDate}</TableHead>
-                  <TableHead>{common.description}</TableHead>
-                  <TableHead>{common.status}</TableHead>
+                  <SortableTableHead sortKey="entryNumber" sort={sort} onSort={toggleSort}>
+                    {j.entryNumber}
+                  </SortableTableHead>
+                  <SortableTableHead sortKey="date" sort={sort} onSort={toggleSort}>
+                    {j.entryDate}
+                  </SortableTableHead>
+                  <SortableTableHead sortKey="description" sort={sort} onSort={toggleSort}>
+                    {common.description}
+                  </SortableTableHead>
+                  <SortableTableHead sortKey="status" sort={sort} onSort={toggleSort}>
+                    {common.status}
+                  </SortableTableHead>
                   <TableHead>{acct.debit}</TableHead>
                   <TableHead>{acct.credit}</TableHead>
                   <TableHead>{j.balanceColumn}</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {entries.map((entry) => {
+                {sorted.map((entry) => {
                   const totals = entryTotals(entry);
                   return (
                     <TableRow key={entry.id}>
@@ -178,12 +199,13 @@ export function JournalEntryListPage() {
           )}
 
           {entries.length > 0 && (
-            <div className="flex items-center justify-between pt-4">
-              <span className="text-xs text-fg-tertiary">
-                {toPersianDigits(data?.total ?? 0)} {j.entryCount}
-              </span>
-              <Pagination currentPage={page} totalPages={totalPages} onPageChange={setPage} />
-            </div>
+            <TablePaginationFooter
+              total={data?.total ?? 0}
+              unitLabel={j.entryCount}
+              currentPage={page}
+              totalPages={totalPages}
+              onPageChange={setPage}
+            />
           )}
         </>
       )}

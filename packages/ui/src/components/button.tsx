@@ -21,7 +21,7 @@ const buttonVariants = cva(
     variants: {
       variant: {
         default:
-          'bg-brand-deep text-primary-fg shadow-[0_1px_3px_rgba(0,0,0,0.12),0_2px_8px_-1px_rgba(74,141,184,0.3)] hover:shadow-[0_2px_6px_rgba(0,0,0,0.12),0_6px_16px_-2px_rgba(74,141,184,0.35)] hover:brightness-110 active:shadow-[0_1px_2px_rgba(0,0,0,0.12)] active:brightness-95 active:translate-y-px',
+          'bg-brand-deep text-primary-fg shadow-brand-glow hover:shadow-brand-glow-hover hover:brightness-110 active:shadow-pressed active:brightness-95 active:translate-y-px',
         secondary:
           'bg-bg-tertiary text-fg-primary shadow-xs hover:shadow-sm hover:brightness-[0.97] active:shadow-xs active:brightness-95 active:translate-y-px',
         outline:
@@ -29,11 +29,9 @@ const buttonVariants = cva(
         ghost:
           'text-fg-secondary hover:bg-bg-tertiary hover:text-fg-primary active:bg-bg-secondary',
         destructive:
-          'bg-danger-default text-danger-fg shadow-[0_1px_3px_rgba(0,0,0,0.12),0_2px_8px_-1px_rgba(255,59,48,0.3)] hover:shadow-[0_2px_6px_rgba(0,0,0,0.12),0_6px_16px_-2px_rgba(255,59,48,0.35)] hover:brightness-110 active:shadow-[0_1px_2px_rgba(0,0,0,0.12)] active:brightness-95 active:translate-y-px',
-        danger:
-          'bg-danger-subtle text-danger-default hover:brightness-[0.97] active:brightness-95',
-        link:
-          'text-brand-deep underline-offset-4 hover:underline',
+          'bg-danger-default text-danger-fg shadow-danger-glow hover:shadow-danger-glow-hover hover:brightness-110 active:shadow-pressed active:brightness-95 active:translate-y-px',
+        danger: 'bg-danger-subtle text-danger-default hover:brightness-[0.97] active:brightness-95',
+        link: 'text-brand-deep underline-offset-4 hover:underline',
       },
       size: {
         xs: 'h-[24px] px-2.5 text-[11px] rounded-lg gap-1',

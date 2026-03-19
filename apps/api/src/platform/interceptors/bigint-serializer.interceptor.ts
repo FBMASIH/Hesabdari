@@ -4,14 +4,13 @@ import type { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
 /**
- * Converts BigInt values to numbers in API responses.
+ * Converts BigInt values to strings in API responses.
  *
  * All monetary values are stored as BigInt (IRR, integer-only).
  * JSON.stringify cannot handle BigInt natively, so this interceptor
- * converts them to numbers before serialization.
+ * converts them to integer strings before serialization.
  *
- * Safety: IRR amounts in any realistic enterprise scenario stay well
- * within Number.MAX_SAFE_INTEGER (~9e15 = 9 quadrillion Rial).
+ * Per CLAUDE.md: "Money MUST be sent over JSON as an integer string."
  */
 @Injectable()
 export class BigIntSerializerInterceptor implements NestInterceptor {
@@ -21,7 +20,7 @@ export class BigIntSerializerInterceptor implements NestInterceptor {
 
   private serialize(value: unknown, seen = new WeakSet<object>()): unknown {
     if (value === null || value === undefined) return value;
-    if (typeof value === 'bigint') return Number(value);
+    if (typeof value === 'bigint') return value.toString();
     if (value instanceof Date) return value;
     if (typeof value === 'object') {
       if (seen.has(value)) return undefined;

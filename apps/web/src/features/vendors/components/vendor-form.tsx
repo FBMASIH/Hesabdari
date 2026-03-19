@@ -9,17 +9,23 @@ import { Input, Textarea, MoneyInput, FormField, FormLabel, FormErrorBanner } fr
 import { t } from '@/shared/lib/i18n';
 import { FormSection, FormActions, DataPageHeader } from '@/features/shared';
 import { useAppToast } from '@/providers/toast-provider';
-import { useCreateVendor } from '../hooks/use-vendors';
+import { useCreateVendor, useUpdateVendor, type VendorDto } from '../hooks/use-vendors';
 import { ApiError } from '@hesabdari/api-client';
 
 const vnd = t('vendor');
 const common = t('common');
 const msgs = t('messages');
 
-export function VendorForm() {
+interface VendorFormProps {
+  initialData?: VendorDto;
+}
+
+export function VendorForm({ initialData }: VendorFormProps = {}) {
   const router = useRouter();
   const { showToast } = useAppToast();
   const createMutation = useCreateVendor();
+  const updateMutation = useUpdateVendor();
+  const isEditing = !!initialData?.id;
   const [formError, setFormError] = useState<string | null>(null);
 
   const {
@@ -30,13 +36,27 @@ export function VendorForm() {
     formState: { errors, isSubmitting },
   } = useForm<CreateVendorDto>({
     resolver: zodResolver(createVendorSchema),
-    defaultValues: { isActive: true },
+    defaultValues: initialData
+      ? {
+          code: initialData.code,
+          name: initialData.name,
+          phone1: initialData.phone1 ?? undefined,
+          address: initialData.address ?? undefined,
+          creditLimit: initialData.creditLimit ?? undefined,
+          nationalId: initialData.nationalId ?? undefined,
+          isActive: initialData.isActive,
+        }
+      : { isActive: true },
   });
 
-  const onSubmit = async (data: CreateVendorDto) => {
+  async function onSubmit(data: CreateVendorDto) {
     setFormError(null);
     try {
-      await createMutation.mutateAsync(data);
+      if (isEditing) {
+        await updateMutation.mutateAsync({ id: initialData.id, data });
+      } else {
+        await createMutation.mutateAsync(data);
+      }
       showToast({ title: msgs.saveSuccess, variant: 'success' });
       router.back();
     } catch (err) {
@@ -44,11 +64,14 @@ export function VendorForm() {
       setFormError(msg);
       showToast({ title: msg, variant: 'error' });
     }
-  };
+  }
 
   return (
-    <div className="flex flex-col">
-      <DataPageHeader title={vnd.newVendor} subtitle={vnd.newVendorSubtitle} />
+    <div className="flex flex-col gap-5 animate-stagger">
+      <DataPageHeader
+        title={isEditing ? vnd.editVendor : vnd.newVendor}
+        subtitle={isEditing ? vnd.editVendorSubtitle : vnd.newVendorSubtitle}
+      />
 
       <form method="post" onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-5">
         {formError && <FormErrorBanner message={formError} />}
@@ -127,7 +150,7 @@ export function VendorForm() {
         <FormActions
           submitLabel={common.save}
           onCancel={() => router.back()}
-          isSubmitting={isSubmitting || createMutation.isPending}
+          isSubmitting={isSubmitting || createMutation.isPending || updateMutation.isPending}
         />
       </form>
     </div>

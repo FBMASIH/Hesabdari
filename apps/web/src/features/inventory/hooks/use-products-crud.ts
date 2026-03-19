@@ -60,7 +60,6 @@ export const productCrudKeys = {
   stocks: (productId: string) => [...productKeys.all, 'stocks', productId] as const,
 };
 
-/** Fetch paginated product list (re-uses shared product keys). */
 export function useProductsList(params: ProductListParams = {}) {
   return useQuery({
     queryKey: productCrudKeys.list(params),
@@ -69,20 +68,19 @@ export function useProductsList(params: ProductListParams = {}) {
         orgPath('/products'),
         toQueryParams(params),
       ),
+    staleTime: 5 * 60 * 1000, // MASTER_DATA
   });
 }
 
-/** Fetch a single product by ID. */
 export function useProduct(id: string) {
   return useQuery({
     queryKey: productCrudKeys.detail(id),
-    queryFn: () =>
-      apiClient.get<ProductDetailDto>(orgPath(`/products/${id}`)),
+    queryFn: () => apiClient.get<ProductDetailDto>(orgPath(`/products/${id}`)),
     enabled: !!id,
+    staleTime: 5 * 60 * 1000, // MASTER_DATA
   });
 }
 
-/** Create a new product. */
 export function useCreateProduct() {
   const queryClient = useQueryClient();
   return useMutation({
@@ -94,12 +92,11 @@ export function useCreateProduct() {
   });
 }
 
-/** Update an existing product. */
 export function useUpdateProduct() {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: ({ id, data }: { id: string; data: UpdateProductPayload }) =>
-      apiClient.patch<ProductDetailDto>(orgPath(`/products/${id}`), data),
+      apiClient.put<ProductDetailDto>(orgPath(`/products/${id}`), data),
     onSuccess: (_data, variables) => {
       queryClient.invalidateQueries({ queryKey: productKeys.lists() });
       queryClient.invalidateQueries({ queryKey: productCrudKeys.detail(variables.id) });
@@ -107,29 +104,26 @@ export function useUpdateProduct() {
   });
 }
 
-/** Delete a product. */
 export function useDeleteProduct() {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (id: string) =>
-      apiClient.delete(orgPath(`/products/${id}`)),
+    mutationFn: (id: string) => apiClient.delete(orgPath(`/products/${id}`)),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: productKeys.lists() });
     },
   });
 }
 
-/** Fetch warehouse stocks for a product (opening stock). */
 export function useProductStocks(productId: string) {
   return useQuery({
     queryKey: productCrudKeys.stocks(productId),
     queryFn: () =>
       apiClient.get<ProductWarehouseStockDto[]>(orgPath(`/products/${productId}/stocks`)),
     enabled: !!productId,
+    staleTime: 5 * 60 * 1000, // MASTER_DATA
   });
 }
 
-/** Save opening stock for a product across warehouses. */
 export function useSaveProductStocks() {
   const queryClient = useQueryClient();
   return useMutation({

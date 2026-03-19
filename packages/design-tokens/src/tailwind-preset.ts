@@ -17,6 +17,7 @@ export const hesabdariPreset = {
           secondary: cssVar('bg-secondary'),
           tertiary: cssVar('bg-tertiary'),
           inverse: cssVar('bg-inverse'),
+          overlay: cssVar('bg-overlay'),
         },
         fg: {
           primary: cssVar('fg-primary'),

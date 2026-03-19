@@ -324,7 +324,8 @@ const fa = {
     invoiceCount: 'فاکتور',
     notFound: 'فاکتور یافت نشد',
     editNotAllowed: 'ویرایش امکان‌پذیر نیست',
-    editNotAllowedDescription: 'فقط فاکتورهای پیش‌نویس قابل ویرایش هستند. برای اصلاح فاکتور تأیید شده، سند برگشت ثبت کنید.',
+    editNotAllowedDescription:
+      'فقط فاکتورهای پیش‌نویس قابل ویرایش هستند. برای اصلاح فاکتور تأیید شده، سند برگشت ثبت کنید.',
   },
 
   // ── Customers ───────────────────────────────────
@@ -333,6 +334,8 @@ const fa = {
     subtitle: 'مدیریت اطلاعات مشتریان',
     newCustomer: 'مشتری جدید',
     newCustomerSubtitle: 'اطلاعات مشتری جدید را وارد کنید',
+    editCustomer: 'ویرایش مشتری',
+    editCustomerSubtitle: 'ویرایش اطلاعات مشتری',
     customerCode: 'کد مشتری',
     customerName: 'نام مشتری',
     namePlaceholder: 'نام مشتری',
@@ -350,6 +353,7 @@ const fa = {
     noCustomerFound: 'مشتری‌ای با این مشخصات یافت نشد',
     noCustomerYet: 'هنوز مشتری ثبت نشده است',
     customerCount: 'مشتری',
+    notFound: 'مشتری یافت نشد',
   },
 
   // ── Vendors ─────────────────────────────────────
@@ -358,6 +362,8 @@ const fa = {
     subtitle: 'مدیریت اطلاعات تأمین‌کنندگان',
     newVendor: 'تأمین‌کننده جدید',
     newVendorSubtitle: 'اطلاعات تأمین‌کننده جدید را وارد کنید',
+    editVendor: 'ویرایش تأمین‌کننده',
+    editVendorSubtitle: 'ویرایش اطلاعات تأمین‌کننده',
     vendorCode: 'کد تأمین‌کننده',
     vendorName: 'نام تأمین‌کننده',
     namePlaceholder: 'نام تأمین‌کننده',
@@ -371,6 +377,7 @@ const fa = {
     noVendorFound: 'تأمین‌کننده‌ای با این مشخصات یافت نشد',
     noVendorYet: 'هنوز تأمین‌کننده‌ای ثبت نشده است',
     vendorCount: 'تأمین‌کننده',
+    notFound: 'تأمین‌کننده یافت نشد',
   },
 
   // ── Treasury ────────────────────────────────────
@@ -494,6 +501,8 @@ const fa = {
     subtitle: 'مدیریت کالاها، خدمات و موجودی',
     newProduct: 'کالای جدید',
     newProductSubtitle: 'اطلاعات کالا یا خدمت جدید را وارد کنید',
+    editProduct: 'ویرایش کالا',
+    editProductSubtitle: 'ویرایش اطلاعات کالا',
     productCode: 'کد کالا',
     productName: 'نام کالا',
     barcode: 'بارکد',
@@ -515,6 +524,7 @@ const fa = {
     noProductFound: 'کالایی با این مشخصات یافت نشد',
     noProductYet: 'هنوز کالایی ثبت نشده است',
     productCount: 'کالا',
+    notFound: 'کالا یافت نشد',
   },
 
   // ── Reports ─────────────────────────────────────
@@ -533,8 +543,17 @@ const fa = {
     fiscalPeriod: 'دوره مالی',
     generateReport: 'ایجاد گزارش',
     selectReportType: 'نوع گزارش را انتخاب کنید',
-    selectReportTypeDescription: 'یکی از گزارش‌های بالا را انتخاب کنید تا بتوانید بازه زمانی و فیلترها را تنظیم کنید.',
+    selectReportTypeDescription:
+      'یکی از گزارش‌های بالا را انتخاب کنید تا بتوانید بازه زمانی و فیلترها را تنظیم کنید.',
     reportSelectedDescription: 'بازه زمانی را انتخاب و دکمه ایجاد گزارش را بزنید.',
+  },
+
+  // ── Spotlight / Command Palette ─────────────────
+  spotlight: {
+    pages: 'صفحات',
+    quickActions: 'عملیات سریع',
+    navigate: 'جابجایی',
+    select: 'انتخاب',
   },
 
   // ── Settings ────────────────────────────────────
@@ -551,6 +570,8 @@ const fa = {
     systemTheme: 'پیش‌فرض سیستم',
     language: 'زبان',
     toggleTheme: 'تغییر پوسته',
+    displayPreferences: 'تنظیمات نمایش و زبان',
+    amountDisplay: 'نمایش مبالغ',
   },
 
   // ── Validation / Errors ─────────────────────────

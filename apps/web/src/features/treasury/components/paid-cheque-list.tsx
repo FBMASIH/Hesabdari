@@ -5,7 +5,6 @@ import { useRouter } from 'next/navigation';
 import {
   Badge,
   Button,
-  Pagination,
   EmptyState,
   ConfirmDialog,
   Table,
@@ -14,25 +13,41 @@ import {
   TableRow,
   TableHead,
   TableCell,
+  SortableTableHead,
   IconPlus,
   IconDocument,
-  IconPen,
-  IconTrash,
 } from '@hesabdari/ui';
 import { t } from '@/shared/lib/i18n';
 import { formatMoney } from '@/shared/lib/money';
-import { formatISOToJalali, toPersianDigits } from '@/shared/lib/date';
-import { DataPageHeader, DataFilterBar, DataTableSkeleton, DataErrorState, type FilterPill } from '@/features/shared';
+import { formatISOToJalali } from '@/shared/lib/date';
+import {
+  DataPageHeader,
+  DataFilterBar,
+  DataTableSkeleton,
+  DataErrorState,
+  TableRowActions,
+  TablePaginationFooter,
+  type FilterPill,
+} from '@/features/shared';
 import { useAppToast } from '@/providers/toast-provider';
-import { usePaidCheques, useDeletePaidCheque, type PaidChequeDto, type PaidChequeStatus } from '../hooks/use-paid-cheques';
+import {
+  usePaidCheques,
+  useDeletePaidCheque,
+  type PaidChequeDto,
+  type PaidChequeStatus,
+} from '../hooks/use-paid-cheques';
 import { useDebounce } from '@/shared/hooks/use-debounce';
+import { useTableSort } from '@/shared/hooks/use-table-sort';
 import { ApiError } from '@hesabdari/api-client';
 
 const tr = t('treasury');
 const common = t('common');
 const msgs = t('messages');
 
-const statusBadgeVariant: Record<PaidChequeStatus, 'default' | 'secondary' | 'success' | 'warning' | 'danger' | 'outline'> = {
+const statusBadgeVariant: Record<
+  PaidChequeStatus,
+  'default' | 'secondary' | 'success' | 'warning' | 'danger' | 'outline'
+> = {
   OPEN: 'outline',
   CLEARED: 'success',
   RETURNED: 'danger',
@@ -57,7 +72,7 @@ export function PaidChequeListPage() {
     page,
     pageSize: 10,
     search: debouncedSearch || undefined,
-    status: statusFilter ? statusFilter as PaidChequeStatus : undefined,
+    status: statusFilter ? (statusFilter as PaidChequeStatus) : undefined,
   });
 
   const deleteMutation = useDeletePaidCheque();
@@ -78,12 +93,16 @@ export function PaidChequeListPage() {
         setDeleteTarget(null);
       },
       onError: (err) => {
-        showToast({ title: err instanceof ApiError ? err.message : msgs.unexpectedError, variant: 'error' });
+        showToast({
+          title: err instanceof ApiError ? err.message : msgs.unexpectedError,
+          variant: 'error',
+        });
       },
     });
   }
 
   const items = data?.data ?? [];
+  const { sort, toggleSort, sorted } = useTableSort(items);
   const totalPages = data ? Math.ceil(data.total / data.pageSize) : 0;
 
   return (
@@ -99,10 +118,16 @@ export function PaidChequeListPage() {
       />
       <DataFilterBar
         searchValue={search}
-        onSearchChange={(v) => { setSearch(v); setPage(1); }}
+        onSearchChange={(v) => {
+          setSearch(v);
+          setPage(1);
+        }}
         searchPlaceholder={tr.searchPaidCheque}
         filters={filters}
-        onFilterToggle={(key) => { setStatusFilter(key); setPage(1); }}
+        onFilterToggle={(key) => {
+          setStatusFilter(key);
+          setPage(1);
+        }}
       />
 
       {isLoading && <DataTableSkeleton columns={8} rows={5} />}
@@ -117,34 +142,58 @@ export function PaidChequeListPage() {
                 title={search || statusFilter ? common.noResults : common.noData}
                 description={search || statusFilter ? tr.noPaidChequeFound : tr.noPaidChequeYet}
                 icon={<IconDocument size={20} />}
-                action={!search && !statusFilter ? (
-                  <Button variant="default" size="sm" onClick={() => router.push('/paid-cheques/new')}>
-                    <IconPlus size={14} /> {tr.newPaidCheque}
-                  </Button>
-                ) : undefined}
+                action={
+                  !search && !statusFilter ? (
+                    <Button
+                      variant="default"
+                      size="sm"
+                      onClick={() => router.push('/paid-cheques/new')}
+                    >
+                      <IconPlus size={14} /> {tr.newPaidCheque}
+                    </Button>
+                  ) : undefined
+                }
               />
             </div>
           ) : (
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead>{tr.chequeNumber}</TableHead>
-                  <TableHead>{tr.paidChequeVendor}</TableHead>
-                  <TableHead>{tr.bankAccount}</TableHead>
-                  <TableHead>{tr.chequeAmount}</TableHead>
-                  <TableHead>{tr.chequeDate}</TableHead>
-                  <TableHead>{tr.chequeDueDate}</TableHead>
-                  <TableHead>{common.status}</TableHead>
+                  <SortableTableHead sortKey="chequeNumber" sort={sort} onSort={toggleSort}>
+                    {tr.chequeNumber}
+                  </SortableTableHead>
+                  <SortableTableHead sortKey="vendor.name" sort={sort} onSort={toggleSort}>
+                    {tr.paidChequeVendor}
+                  </SortableTableHead>
+                  <SortableTableHead sortKey="bankAccount.name" sort={sort} onSort={toggleSort}>
+                    {tr.bankAccount}
+                  </SortableTableHead>
+                  <SortableTableHead sortKey="amount" sort={sort} onSort={toggleSort}>
+                    {tr.chequeAmount}
+                  </SortableTableHead>
+                  <SortableTableHead sortKey="date" sort={sort} onSort={toggleSort}>
+                    {tr.chequeDate}
+                  </SortableTableHead>
+                  <SortableTableHead sortKey="dueDate" sort={sort} onSort={toggleSort}>
+                    {tr.chequeDueDate}
+                  </SortableTableHead>
+                  <SortableTableHead sortKey="status" sort={sort} onSort={toggleSort}>
+                    {common.status}
+                  </SortableTableHead>
                   <TableHead>{common.actions}</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {items.map((row) => (
+                {sorted.map((row) => (
                   <TableRow key={row.id}>
-                    <TableCell className="font-medium ltr-text" dir="ltr">{row.chequeNumber}</TableCell>
+                    <TableCell className="font-medium ltr-text" dir="ltr">
+                      {row.chequeNumber}
+                    </TableCell>
                     <TableCell>{row.vendor?.name ?? '—'}</TableCell>
                     <TableCell>{row.bankAccount.name}</TableCell>
-                    <TableCell className="tabular-nums">{formatMoney(row.amount, { showUnit: false })}</TableCell>
+                    <TableCell className="tabular-nums">
+                      {formatMoney(row.amount, { showUnit: false })}
+                    </TableCell>
                     <TableCell>{formatISOToJalali(row.date, 'short')}</TableCell>
                     <TableCell>{formatISOToJalali(row.dueDate, 'short')}</TableCell>
                     <TableCell>
@@ -153,12 +202,11 @@ export function PaidChequeListPage() {
                       </Badge>
                     </TableCell>
                     <TableCell>
-                      <div className="flex items-center gap-1">
-                        <Button variant="outline" size="xs" onClick={() => router.push(`/paid-cheques/${row.id}/edit` as never)}><IconPen size={12} /> {common.edit}</Button>
-                        <Button variant="danger" size="xs" disabled={deleteMutation.isPending} onClick={() => setDeleteTarget(row)}>
-                          <IconTrash size={12} /> {common.delete}
-                        </Button>
-                      </div>
+                      <TableRowActions
+                        onEdit={() => router.push(`/paid-cheques/${row.id}/edit` as never)}
+                        onDelete={() => setDeleteTarget(row)}
+                        deleteDisabled={deleteMutation.isPending}
+                      />
                     </TableCell>
                   </TableRow>
                 ))}
@@ -167,19 +215,28 @@ export function PaidChequeListPage() {
           )}
 
           {items.length > 0 && (
-            <div className="flex items-center justify-between pt-4">
-              <span className="text-xs text-fg-tertiary">{toPersianDigits(data?.total ?? 0)} {tr.paidCheque}</span>
-              <Pagination currentPage={page} totalPages={totalPages} onPageChange={setPage} />
-            </div>
+            <TablePaginationFooter
+              total={data?.total ?? 0}
+              unitLabel={tr.paidCheque}
+              currentPage={page}
+              totalPages={totalPages}
+              onPageChange={setPage}
+            />
           )}
         </>
       )}
 
       <ConfirmDialog
         open={deleteTarget !== null}
-        onOpenChange={(open) => { if (!open) setDeleteTarget(null); }}
+        onOpenChange={(open) => {
+          if (!open) setDeleteTarget(null);
+        }}
         title={msgs.deleteConfirm}
-        description={deleteTarget ? `${tr.chequeNumber} ${deleteTarget.chequeNumber} ${msgs.deleteWarning}` : ''}
+        description={
+          deleteTarget
+            ? `${tr.chequeNumber} ${deleteTarget.chequeNumber} ${msgs.deleteWarning}`
+            : ''
+        }
         confirmLabel={common.delete}
         variant="danger"
         onConfirm={handleDelete}

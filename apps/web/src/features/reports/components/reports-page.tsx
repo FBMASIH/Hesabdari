@@ -34,11 +34,8 @@ export function ReportsPage() {
   const [toDate, setToDate] = useState('');
 
   return (
-    <div className="flex flex-col">
-      <DataPageHeader
-        title={rpt.title}
-        subtitle={rpt.subtitle}
-      />
+    <div className="flex flex-col animate-stagger">
+      <DataPageHeader title={rpt.title} subtitle={rpt.subtitle} />
 
       {/* Report type selection */}
       <div className="grid grid-cols-2 gap-3 pb-5 sm:grid-cols-3 lg:grid-cols-6">
@@ -47,10 +44,11 @@ export function ReportsPage() {
             key={r.key}
             type="button"
             onClick={() => setSelectedReport(r.key)}
-            className={cn('glass-surface-static flex flex-col items-center gap-2.5 rounded-2xl p-4 text-center transition-all',
+            className={cn(
+              'glass-surface-static flex flex-col items-center gap-2.5 rounded-2xl p-4 text-center transition-all',
               selectedReport === r.key
                 ? 'ring-2 ring-brand-deep/50 bg-primary-subtle shadow-md'
-                : 'hover:shadow-sm'
+                : 'hover:shadow-sm',
             )}
           >
             <span className="text-brand-deep">{r.icon}</span>
@@ -64,11 +62,15 @@ export function ReportsPage() {
         <FormSection title={rpt.fiscalPeriod} className="mb-5">
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
             <div>
-              <label className="mb-1 block text-xs font-medium text-fg-secondary">{rpt.fromDate}</label>
+              <label className="mb-1 block text-xs font-medium text-fg-secondary">
+                {rpt.fromDate}
+              </label>
               <DatePicker value={fromDate} onChange={setFromDate} />
             </div>
             <div>
-              <label className="mb-1 block text-xs font-medium text-fg-secondary">{rpt.toDate}</label>
+              <label className="mb-1 block text-xs font-medium text-fg-secondary">
+                {rpt.toDate}
+              </label>
               <DatePicker value={toDate} onChange={setToDate} />
             </div>
             <div className="flex items-end">
@@ -81,23 +83,19 @@ export function ReportsPage() {
       )}
 
       {/* Report output placeholder */}
-      {selectedReport ? (
-        <div className="glass-surface-static rounded-2xl p-8">
-          <EmptyState
-            title={`${REPORT_TYPES.find((r) => r.key === selectedReport)?.label ?? ''}`}
-            description={rpt.reportSelectedDescription}
-            icon={<IconChart size={20} />}
-          />
-        </div>
-      ) : (
-        <div className="glass-surface-static rounded-2xl p-8">
-          <EmptyState
-            icon={<IconChart size={20} />}
-            title={rpt.selectReportType}
-            description={rpt.selectReportTypeDescription}
-          />
-        </div>
-      )}
+      <div className="glass-surface-static rounded-2xl p-8">
+        <EmptyState
+          icon={<IconChart size={20} />}
+          title={
+            selectedReport
+              ? (REPORT_TYPES.find((r) => r.key === selectedReport)?.label ?? '')
+              : rpt.selectReportType
+          }
+          description={
+            selectedReport ? rpt.reportSelectedDescription : rpt.selectReportTypeDescription
+          }
+        />
+      </div>
     </div>
   );
 }

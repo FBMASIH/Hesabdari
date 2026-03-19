@@ -18,7 +18,10 @@ const typeLabel: Record<AccountDto['type'], string> = {
   EXPENSE: acct.types.expense,
 };
 
-const typeColor: Record<AccountDto['type'], 'default' | 'success' | 'warning' | 'danger' | 'secondary'> = {
+const typeColor: Record<
+  AccountDto['type'],
+  'default' | 'success' | 'warning' | 'danger' | 'secondary'
+> = {
   ASSET: 'success',
   LIABILITY: 'danger',
   EQUITY: 'warning',
@@ -38,6 +41,7 @@ interface TreeNodeProps {
 function AccountTreeNode({ account, children, childrenMap, depth }: TreeNodeProps) {
   const [expanded, setExpanded] = useState(depth < 1);
   const hasChildren = children.length > 0;
+  const isRoot = depth === 0;
 
   return (
     <div>
@@ -45,53 +49,84 @@ function AccountTreeNode({ account, children, childrenMap, depth }: TreeNodeProp
         type="button"
         onClick={() => hasChildren && setExpanded(!expanded)}
         className={cn(
-          'flex w-full items-center gap-3 border-b border-border-secondary/50 py-3.5 pe-5 transition-colors hover:bg-bg-primary/40',
+          'group/node flex w-full items-center gap-3 border-b border-border-secondary/50 pe-5 transition-colors duration-150',
           hasChildren ? 'cursor-pointer' : 'cursor-default',
+          isRoot
+            ? 'bg-bg-tertiary/25 py-4 hover:bg-bg-tertiary/50'
+            : 'py-3.5 hover:bg-bg-primary/40',
         )}
         style={{ paddingInlineStart: `${depth * 28 + 20}px` }}
       >
         {/* Expand/collapse indicator */}
-        <span className="flex h-5 w-5 items-center justify-center text-fg-tertiary">
+        <span
+          className={cn(
+            'flex h-6 w-6 items-center justify-center rounded text-fg-tertiary transition-colors duration-150',
+            hasChildren && 'group-hover/node:bg-bg-tertiary/60',
+          )}
+        >
           {hasChildren ? (
-            <IconChevronRight size={14} className={cn('transition-transform', expanded && 'rotate-90')} />
+            <IconChevronRight
+              size={14}
+              className={cn('transition-transform', expanded && 'rotate-90')}
+            />
           ) : (
             <span className="h-1.5 w-1.5 rounded-full bg-fg-tertiary/40" />
           )}
         </span>
 
         {/* Code */}
-        <span className="w-24 text-start text-sm tabular-nums text-fg-secondary ltr-text" dir="ltr">
+        <span
+          className={cn(
+            'w-24 text-start text-sm tabular-nums ltr-text',
+            isRoot ? 'font-semibold text-fg-primary' : 'text-fg-secondary',
+          )}
+          dir="ltr"
+        >
           {toPersianDigits(account.code)}
         </span>
 
-        {/* Name */}
-        <span className={cn('flex-1 text-start text-sm', hasChildren ? 'font-medium text-fg-primary' : 'text-fg-primary')}>
+        {/* Name + child count */}
+        <span
+          className={cn(
+            'flex flex-1 items-center gap-2 text-start text-sm text-fg-primary',
+            (hasChildren || isRoot) && 'font-semibold',
+          )}
+        >
           {account.name}
+          {hasChildren && (
+            <span className="rounded-full bg-bg-tertiary px-1.5 py-0.5 text-[10px] leading-none text-fg-tertiary">
+              {toPersianDigits(children.length)}
+            </span>
+          )}
         </span>
 
         {/* Type badge */}
-        <Badge variant={typeColor[account.type]}>
-          {typeLabel[account.type]}
-        </Badge>
+        <Badge variant={typeColor[account.type]}>{typeLabel[account.type]}</Badge>
 
         {/* Active status */}
-        {!account.isActive && (
-          <Badge variant="danger">{common.inactive}</Badge>
-        )}
+        {!account.isActive && <Badge variant="danger">{common.inactive}</Badge>}
       </button>
 
-      {/* Children */}
-      {expanded && hasChildren && (
-        <div>
-          {children.map((child) => (
-            <AccountTreeNode
-              key={child.id}
-              account={child}
-              children={childrenMap.get(child.id) ?? []}
-              childrenMap={childrenMap}
-              depth={depth + 1}
-            />
-          ))}
+      {/* Children — CSS Grid collapsible for smooth height animation */}
+      {hasChildren && (
+        <div
+          className={cn(
+            'collapsible',
+            depth === 0 && expanded && 'border-b border-border-secondary/30',
+          )}
+          data-expanded={expanded}
+        >
+          <div className="collapsible-content">
+            {children.map((child) => (
+              <AccountTreeNode
+                key={child.id}
+                account={child}
+                children={childrenMap.get(child.id) ?? []}
+                childrenMap={childrenMap}
+                depth={depth + 1}
+              />
+            ))}
+          </div>
         </div>
       )}
     </div>
@@ -105,7 +140,8 @@ export function AccountTreePage() {
 
   // Build tree from flat list — O(n) map lookup instead of O(n²) filtering
   const accountTree = useMemo(() => {
-    if (!accounts) return { rootAccounts: [] as AccountDto[], childrenMap: new Map<string, AccountDto[]>() };
+    if (!accounts)
+      return { rootAccounts: [] as AccountDto[], childrenMap: new Map<string, AccountDto[]>() };
     const roots: AccountDto[] = [];
     const map = new Map<string, AccountDto[]>();
     for (const account of accounts) {
@@ -123,10 +159,7 @@ export function AccountTreePage() {
 
   return (
     <div className="flex flex-col">
-      <DataPageHeader
-        title={acct.chartOfAccounts}
-        subtitle={acct.chartOfAccountsDesc}
-      />
+      <DataPageHeader title={acct.chartOfAccounts} subtitle={acct.chartOfAccountsDesc} />
 
       {isLoading && <DataTableSkeleton columns={3} rows={8} />}
 
@@ -143,10 +176,14 @@ export function AccountTreePage() {
           ) : (
             <>
               {/* Header */}
-              <div className="flex items-center gap-3 border-b border-border-secondary py-3 pe-5 ps-5">
-                <span className="w-5" />
-                <span className="w-24 text-xs font-medium text-fg-tertiary">{acct.accountCode}</span>
-                <span className="flex-1 text-xs font-medium text-fg-tertiary">{acct.accountName}</span>
+              <div className="flex items-center gap-3 border-b border-border-secondary bg-bg-tertiary/30 py-3 pe-5 ps-5">
+                <span className="w-6" />
+                <span className="w-24 text-xs font-medium text-fg-tertiary">
+                  {acct.accountCode}
+                </span>
+                <span className="flex-1 text-xs font-medium text-fg-tertiary">
+                  {acct.accountName}
+                </span>
                 <span className="text-xs font-medium text-fg-tertiary">{acct.accountType}</span>
               </div>
 

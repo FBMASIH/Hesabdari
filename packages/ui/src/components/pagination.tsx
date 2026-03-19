@@ -16,7 +16,15 @@ export interface PaginationProps {
   nextLabel?: string;
 }
 
-export function Pagination({ currentPage, totalPages, onPageChange, className, navLabel = 'صفحه‌بندی', previousLabel = 'صفحه قبلی', nextLabel = 'صفحه بعدی' }: PaginationProps) {
+export function Pagination({
+  currentPage,
+  totalPages,
+  onPageChange,
+  className,
+  navLabel = 'صفحه‌بندی',
+  previousLabel = 'صفحه قبلی',
+  nextLabel = 'صفحه بعدی',
+}: PaginationProps) {
   if (totalPages <= 1) return null;
 
   const pages = getVisiblePages(currentPage, totalPages);
@@ -37,7 +45,10 @@ export function Pagination({ currentPage, totalPages, onPageChange, className, n
       {/* Page numbers */}
       {pages.map((page, i) =>
         page === '...' ? (
-          <span key={`ellipsis-${i}`} className="flex h-8 w-8 items-center justify-center text-xs text-fg-tertiary">
+          <span
+            key={`ellipsis-${i}`}
+            className="flex h-8 w-8 items-center justify-center text-xs text-fg-tertiary"
+          >
             …
           </span>
         ) : (
@@ -49,7 +60,7 @@ export function Pagination({ currentPage, totalPages, onPageChange, className, n
             className={cn(
               'flex h-8 w-8 items-center justify-center rounded-lg tabular-nums text-sm font-medium transition-colors',
               page === currentPage
-                ? 'bg-brand-deep text-primary-fg shadow-[0_1px_3px_rgba(74,141,184,0.3)]'
+                ? 'bg-brand-deep text-primary-fg shadow-brand-ring'
                 : 'text-fg-secondary hover:bg-bg-secondary',
             )}
           >
@@ -75,8 +86,16 @@ export function Pagination({ currentPage, totalPages, onPageChange, className, n
 /** Persian digit conversion for page numbers. */
 function toPersianDigit(n: number): string {
   const digits: Record<string, string> = {
-    '0': '۰', '1': '۱', '2': '۲', '3': '۳', '4': '۴',
-    '5': '۵', '6': '۶', '7': '۷', '8': '۸', '9': '۹',
+    '0': '۰',
+    '1': '۱',
+    '2': '۲',
+    '3': '۳',
+    '4': '۴',
+    '5': '۵',
+    '6': '۶',
+    '7': '۷',
+    '8': '۸',
+    '9': '۹',
   };
   return String(n).replace(/\d/g, (d) => digits[d] ?? d);
 }

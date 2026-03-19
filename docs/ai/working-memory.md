@@ -1,6 +1,6 @@
 # Working Memory — Hesabdari
 
-**Last updated:** 2026-03-12 (Session 5)
+**Last updated:** 2026-03-19 (Session 6)
 
 ## Current Phase
 
@@ -18,7 +18,7 @@ Backend stabilization complete. Runtime safety hardening done: BigInt serializat
 apps/api/          NestJS backend (webpack builder)
 apps/web/          Next.js 16.1 frontend (scaffolded, minimal)
 packages/db/       Prisma 7 schema (30 models, 9 enums) + generated client
-packages/contracts/ Zod schemas (15 files)
+packages/contracts/ Zod schemas (18 files)
 packages/shared/   Shared types/utils
 packages/ui/       Radix-based UI components (11)
 packages/design-tokens/ Tailwind theme tokens
@@ -28,8 +28,8 @@ packages/config/        TS/ESLint/Prettier configs
 
 ## Runtime Safety (new in Session 5)
 
-- **BigInt serialization:** `BigIntSerializerInterceptor` — global, converts BigInt→number in all responses
-- **Auth:** `JwtAuthGuard` registered as `APP_GUARD` — deny-by-default. Only `@Public()` endpoints skip auth.
+- **BigInt serialization:** `BigIntSerializerInterceptor` — global, converts BigInt→string (integer strings) in all responses per CLAUDE.md
+- **Auth:** `JwtAuthGuard` + `OrgMembershipGuard` registered as `APP_GUARD` — deny-by-default. Only `@Public()` endpoints skip auth. Org membership validated on `:orgId` routes.
 - **Error handling:** `GlobalExceptionFilter` — ZodError→400, ApplicationError→statusCode, DomainError→422, HttpException→status, unknown→500. Consistent `{ error: { code, message, details? } }` shape.
 - **Logging:** `LoggingInterceptor` — global, logs `METHOD URL - Xms` for every request.
 

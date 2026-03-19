@@ -58,3 +58,8 @@ export { IconNotebook } from './notebook';
 export { IconBuildings } from './buildings';
 export { IconUsersGroup } from './users-group';
 export { IconDelivery } from './delivery';
+
+// Settings & Theme
+export { IconSettings } from './settings';
+export { IconSun } from './sun';
+export { IconMoon } from './moon';

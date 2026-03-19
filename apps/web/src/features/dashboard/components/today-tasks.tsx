@@ -1,3 +1,4 @@
+import { type ReactNode } from 'react';
 import Link from 'next/link';
 import {
   EmptyState,
@@ -14,7 +15,7 @@ const dash = t('dashboard');
 interface QuickAction {
   label: string;
   href: string;
-  icon: React.ReactNode;
+  icon: ReactNode;
 }
 
 const quickActions: QuickAction[] = [
