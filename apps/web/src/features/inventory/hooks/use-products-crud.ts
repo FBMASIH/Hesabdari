@@ -3,6 +3,7 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { apiClient } from '@/shared/lib/api';
 import { orgPath, toQueryParams, type PaginatedResponse } from '@/shared/lib/query-helpers';
+import { STALE_TIME } from '@/shared/config/query-config';
 import { productKeys, type ProductListParams } from '@/features/shared/hooks/use-products';
 
 export interface ProductDetailDto {
@@ -68,7 +69,7 @@ export function useProductsList(params: ProductListParams = {}) {
         orgPath('/products'),
         toQueryParams(params),
       ),
-    staleTime: 5 * 60 * 1000, // MASTER_DATA
+    staleTime: STALE_TIME.MASTER_DATA,
   });
 }
 
@@ -77,7 +78,7 @@ export function useProduct(id: string) {
     queryKey: productCrudKeys.detail(id),
     queryFn: () => apiClient.get<ProductDetailDto>(orgPath(`/products/${id}`)),
     enabled: !!id,
-    staleTime: 5 * 60 * 1000, // MASTER_DATA
+    staleTime: STALE_TIME.MASTER_DATA,
   });
 }
 
@@ -120,7 +121,7 @@ export function useProductStocks(productId: string) {
     queryFn: () =>
       apiClient.get<ProductWarehouseStockDto[]>(orgPath(`/products/${productId}/stocks`)),
     enabled: !!productId,
-    staleTime: 5 * 60 * 1000, // MASTER_DATA
+    staleTime: STALE_TIME.MASTER_DATA,
   });
 }
 

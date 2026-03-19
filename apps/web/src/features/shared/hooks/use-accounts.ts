@@ -3,6 +3,7 @@
 import { useQuery } from '@tanstack/react-query';
 import { apiClient } from '@/shared/lib/api';
 import { orgPath } from '@/shared/lib/query-helpers';
+import { STALE_TIME } from '@/shared/config/query-config';
 
 export interface AccountDto {
   id: string;
@@ -22,6 +23,6 @@ export function useAccounts() {
   return useQuery({
     queryKey: accountKeys.list(),
     queryFn: () => apiClient.get<AccountDto[]>(orgPath('/accounts')),
-    staleTime: 5 * 60 * 1000, // MASTER_DATA
+    staleTime: STALE_TIME.MASTER_DATA,
   });
 }

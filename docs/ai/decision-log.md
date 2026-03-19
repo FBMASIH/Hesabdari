@@ -30,7 +30,7 @@
 
 ## D015 — CostingMethod on Warehouse, not Product (2026-03-12)
 
-## D016 — BigInt serialized as number in API responses (2026-03-12)
+## D016 — BigInt serialized as number in API responses (2026-03-12) — SUPERSEDED by D019
 
 **Decision:** Global `BigIntSerializerInterceptor` converts all BigInt values to `number` in HTTP responses.
 **Why:** `JSON.stringify` cannot handle BigInt. IRR amounts fit safely within `Number.MAX_SAFE_INTEGER` (~9e15).
@@ -39,13 +39,20 @@
 
 ## D017 — Deny-by-default auth via APP_GUARD (2026-03-12)
 
-**Decision:** `JwtAuthGuard` registered as global `APP_GUARD`. All endpoints require JWT unless decorated `@Public()`.
-**Why:** CLAUDE.md mandates deny-by-default. Per-controller guards risk accidental omission on accounting endpoints.
+**Decision:** `JwtAuthGuard` and `OrgMembershipGuard` registered as global `APP_GUARD`. All endpoints require JWT unless decorated `@Public()`. Org-scoped endpoints (with `:orgId` param) additionally verify organization membership.
+**Why:** CLAUDE.md mandates deny-by-default and organization membership verification for every request.
 **Alternatives:** Per-controller `@UseGuards()` (rejected — too fragile for 21 controllers).
-**Impact:** Health and auth endpoints marked `@Public()`. All business endpoints automatically protected. No RBAC yet (org membership check deferred).
+**Impact:** Health and auth endpoints marked `@Public()`. All business endpoints automatically protected. Org membership enforced globally for org-scoped routes.
 
 ## D018 — Structured error response shape (2026-03-12)
 
 **Decision:** All API errors return `{ error: { code: string, message: string, details?: unknown } }`. ZodError→400, ApplicationError→statusCode, DomainError→422, HttpException→status, unknown→500.
 **Why:** Consistent error shape for frontend consumption. No internal detail leakage on 500s.
 **Impact:** Global `GlobalExceptionFilter` registered in `main.ts`. Controllers don't need try/catch for Zod parsing.
+
+## D019 — BigInt serialized as string in API responses (2026-03-19) — supersedes D016
+
+**Decision:** `BigIntSerializerInterceptor` now converts BigInt values to integer strings (`value.toString()`) instead of numbers.
+**Why:** CLAUDE.md mandates "Money MUST be sent over JSON as an integer string." Contracts were updated to `z.string().regex(/^\d+$/)`. String serialization prevents precision loss for large monetary values and aligns with the API boundary specification.
+**Alternatives:** Number serialization (D016, now superseded — risks precision loss for values near `Number.MAX_SAFE_INTEGER`).
+**Impact:** All monetary fields in responses are strings. Frontend must parse with string-based logic. Contracts already expect strings.

@@ -3,6 +3,7 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { apiClient } from '@/shared/lib/api';
 import { orgPath, toQueryParams, type PaginatedResponse } from '@/shared/lib/query-helpers';
+import { STALE_TIME } from '@/shared/config/query-config';
 
 export type ReceivedChequeStatus =
   | 'OPEN'
@@ -58,7 +59,7 @@ export function useReceivedCheques(params: ReceivedChequeListParams = {}) {
         orgPath('/received-cheques'),
         toQueryParams(params),
       ),
-    staleTime: 2 * 60 * 1000, // TRANSACTIONAL
+    staleTime: STALE_TIME.TRANSACTIONAL,
   });
 }
 

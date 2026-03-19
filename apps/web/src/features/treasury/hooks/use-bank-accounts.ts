@@ -3,6 +3,7 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { apiClient } from '@/shared/lib/api';
 import { orgPath, toQueryParams, type PaginatedResponse } from '@/shared/lib/query-helpers';
+import { STALE_TIME } from '@/shared/config/query-config';
 
 export interface BankAccountDto {
   id: string;
@@ -55,7 +56,7 @@ export function useBankAccounts(params: BankAccountListParams = {}) {
         orgPath('/bank-accounts'),
         toQueryParams(params),
       ),
-    staleTime: 5 * 60 * 1000, // MASTER_DATA
+    staleTime: STALE_TIME.MASTER_DATA,
   });
 }
 
@@ -64,7 +65,7 @@ export function useBankAccountSearch(q: string) {
     queryKey: bankAccountKeys.search(q),
     queryFn: () => apiClient.get<BankAccountDto[]>(orgPath('/bank-accounts/search'), { q }),
     enabled: q.length >= 1,
-    staleTime: 30 * 1000, // SEARCH
+    staleTime: STALE_TIME.SEARCH,
   });
 }
 

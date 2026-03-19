@@ -3,6 +3,7 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { apiClient } from '@/shared/lib/api';
 import { orgPath, toQueryParams, type PaginatedResponse } from '@/shared/lib/query-helpers';
+import { STALE_TIME } from '@/shared/config/query-config';
 
 // ── API response types (matching backend) ───────────
 
@@ -60,7 +61,7 @@ export function useInvoices(params: InvoiceListParams = {}) {
     queryKey: invoiceKeys.list(params),
     queryFn: () =>
       apiClient.get<PaginatedResponse<InvoiceDto>>(orgPath('/invoices'), toQueryParams(params)),
-    staleTime: 2 * 60 * 1000, // TRANSACTIONAL
+    staleTime: STALE_TIME.TRANSACTIONAL,
   });
 }
 
@@ -69,7 +70,7 @@ export function useInvoice(id: string) {
     queryKey: invoiceKeys.detail(id),
     queryFn: () => apiClient.get<InvoiceDto>(orgPath(`/invoices/${id}`)),
     enabled: !!id,
-    staleTime: 2 * 60 * 1000, // TRANSACTIONAL
+    staleTime: STALE_TIME.TRANSACTIONAL,
   });
 }
 

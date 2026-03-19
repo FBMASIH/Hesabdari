@@ -2,7 +2,7 @@ import { Module } from '@nestjs/common';
 import { APP_GUARD } from '@nestjs/core';
 import { ConfigModule } from '@nestjs/config';
 import { AppConfig } from './config/app.config';
-import { JwtAuthGuard } from './platform/guards';
+import { JwtAuthGuard, OrgMembershipGuard } from './platform/guards';
 import { DatabaseModule } from './platform/database/database.module';
 import { CacheModule } from './platform/cache/cache.module';
 import { LoggingModule } from './platform/logging/logging.module';
@@ -43,6 +43,10 @@ import { FilesModule } from './modules/files/files.module';
     NotificationsModule,
     FilesModule,
   ],
-  providers: [AppConfig, { provide: APP_GUARD, useClass: JwtAuthGuard }],
+  providers: [
+    AppConfig,
+    { provide: APP_GUARD, useClass: JwtAuthGuard },
+    { provide: APP_GUARD, useClass: OrgMembershipGuard },
+  ],
 })
 export class AppModule {}

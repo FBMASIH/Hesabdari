@@ -3,6 +3,7 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { apiClient } from '@/shared/lib/api';
 import { orgPath, toQueryParams, type PaginatedResponse } from '@/shared/lib/query-helpers';
+import { STALE_TIME } from '@/shared/config/query-config';
 import type { CreateCustomerDto } from '@hesabdari/contracts';
 
 export interface CustomerDto {
@@ -37,7 +38,7 @@ export function useCustomers(params: CustomerListParams = {}) {
     queryKey: customerKeys.list(params),
     queryFn: () =>
       apiClient.get<PaginatedResponse<CustomerDto>>(orgPath('/customers'), toQueryParams(params)),
-    staleTime: 5 * 60 * 1000, // MASTER_DATA
+    staleTime: STALE_TIME.MASTER_DATA,
   });
 }
 
@@ -46,7 +47,7 @@ export function useCustomerSearch(q: string) {
     queryKey: customerKeys.search(q),
     queryFn: () => apiClient.get<CustomerDto[]>(orgPath('/customers/search'), { q }),
     enabled: q.length >= 1,
-    staleTime: 30 * 1000, // SEARCH
+    staleTime: STALE_TIME.SEARCH,
   });
 }
 
@@ -56,7 +57,7 @@ export function useCustomer(id: string) {
     queryKey: customerKeys.detail(id),
     queryFn: () => apiClient.get<CustomerDto>(orgPath(`/customers/${id}`)),
     enabled: !!id,
-    staleTime: 5 * 60 * 1000, // MASTER_DATA
+    staleTime: STALE_TIME.MASTER_DATA,
   });
 }
 

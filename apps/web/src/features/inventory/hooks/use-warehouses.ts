@@ -3,6 +3,7 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { apiClient } from '@/shared/lib/api';
 import { orgPath, toQueryParams, type PaginatedResponse } from '@/shared/lib/query-helpers';
+import { STALE_TIME } from '@/shared/config/query-config';
 import type { CreateWarehouseDto } from '@hesabdari/contracts';
 
 export interface WarehouseDto {
@@ -33,7 +34,7 @@ export function useWarehouses(params: WarehouseListParams = {}) {
     queryKey: warehouseKeys.list(params),
     queryFn: () =>
       apiClient.get<PaginatedResponse<WarehouseDto>>(orgPath('/warehouses'), toQueryParams(params)),
-    staleTime: 5 * 60 * 1000, // MASTER_DATA
+    staleTime: STALE_TIME.MASTER_DATA,
   });
 }
 

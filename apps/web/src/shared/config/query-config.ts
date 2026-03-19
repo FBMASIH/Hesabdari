@@ -9,8 +9,8 @@ export const STALE_TIME = {
   /** Customers, vendors, accounts, warehouses, currencies, periods — rarely change. */
   MASTER_DATA: 5 * 60 * 1000, // 5 minutes
 
-  /** Invoices, journal entries, cheques — change during active work sessions. */
-  TRANSACTIONAL: 2 * 60 * 1000, // 2 minutes
+  /** Invoices, journal entries, cheques — always refetch (financial data must not be stale). */
+  TRANSACTIONAL: 0,
 
   /** Dashboard KPIs, summaries — should reflect recent activity. */
   DASHBOARD: 30 * 1000, // 30 seconds

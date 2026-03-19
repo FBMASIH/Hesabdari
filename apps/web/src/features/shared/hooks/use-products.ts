@@ -3,6 +3,7 @@
 import { useQuery } from '@tanstack/react-query';
 import { apiClient } from '@/shared/lib/api';
 import { orgPath, toQueryParams, type PaginatedResponse } from '@/shared/lib/query-helpers';
+import { STALE_TIME } from '@/shared/config/query-config';
 
 export interface ProductDto {
   id: string;
@@ -31,6 +32,6 @@ export function useProducts(params: ProductListParams = {}) {
     queryKey: productKeys.list(params),
     queryFn: () =>
       apiClient.get<PaginatedResponse<ProductDto>>(orgPath('/products'), toQueryParams(params)),
-    staleTime: 5 * 60 * 1000, // MASTER_DATA
+    staleTime: STALE_TIME.MASTER_DATA,
   });
 }
