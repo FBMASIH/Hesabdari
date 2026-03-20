@@ -26,8 +26,5 @@ const THEME_INIT = [
 ].join('');
 
 export function ThemeScript() {
-  return (
-    /* eslint-disable-next-line -- static constant string, no user input, standard Next.js theme pattern */
-    <script dangerouslySetInnerHTML={{ __html: THEME_INIT }} />
-  );
+  return <script dangerouslySetInnerHTML={{ __html: THEME_INIT }} />;
 }
