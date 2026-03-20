@@ -19,6 +19,7 @@ const fa = {
     create: 'ایجاد',
     search: 'جستجو',
     searchPlaceholder: 'جستجو در اسناد، مشتریان و...',
+    searchInputPlaceholder: 'جستجو...',
     filter: 'فیلتر',
     advancedFilter: 'فیلتر پیشرفته',
     actions: 'عملیات',
@@ -61,6 +62,7 @@ const fa = {
     today: 'امروز',
     thisWeek: 'این هفته',
     thisMonth: 'این ماه',
+    dateRange: 'بازه زمانی',
     // Shared form section headers
     basicInfo: 'اطلاعات اصلی',
     additionalInfo: 'اطلاعات تکمیلی',
@@ -95,6 +97,12 @@ const fa = {
     treasury: 'خزانه‌داری',
     inventory: 'انبار',
     logout: 'خروج',
+    mainNav: 'ناوبری اصلی',
+    selectOrg: 'انتخاب سازمان',
+    orgLoadError: 'خطا در بارگذاری — کلیک برای تلاش مجدد',
+    orgDefault: 'سازمان',
+    profile: 'پروفایل',
+    account: 'حساب کاربری',
   },
 
   // ── Auth ────────────────────────────────────────
@@ -134,6 +142,9 @@ const fa = {
     signInWithApple: 'ورود با Apple',
     signInWithGoogle: 'ورود با Google',
     copyright: '© ۱۴۰۵ حسابداری. تمامی حقوق محفوظ است.',
+    hidePassword: 'پنهان کردن رمز عبور',
+    showPassword: 'نمایش رمز عبور',
+    authModeLabel: 'حالت احراز هویت',
   },
 
   // ── Dashboard ───────────────────────────────────
@@ -323,6 +334,8 @@ const fa = {
     viewInvoiceAriaLabel: (num: string) => `مشاهده فاکتور ${num}`,
     invoiceCount: 'فاکتور',
     notFound: 'فاکتور یافت نشد',
+    editTitle: (title: string) => `ویرایش ${title}`,
+    invoiceLabel: (num: string) => `فاکتور ${num}`,
     editNotAllowed: 'ویرایش امکان‌پذیر نیست',
     editNotAllowedDescription:
       'فقط فاکتورهای پیش‌نویس قابل ویرایش هستند. برای اصلاح فاکتور تأیید شده، سند برگشت ثبت کنید.',
@@ -572,6 +585,9 @@ const fa = {
     toggleTheme: 'تغییر پوسته',
     displayPreferences: 'تنظیمات نمایش و زبان',
     amountDisplay: 'نمایش مبالغ',
+    comingSoon: 'این قابلیت به‌زودی در دسترس خواهد بود',
+    languageValue: 'فارسی',
+    amountDisplayValue: 'تومان (ریال ÷ ۱۰)',
   },
 
   // ── Validation / Errors ─────────────────────────

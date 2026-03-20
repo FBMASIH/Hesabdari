@@ -16,7 +16,7 @@ import { cn } from '../lib/utils';
  *   link         — Underline text link.
  */
 const buttonVariants = cva(
-  'inline-flex items-center justify-center whitespace-nowrap rounded-xl text-[13px] font-medium transition-all duration-150 focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-brand-deep/25 disabled:pointer-events-none disabled:opacity-40',
+  'inline-flex items-center justify-center whitespace-nowrap rounded-xl text-[13px] font-medium transition-all duration-150 focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-brand-deep/25 disabled:pointer-events-none disabled:opacity-60',
   {
     variants: {
       variant: {
@@ -34,7 +34,7 @@ const buttonVariants = cva(
         link: 'text-brand-deep underline-offset-4 hover:underline',
       },
       size: {
-        xs: 'h-[24px] px-2.5 text-[11px] rounded-lg gap-1',
+        xs: 'h-[24px] px-2.5 text-2xs rounded-lg gap-1',
         sm: 'h-[28px] px-3 text-[12px] gap-1.5',
         md: 'h-[32px] px-4 gap-2',
         lg: 'h-[36px] px-5 text-[14px] gap-2',

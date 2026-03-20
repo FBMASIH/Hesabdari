@@ -62,6 +62,43 @@ async function main() {
   });
   console.log(`Organization: ${org.name}`);
 
+  // ── Default Role (Owner / مدیر) ───────────────────
+  const ownerRole = await prisma.role.upsert({
+    where: {
+      organizationId_name: {
+        organizationId: org.id,
+        name: 'مدیر',
+      },
+    },
+    update: {},
+    create: {
+      id: '00000000-0000-0000-0000-000000000099',
+      organizationId: org.id,
+      name: 'مدیر',
+      isSystem: true,
+    },
+  });
+  // Assign all permissions to the Owner role
+  for (const perm of permissions) {
+    const permission = await prisma.permission.findUnique({ where: { code: perm.code } });
+    if (permission) {
+      await prisma.rolePermission.upsert({
+        where: {
+          roleId_permissionId: {
+            roleId: ownerRole.id,
+            permissionId: permission.id,
+          },
+        },
+        update: {},
+        create: {
+          roleId: ownerRole.id,
+          permissionId: permission.id,
+        },
+      });
+    }
+  }
+  console.log(`Role: ${ownerRole.name} (with all permissions)`);
+
   // ── Accounting Period ──────────────────────────────
   const period = await prisma.accountingPeriod.upsert({
     where: { id: '00000000-0000-0000-0000-000000000001' },
@@ -93,7 +130,12 @@ async function main() {
     { code: '4101', name: 'فروش کالا', type: 'REVENUE' as const, parentId: '4100' },
     { code: '4102', name: 'درآمد خدمات', type: 'REVENUE' as const, parentId: '4100' },
     { code: '5100', name: 'بهای تمام‌شده', type: 'EXPENSE' as const, parentId: null },
-    { code: '5101', name: 'بهای تمام‌شده کالای فروش‌رفته', type: 'EXPENSE' as const, parentId: '5100' },
+    {
+      code: '5101',
+      name: 'بهای تمام‌شده کالای فروش‌رفته',
+      type: 'EXPENSE' as const,
+      parentId: '5100',
+    },
     { code: '6100', name: 'هزینه‌های عملیاتی', type: 'EXPENSE' as const, parentId: null },
     { code: '6101', name: 'هزینه حقوق و دستمزد', type: 'EXPENSE' as const, parentId: '6100' },
     { code: '6102', name: 'هزینه اجاره', type: 'EXPENSE' as const, parentId: '6100' },
@@ -191,6 +233,40 @@ async function main() {
       isActive: true,
     },
   });
+
+  // ── Banks (22 Iranian banks) ──────────────────────
+  const banks = [
+    { code: 'melli', name: 'بانک ملی ایران' },
+    { code: 'sepah', name: 'بانک سپه' },
+    { code: 'mellat', name: 'بانک ملت' },
+    { code: 'tejarat', name: 'بانک تجارت' },
+    { code: 'saderat', name: 'بانک صادرات ایران' },
+    { code: 'maskan', name: 'بانک مسکن' },
+    { code: 'refah', name: 'بانک رفاه کارگران' },
+    { code: 'tosesaderat', name: 'بانک توسعه صادرات' },
+    { code: 'sanatmadan', name: 'بانک صنعت و معدن' },
+    { code: 'keshavarzi', name: 'بانک کشاورزی' },
+    { code: 'markazi', name: 'بانک مرکزی' },
+    { code: 'postbank', name: 'پست بانک ایران' },
+    { code: 'toseetaavon', name: 'بانک توسعه تعاون' },
+    { code: 'eghtesadnovin', name: 'بانک اقتصاد نوین' },
+    { code: 'parsian', name: 'بانک پارسیان' },
+    { code: 'pasargad', name: 'بانک پاسارگاد' },
+    { code: 'karafarin', name: 'بانک کارآفرین' },
+    { code: 'saman', name: 'بانک سامان' },
+    { code: 'sina', name: 'بانک سینا' },
+    { code: 'sarmayeh', name: 'بانک سرمایه' },
+    { code: 'shahr', name: 'بانک شهر' },
+    { code: 'ayandeh', name: 'بانک آینده' },
+  ];
+  for (const bank of banks) {
+    await prisma.bank.upsert({
+      where: { code: bank.code },
+      update: {},
+      create: { code: bank.code, name: bank.name },
+    });
+  }
+  console.log(`Banks: ${banks.length} seeded`);
 
   // ── Products ───────────────────────────────────────
   const products = [

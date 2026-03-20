@@ -22,9 +22,10 @@ export function DataErrorState({ error, onRetry, className }: DataErrorStateProp
           ? error
           : msgs.networkError;
 
-  // Avoid leaking English error messages in the Persian UI
-  const isLikelyEnglish = /^[A-Za-z\s.,!?:;'"()-]+$/.test(rawMessage);
-  const message = isLikelyEnglish ? msgs.networkError : rawMessage;
+  // Avoid leaking English error messages or backend error codes in the Persian UI
+  const isLikelyEnglish =
+    rawMessage.length > 0 && /^[A-Za-z0-9_\s.,!?:;'"()/\-]+$/.test(rawMessage);
+  const message = !rawMessage || isLikelyEnglish ? msgs.networkError : rawMessage;
 
   return (
     <div className={className ?? 'glass-surface-static overflow-hidden rounded-2xl'}>

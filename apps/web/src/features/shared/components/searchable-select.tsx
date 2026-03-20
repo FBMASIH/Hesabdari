@@ -2,6 +2,7 @@
 
 import { useState, useMemo } from 'react';
 import { Input, Spinner, cn } from '@hesabdari/ui';
+import { t } from '@/shared/lib/i18n';
 import { DROPDOWN_PANEL } from '@/shared/styles';
 
 export interface SearchableSelectOption {
@@ -29,7 +30,7 @@ export function SearchableSelect({
   onChange,
   options,
   isLoading = false,
-  placeholder = 'جستجو...',
+  placeholder = t('common').searchInputPlaceholder,
   className,
 }: SearchableSelectProps) {
   const [query, setQuery] = useState('');
@@ -75,7 +76,7 @@ export function SearchableSelect({
           className={cn('absolute z-dropdown mt-1.5 max-h-48 w-full overflow-auto', DROPDOWN_PANEL)}
         >
           {filtered.length === 0 ? (
-            <div className="px-3 py-2 text-xs text-fg-tertiary">نتیجه‌ای یافت نشد</div>
+            <div className="px-3 py-2 text-xs text-fg-tertiary">{t('common').noResults}</div>
           ) : (
             filtered.map((opt) => (
               <button

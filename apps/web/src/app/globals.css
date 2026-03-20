@@ -17,6 +17,9 @@
     sans-serif;
   --font-family-mono: 'SF Mono', 'JetBrains Mono', 'Fira Code', monospace;
 
+  /* Layout — single source of truth */
+  --content-max-width: 1440px;
+
   /* Animation timing — single source of truth */
   --anim-fast: 150ms;
   --anim-normal: 250ms;
@@ -112,6 +115,32 @@ body {
     var(--glass-shadow),
     inset 0 0.5px 0 rgba(255, 255, 255, 0.04);
   transition-duration: 80ms;
+}
+
+/* ── Nav scroll — hide scrollbar, fade edges ── */
+.nav-scroll-container {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  mask-image: linear-gradient(
+    to right,
+    transparent 0,
+    black 16px,
+    black calc(100% - 16px),
+    transparent 100%
+  );
+}
+/* RTL override — fade matches scroll direction */
+[dir='ltr'] .nav-scroll-container {
+  mask-image: linear-gradient(
+    to left,
+    transparent 0,
+    black 16px,
+    black calc(100% - 16px),
+    transparent 100%
+  );
+}
+.nav-scroll-container::-webkit-scrollbar {
+  display: none;
 }
 
 /* ── macOS window background ─────────────────── */

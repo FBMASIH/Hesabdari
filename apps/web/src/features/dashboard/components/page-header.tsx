@@ -1,8 +1,9 @@
 'use client';
 
-import { useState, useRef, useEffect } from 'react';
-import { cn, IconCalendar } from '@hesabdari/ui';
+import { useState, useRef, useCallback } from 'react';
+import { cn, IconCalendar, SegmentedControl, type SegmentedControlItem } from '@hesabdari/ui';
 import { t } from '@/shared/lib/i18n';
+import { useDismiss } from '@/shared/hooks/use-dismiss';
 import { DROPDOWN_PANEL } from '@/shared/styles';
 
 const dash = t('dashboard');
@@ -11,11 +12,11 @@ const common = t('common');
 export type DashboardMode = 'daily' | 'management' | 'accounting';
 export type DateRange = 'today' | 'thisWeek' | 'thisMonth';
 
-const modes: { key: DashboardMode; label: string }[] = [
-  { key: 'daily', label: dash.daily },
-  { key: 'management', label: dash.management },
-  { key: 'accounting', label: dash.accountingMode },
-];
+const modes = [
+  { key: 'daily' as const, label: dash.daily },
+  { key: 'management' as const, label: dash.management },
+  { key: 'accounting' as const, label: dash.accountingMode },
+] satisfies SegmentedControlItem<DashboardMode>[];
 
 const dateRanges: { key: DateRange; label: string }[] = [
   { key: 'today', label: common.today },
@@ -38,25 +39,8 @@ export function PageHeader({
 }: PageHeaderProps) {
   const [dateMenuOpen, setDateMenuOpen] = useState(false);
   const dateMenuRef = useRef<HTMLDivElement>(null);
-
-  // Close dropdown on outside click or Escape key
-  useEffect(() => {
-    if (!dateMenuOpen) return;
-    const handleClick = (e: MouseEvent) => {
-      if (dateMenuRef.current && !dateMenuRef.current.contains(e.target as Node)) {
-        setDateMenuOpen(false);
-      }
-    };
-    const handleKey = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') setDateMenuOpen(false);
-    };
-    document.addEventListener('mousedown', handleClick);
-    document.addEventListener('keydown', handleKey);
-    return () => {
-      document.removeEventListener('mousedown', handleClick);
-      document.removeEventListener('keydown', handleKey);
-    };
-  }, [dateMenuOpen]);
+  const closeDateMenu = useCallback(() => setDateMenuOpen(false), []);
+  useDismiss(dateMenuRef, dateMenuOpen, closeDateMenu);
 
   const activeDateLabel = dateRanges.find((r) => r.key === dateRange)?.label ?? common.thisWeek;
 
@@ -71,23 +55,13 @@ export function PageHeader({
       {/* Mode controls + date range — left side in RTL */}
       <div className="flex items-center gap-3">
         {/* Mode segmented control */}
-        <div className="glass-surface-static inline-flex items-center gap-0.5 rounded-xl p-1">
-          {modes.map((mode) => (
-            <button
-              type="button"
-              key={mode.key}
-              onClick={() => onModeChange(mode.key)}
-              className={cn(
-                'rounded-lg px-3.5 py-1.5 text-xs font-medium transition-all duration-200',
-                activeMode === mode.key
-                  ? 'bg-bg-secondary text-fg-primary shadow-[0_1px_3px_rgba(0,0,0,0.06),0_0_0_0.5px_rgba(0,0,0,0.04)]'
-                  : 'text-fg-tertiary hover:text-fg-secondary hover:bg-bg-secondary/30',
-              )}
-            >
-              {mode.label}
-            </button>
-          ))}
-        </div>
+        <SegmentedControl
+          items={modes}
+          value={activeMode}
+          onChange={onModeChange}
+          label={dash.title}
+          size="sm"
+        />
 
         {/* Date range dropdown */}
         <div className="relative" ref={dateMenuRef}>
@@ -105,7 +79,7 @@ export function PageHeader({
           {dateMenuOpen && (
             <div
               role="listbox"
-              aria-label="بازه زمانی"
+              aria-label={common.dateRange}
               className={cn(
                 'absolute start-0 top-full z-dropdown mt-1.5 min-w-[140px]',
                 DROPDOWN_PANEL,

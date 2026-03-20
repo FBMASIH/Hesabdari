@@ -5,7 +5,7 @@ import { Skeleton } from '@hesabdari/ui';
 
 function PageWrapper({ children }: { children: ReactNode }) {
   return (
-    <div className="mx-auto w-full max-w-[1440px] space-y-6 px-6 py-4 animate-fade-in">
+    <div className="mx-auto w-full max-w-[var(--content-max-width)] space-y-6 px-6 py-4 animate-fade-in">
       {children}
     </div>
   );

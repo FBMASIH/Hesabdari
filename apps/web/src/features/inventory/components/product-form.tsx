@@ -160,10 +160,8 @@ export function ProductForm({ initialData }: ProductFormProps = {}) {
   return (
     <div className="flex flex-col gap-5 animate-stagger">
       <DataPageHeader
-        title={isEditing ? (prod.editProduct ?? 'ویرایش کالا') : prod.newProduct}
-        subtitle={
-          isEditing ? (prod.editProductSubtitle ?? 'ویرایش اطلاعات کالا') : prod.newProductSubtitle
-        }
+        title={isEditing ? prod.editProduct : prod.newProduct}
+        subtitle={isEditing ? prod.editProductSubtitle : prod.newProductSubtitle}
       />
 
       <form method="post" onSubmit={handleSubmit} className="flex flex-col gap-5">

@@ -14,7 +14,7 @@ const dash = t('dashboard');
 
 interface QuickAction {
   label: string;
-  href: string;
+  href: '/invoices/new' | '/journal-entries/new';
   icon: ReactNode;
 }
 
@@ -64,7 +64,7 @@ export function TodayTasks() {
           {quickActions.map((action) => (
             <Link
               key={action.label}
-              href={action.href as '/invoices/new' | '/journal-entries/new'}
+              href={action.href}
               className="flex flex-col items-center gap-1.5 rounded-xl px-2 py-3 text-center transition-all duration-150 hover:bg-bg-tertiary/50 hover:shadow-xs active:scale-[0.97]"
             >
               <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary-subtle text-brand-deep shadow-xs">

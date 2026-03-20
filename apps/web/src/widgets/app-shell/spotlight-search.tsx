@@ -387,6 +387,7 @@ export function SpotlightSearch({ open, onOpenChange }: SpotlightSearchProps) {
             placeholder={common.searchPlaceholder}
             aria-label={common.search}
             aria-controls="spotlight-listbox"
+            aria-autocomplete="list"
             aria-expanded={flatItems.length > 0}
             aria-activedescendant={activeItemId}
             className="spotlight-input"
@@ -461,19 +462,19 @@ export function SpotlightSearch({ open, onOpenChange }: SpotlightSearchProps) {
 
         {/* Footer hint */}
         <div className="spotlight-footer">
-          <span className="flex items-center gap-1.5 text-[11px] text-fg-tertiary">
+          <span className="flex items-center gap-1.5 text-2xs text-fg-tertiary">
             <kbd className="spotlight-hint-key" aria-hidden="true">
               ↑↓
             </kbd>
             {spotlight.navigate}
           </span>
-          <span className="flex items-center gap-1.5 text-[11px] text-fg-tertiary">
+          <span className="flex items-center gap-1.5 text-2xs text-fg-tertiary">
             <kbd className="spotlight-hint-key" aria-hidden="true">
               ↵
             </kbd>
             {spotlight.select}
           </span>
-          <span className="flex items-center gap-1.5 text-[11px] text-fg-tertiary">
+          <span className="flex items-center gap-1.5 text-2xs text-fg-tertiary">
             <kbd className="spotlight-hint-key" aria-hidden="true">
               ESC
             </kbd>

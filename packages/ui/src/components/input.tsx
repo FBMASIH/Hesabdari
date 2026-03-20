@@ -10,7 +10,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
       <input
         type={type}
         className={cn(
-          'flex h-[30px] w-full rounded-lg border-[0.5px] border-border-primary bg-bg-secondary px-2.5 text-[13px] text-fg-primary shadow-inner transition-[border-color,box-shadow] duration-150',
+          'flex h-[30px] w-full rounded-xl border-[0.5px] border-border-primary bg-bg-secondary px-2.5 text-[13px] text-fg-primary shadow-inner transition-[border-color,box-shadow] duration-150',
           'placeholder:text-fg-tertiary',
           'hover:border-border-primary/100',
           'focus:border-brand-deep focus:outline-none focus:ring-[3px] focus:ring-brand-deep/15 focus:shadow-focus-brand',

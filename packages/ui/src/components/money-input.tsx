@@ -1,15 +1,12 @@
 'use client';
 
-import {
-  forwardRef,
-  useCallback,
-  useRef,
-  type InputHTMLAttributes,
-} from 'react';
+import { forwardRef, useCallback, useRef, type InputHTMLAttributes } from 'react';
 import { cn } from '../lib/utils';
 
-export interface MoneyInputProps
-  extends Omit<InputHTMLAttributes<HTMLInputElement>, 'value' | 'onChange' | 'type'> {
+export interface MoneyInputProps extends Omit<
+  InputHTMLAttributes<HTMLInputElement>,
+  'value' | 'onChange' | 'type'
+> {
   /** Value as a plain digit string (e.g. "1250000"). Source of truth. */
   value: string;
   /** Called with the new plain digit string on every change. */
@@ -129,7 +126,7 @@ export const MoneyInput = forwardRef<HTMLInputElement, MoneyInputProps>(
           {...props}
         />
         {suffix && (
-          <span className="pointer-events-none absolute inset-y-0 end-0 flex items-center pe-3 text-[11px] text-fg-tertiary">
+          <span className="pointer-events-none absolute inset-y-0 end-0 flex items-center pe-3 text-2xs text-fg-tertiary">
             {suffix}
           </span>
         )}

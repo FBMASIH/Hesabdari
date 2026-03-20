@@ -1,6 +1,8 @@
-import { ApiClient } from '@hesabdari/api-client';
+import { ApiClient, ApiError } from '@hesabdari/api-client';
 import { env } from '@/shared/config/env';
 import { useAuthStore } from '@/shared/hooks/use-auth';
+
+export { ApiError };
 
 export const apiClient = new ApiClient({
   baseUrl: env.apiUrl,

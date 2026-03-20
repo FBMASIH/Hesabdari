@@ -4,7 +4,7 @@ import { cn } from '../lib/utils';
 
 /** macOS-style badges — small capsules with tinted backgrounds */
 const badgeVariants = cva(
-  'inline-flex items-center rounded-full px-2 py-0.5 text-[11px] font-medium leading-tight',
+  'inline-flex items-center rounded-full px-2 py-0.5 text-2xs font-medium leading-tight',
   {
     variants: {
       variant: {

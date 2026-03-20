@@ -30,12 +30,13 @@ import { AuthDivider } from './auth-divider';
 export type AuthMode = 'sign-in' | 'sign-up';
 
 function PasswordToggle(visible: boolean, toggle: () => void) {
+  const auth = t('auth');
   return (
     <span className="auth-input-icon auth-input-icon-ltr">
       <button
         type="button"
         onClick={toggle}
-        aria-label={visible ? 'پنهان کردن رمز عبور' : 'نمایش رمز عبور'}
+        aria-label={visible ? auth.hidePassword : auth.showPassword}
         className="flex h-4 w-4 items-center justify-center text-current hover:opacity-80"
       >
         {visible ? <IconEyeClosed size={16} /> : <IconEye size={16} />}

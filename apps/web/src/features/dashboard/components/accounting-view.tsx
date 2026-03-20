@@ -66,7 +66,7 @@ const balanceCards: BalanceCard[] = [
 interface ReportLink {
   label: string;
   icon: ReactNode;
-  href: string;
+  href: '/reports' | '/journal-entries';
 }
 
 const reportLinks: ReportLink[] = [
@@ -88,18 +88,18 @@ export function AccountingView() {
             className="glass-interactive flex flex-col gap-2 rounded-2xl p-4 cursor-default"
           >
             <div className="flex items-center justify-between">
-              <span className="text-[11px] font-medium text-fg-tertiary">{card.label}</span>
+              <span className="text-2xs font-medium text-fg-tertiary">{card.label}</span>
               <div className={`${ICON_CIRCLE} ${card.color}`}>{card.icon}</div>
             </div>
             <div className="flex items-baseline justify-between">
               <div className="flex flex-col">
-                <span className="text-[11px] text-fg-tertiary">{acct.debit}</span>
+                <span className="text-2xs text-fg-tertiary">{acct.debit}</span>
                 <span className="text-sm font-semibold tabular-nums text-fg-primary">
                   {formatMoney(card.debit, { showUnit: false })}
                 </span>
               </div>
               <div className="flex flex-col items-end">
-                <span className="text-[11px] text-fg-tertiary">{acct.credit}</span>
+                <span className="text-2xs text-fg-tertiary">{acct.credit}</span>
                 <span className="text-sm font-semibold tabular-nums text-fg-primary">
                   {formatMoney(card.credit, { showUnit: false })}
                 </span>
@@ -121,19 +121,19 @@ export function AccountingView() {
 
             <div className="mb-4 flex items-center gap-6">
               <div className="flex flex-col">
-                <span className="text-[11px] text-fg-tertiary">{journal.totalDebit}</span>
+                <span className="text-2xs text-fg-tertiary">{journal.totalDebit}</span>
                 <span className="text-lg font-bold tabular-nums text-fg-primary">
                   {formatMoney('0', { showUnit: false })}
                 </span>
               </div>
               <div className="flex flex-col">
-                <span className="text-[11px] text-fg-tertiary">{journal.totalCredit}</span>
+                <span className="text-2xs text-fg-tertiary">{journal.totalCredit}</span>
                 <span className="text-lg font-bold tabular-nums text-fg-primary">
                   {formatMoney('0', { showUnit: false })}
                 </span>
               </div>
               <div className="flex flex-col">
-                <span className="text-[11px] text-fg-tertiary">{journal.balanceColumn}</span>
+                <span className="text-2xs text-fg-tertiary">{journal.balanceColumn}</span>
                 <span className="text-lg font-bold tabular-nums text-success-default">
                   {journal.balanced}
                 </span>
@@ -160,7 +160,7 @@ export function AccountingView() {
               {reportLinks.map((link) => (
                 <Link
                   key={link.label}
-                  href={link.href as never}
+                  href={link.href}
                   className={`flex items-center gap-2.5 rounded-xl px-3 py-2.5 ${LINK_HOVER}`}
                 >
                   <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-primary-subtle text-brand-deep shadow-xs">

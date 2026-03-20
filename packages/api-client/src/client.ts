@@ -47,10 +47,12 @@ export class ApiClient {
     return path;
   }
 
-  private getHeaders(): HeadersInit {
-    const headers: HeadersInit = {
-      'Content-Type': 'application/json',
-    };
+  private getHeaders(includeContentType = true): HeadersInit {
+    const headers: Record<string, string> = {};
+
+    if (includeContentType) {
+      headers['Content-Type'] = 'application/json';
+    }
 
     const token = this.config.getAccessToken?.();
     if (token) {
@@ -112,7 +114,10 @@ export class ApiClient {
     return this.refreshPromise;
   }
 
-  private async handleResponse<T>(response: Response, retryFn?: () => Promise<Response>): Promise<T> {
+  private async handleResponse<T>(
+    response: Response,
+    retryFn?: () => Promise<Response>,
+  ): Promise<T> {
     // On 401, attempt token refresh before giving up
     if (response.status === 401 && retryFn) {
       const refreshed = await this.attemptRefresh();
@@ -154,10 +159,10 @@ export class ApiClient {
     const url = this.resolveUrl(path, params);
     const response = await fetch(url, {
       method: 'GET',
-      headers: this.getHeaders(),
+      headers: this.getHeaders(false),
     });
     return this.handleResponse<T>(response, () =>
-      fetch(url, { method: 'GET', headers: this.getHeaders() }),
+      fetch(url, { method: 'GET', headers: this.getHeaders(false) }),
     );
   }
 
@@ -204,10 +209,10 @@ export class ApiClient {
     const url = this.resolveUrl(path);
     const response = await fetch(url, {
       method: 'DELETE',
-      headers: this.getHeaders(),
+      headers: this.getHeaders(false),
     });
     return this.handleResponse<T>(response, () =>
-      fetch(url, { method: 'DELETE', headers: this.getHeaders() }),
+      fetch(url, { method: 'DELETE', headers: this.getHeaders(false) }),
     );
   }
 }

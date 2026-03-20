@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useForm, Controller } from 'react-hook-form';
 import {
@@ -15,11 +15,17 @@ import {
   SelectTrigger,
   SelectContent,
   SelectItem,
+  SelectValue,
+  Spinner,
 } from '@hesabdari/ui';
 import { t } from '@/shared/lib/i18n';
 import { FormSection, FormActions, DataPageHeader } from '@/features/shared';
 import { useAppToast } from '@/providers/toast-provider';
-import { useCreateBankAccount, type CreateBankAccountInput } from '../hooks/use-bank-accounts';
+import {
+  useCreateBankAccount,
+  useBanks,
+  type CreateBankAccountInput,
+} from '../hooks/use-bank-accounts';
 import { useDefaultCurrencyId } from '@/features/shared/hooks/use-currencies';
 import { ApiError } from '@hesabdari/api-client';
 
@@ -27,39 +33,19 @@ const tr = t('treasury');
 const common = t('common');
 const msgs = t('messages');
 
-// Iranian banks — static list until the banks API is available
-const IRANIAN_BANKS = [
-  { value: 'melli', label: 'بانک ملی ایران' },
-  { value: 'sepah', label: 'بانک سپه' },
-  { value: 'mellat', label: 'بانک ملت' },
-  { value: 'tejarat', label: 'بانک تجارت' },
-  { value: 'saderat', label: 'بانک صادرات ایران' },
-  { value: 'maskan', label: 'بانک مسکن' },
-  { value: 'refah', label: 'بانک رفاه کارگران' },
-  { value: 'tosee-saderat', label: 'بانک توسعه صادرات' },
-  { value: 'sanat-madan', label: 'بانک صنعت و معدن' },
-  { value: 'keshavarzi', label: 'بانک کشاورزی' },
-  { value: 'markazi', label: 'بانک مرکزی' },
-  { value: 'post-bank', label: 'پست بانک ایران' },
-  { value: 'tosee-taavon', label: 'بانک توسعه تعاون' },
-  { value: 'eghtesad-novin', label: 'بانک اقتصاد نوین' },
-  { value: 'parsian', label: 'بانک پارسیان' },
-  { value: 'pasargad', label: 'بانک پاسارگاد' },
-  { value: 'karafarin', label: 'بانک کارآفرین' },
-  { value: 'saman', label: 'بانک سامان' },
-  { value: 'sina', label: 'بانک سینا' },
-  { value: 'sarmayeh', label: 'بانک سرمایه' },
-  { value: 'shahr', label: 'بانک شهر' },
-  { value: 'ayandeh', label: 'بانک آینده' },
-];
-
 export function BankAccountForm() {
   const router = useRouter();
   const { showToast } = useAppToast();
   const createMutation = useCreateBankAccount();
   const [formError, setFormError] = useState<string | null>(null);
   const currencyId = useDefaultCurrencyId();
-  const [bankId, setBankId] = useState('');
+  const { data: banks = [], isLoading: banksLoading, isError: banksError } = useBanks();
+
+  useEffect(() => {
+    if (banksError) {
+      showToast({ title: msgs.fetchError, variant: 'error' });
+    }
+  }, [banksError, showToast]);
 
   const {
     register,
@@ -67,7 +53,11 @@ export function BankAccountForm() {
     control,
     formState: { errors, isSubmitting },
   } = useForm<CreateBankAccountInput>({
-    defaultValues: { isActive: true, openingBalance: { amount: '', date: '', description: '' } },
+    defaultValues: {
+      isActive: true,
+      bankId: '',
+      openingBalance: { amount: '', date: '', description: '' },
+    },
   });
 
   const onSubmit = async (data: CreateBankAccountInput) => {
@@ -77,7 +67,7 @@ export function BankAccountForm() {
       const payload = {
         ...data,
         currencyId: currencyId ?? '00000000-0000-0000-0000-000000000001',
-        bankId: bankId || undefined,
+        bankId: data.bankId || undefined,
       };
       if (!payload.openingBalance?.amount || !payload.openingBalance?.date) {
         delete payload.openingBalance;
@@ -121,21 +111,34 @@ export function BankAccountForm() {
                 className="rounded-xl"
               />
             </FormField>
-            {/* bankId: uses static list until the banks API is available */}
-            <FormField>
+            <FormField error={errors.bankId?.message}>
               <FormLabel>{tr.bankName}</FormLabel>
-              <Select value={bankId} onValueChange={setBankId}>
-                <SelectTrigger className="rounded-xl">
-                  <span>{IRANIAN_BANKS.find((b) => b.value === bankId)?.label ?? tr.bankName}</span>
-                </SelectTrigger>
-                <SelectContent>
-                  {IRANIAN_BANKS.map((b) => (
-                    <SelectItem key={b.value} value={b.value}>
-                      {b.label}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+              <Controller
+                name="bankId"
+                control={control}
+                rules={{ required: true }}
+                render={({ field }) => (
+                  <Select value={field.value} onValueChange={field.onChange}>
+                    <SelectTrigger className="rounded-xl">
+                      {banksLoading ? (
+                        <span className="flex items-center gap-1.5 text-fg-tertiary">
+                          <Spinner size="sm" />
+                          {common.loading}
+                        </span>
+                      ) : (
+                        <SelectValue placeholder={tr.bankName} />
+                      )}
+                    </SelectTrigger>
+                    <SelectContent>
+                      {banks.map((b) => (
+                        <SelectItem key={b.id} value={b.id}>
+                          {b.name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                )}
+              />
             </FormField>
             <FormField error={errors.branch?.message}>
               <FormLabel>{tr.branch}</FormLabel>

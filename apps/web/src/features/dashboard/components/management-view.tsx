@@ -24,7 +24,7 @@ interface StatCard {
   value: string;
   sub: string;
   icon: ReactNode;
-  href: string;
+  href: '/reports' | '/invoices';
   color: string;
 }
 
@@ -61,7 +61,7 @@ interface EntityLink {
   label: string;
   count: string;
   icon: ReactNode;
-  href: string;
+  href: '/customers' | '/vendors' | '/invoices';
 }
 
 const entities: EntityLink[] = [
@@ -93,18 +93,18 @@ export function ManagementView() {
         {stats.map((stat) => (
           <Link
             key={stat.label}
-            href={stat.href as never}
+            href={stat.href}
             className="glass-interactive flex flex-col gap-2 rounded-2xl p-5"
           >
             <div className="flex items-center justify-between">
-              <span className="text-[11px] font-medium text-fg-tertiary">{stat.label}</span>
+              <span className="text-2xs font-medium text-fg-tertiary">{stat.label}</span>
               <div className={`${ICON_CIRCLE} ${stat.color}`}>{stat.icon}</div>
             </div>
             <span className="text-xl font-bold tabular-nums text-fg-primary leading-tight">
               {stat.value}
               <span className="ms-1 text-xs font-normal text-fg-tertiary">{common.toman}</span>
             </span>
-            <span className="text-[11px] text-fg-tertiary">{stat.sub}</span>
+            <span className="text-2xs text-fg-tertiary">{stat.sub}</span>
           </Link>
         ))}
       </div>
@@ -136,7 +136,7 @@ export function ManagementView() {
             {entities.map((entity) => (
               <Link
                 key={entity.label}
-                href={entity.href as never}
+                href={entity.href}
                 className={`flex items-center justify-between rounded-xl px-3 py-2.5 ${LINK_HOVER}`}
               >
                 <div className="flex items-center gap-2.5">

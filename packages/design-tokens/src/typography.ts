@@ -6,6 +6,7 @@ export const typography: TypographyToken = {
     mono: '"JetBrains Mono", "Fira Code", "Cascadia Code", monospace',
   },
   fontSize: {
+    '2xs': '0.6875rem',
     xs: '0.75rem',
     sm: '0.875rem',
     base: '1rem',

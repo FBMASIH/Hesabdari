@@ -56,7 +56,7 @@ export function KpiStrip() {
           className="glass-interactive flex flex-col gap-2 rounded-2xl p-4 cursor-default"
         >
           <div className="flex items-center justify-between">
-            <span className="text-[11px] font-medium text-fg-tertiary">{item.label}</span>
+            <span className="text-2xs font-medium text-fg-tertiary">{item.label}</span>
             <div className={`flex h-8 w-8 items-center justify-center rounded-xl ${item.color}`}>
               {item.icon}
             </div>
@@ -64,7 +64,7 @@ export function KpiStrip() {
           <span className="text-xl font-bold tabular-nums text-fg-primary leading-tight">
             {item.value}
           </span>
-          <span className="text-[11px] text-fg-tertiary">{item.sub}</span>
+          <span className="text-2xs text-fg-tertiary">{item.sub}</span>
         </div>
       ))}
     </div>
