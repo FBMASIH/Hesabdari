@@ -40,11 +40,24 @@ function getInitialState(): { theme: Theme; resolved: 'light' | 'dark' } {
 }
 
 export function ThemeProvider({ children }: { children: ReactNode }) {
-  const [initial] = useState(getInitialState);
-  const [theme, setTheme] = useState<Theme>(initial.theme);
-  const [resolvedTheme, setResolvedTheme] = useState<'light' | 'dark'>(initial.resolved);
+  // Start with 'system' on both server and client to avoid hydration mismatch.
+  // The real stored theme is applied in the first useEffect below.
+  const [theme, setTheme] = useState<Theme>('system');
+  const [resolvedTheme, setResolvedTheme] = useState<'light' | 'dark'>('light');
+  const [mounted, setMounted] = useState(false);
+
+  // On mount, read the stored theme from localStorage so subsequent renders
+  // reflect the user's preference. This runs once and doesn't cause a visible
+  // flash because ThemeScript already set data-theme on <html> before React loads.
+  useEffect(() => {
+    const { theme: stored, resolved } = getInitialState();
+    setTheme(stored);
+    setResolvedTheme(resolved);
+    setMounted(true);
+  }, []);
 
   useEffect((): (() => void) | void => {
+    if (!mounted) return;
     const resolve = (): 'light' | 'dark' => {
       if (theme === 'system') {
         return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
@@ -71,7 +84,7 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
       mq.addEventListener('change', listener);
       return () => mq.removeEventListener('change', listener);
     }
-  }, [theme]);
+  }, [theme, mounted]);
 
   return (
     <ThemeContext.Provider value={{ theme, resolvedTheme, setTheme }}>

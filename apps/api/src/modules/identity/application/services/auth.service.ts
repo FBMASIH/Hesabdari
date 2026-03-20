@@ -1,13 +1,9 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
-// eslint-disable-next-line @typescript-eslint/consistent-type-imports -- NestJS DI requires runtime class references
-import { JwtService } from '@nestjs/jwt';
-// eslint-disable-next-line @typescript-eslint/consistent-type-imports -- NestJS DI requires runtime class references
-import { ConfigService } from '@nestjs/config';
+import { type JwtService } from '@nestjs/jwt';
+import { type ConfigService } from '@nestjs/config';
 import * as bcrypt from 'bcryptjs';
-// eslint-disable-next-line @typescript-eslint/consistent-type-imports -- NestJS DI requires runtime class references
-import { UserRepository } from '../../infrastructure/repositories/user.repository';
-// eslint-disable-next-line @typescript-eslint/consistent-type-imports -- NestJS DI requires runtime class references
-import { SessionRepository } from '../../infrastructure/repositories/session.repository';
+import { type UserRepository } from '../../infrastructure/repositories/user.repository';
+import { type SessionRepository } from '../../infrastructure/repositories/session.repository';
 import { ApplicationError, ConflictError } from '@/platform/errors';
 import type { LoginDto, RegisterDto } from '@hesabdari/contracts';
 

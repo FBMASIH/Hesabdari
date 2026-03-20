@@ -44,9 +44,10 @@ test-results/
 .playwright-mcp/
 audit-screenshots/
 
-# Screenshots (test/audit artifacts)
+# Screenshots (test/audit/design artifacts in root)
 audit-*.png
 test-*.png
+navbar-*.png
 
 # Prisma
 packages/db/prisma/*.db

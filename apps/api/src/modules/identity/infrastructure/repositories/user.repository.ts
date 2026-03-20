@@ -1,6 +1,5 @@
 import { Injectable } from '@nestjs/common';
-// eslint-disable-next-line @typescript-eslint/consistent-type-imports -- NestJS DI requires runtime class references
-import { PrismaService } from '@/platform/database/prisma.service';
+import { type PrismaService } from '@/platform/database/prisma.service';
 import type {
   IUserRepository,
   UserWithOrganizations,
