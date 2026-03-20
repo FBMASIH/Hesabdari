@@ -1,6 +1,10 @@
 import { Injectable } from '@nestjs/common';
+// eslint-disable-next-line @typescript-eslint/consistent-type-imports -- NestJS DI requires runtime class references
 import { PrismaService } from '@/platform/database/prisma.service';
-import type { IUserRepository, UserWithOrganizations } from '../../domain/repositories/user.repository.interface';
+import type {
+  IUserRepository,
+  UserWithOrganizations,
+} from '../../domain/repositories/user.repository.interface';
 import type { UserEntity } from '../../domain/entities/user.entity';
 
 @Injectable()
@@ -30,6 +34,36 @@ export class UserRepository implements IUserRepository {
           },
         },
       },
+    });
+  }
+
+  async createWithDefaultOrgMembership(
+    data: Omit<UserEntity, 'id' | 'createdAt' | 'updatedAt'>,
+  ): Promise<UserEntity> {
+    return this.prisma.$transaction(async (tx) => {
+      const user = await tx.user.create({ data });
+
+      const defaultOrg = await tx.organization.findFirst({
+        where: { slug: 'hesabdari-dev' },
+      });
+
+      if (defaultOrg) {
+        const ownerRole = await tx.role.findFirst({
+          where: { organizationId: defaultOrg.id, isSystem: true },
+        });
+
+        if (ownerRole) {
+          await tx.organizationMember.create({
+            data: {
+              userId: user.id,
+              organizationId: defaultOrg.id,
+              roleId: ownerRole.id,
+            },
+          });
+        }
+      }
+
+      return user;
     });
   }
 

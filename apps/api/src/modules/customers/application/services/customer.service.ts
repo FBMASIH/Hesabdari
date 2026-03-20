@@ -1,13 +1,24 @@
 import { Injectable } from '@nestjs/common';
-import { CustomerRepository } from '../../infrastructure/repositories/customer.repository';
+import type { CustomerRepository } from '../../infrastructure/repositories/customer.repository';
 import { NotFoundError, ConflictError } from '@/platform/errors';
 import type { CreateCustomerDto, UpdateCustomerDto, CustomerQueryDto } from '@hesabdari/contracts';
+import type { Customer } from '@hesabdari/db';
+
+export interface PaginatedCustomers {
+  data: Customer[];
+  total: number;
+  page: number;
+  pageSize: number;
+}
 
 @Injectable()
 export class CustomerService {
   constructor(private readonly customerRepository: CustomerRepository) {}
 
-  async findByOrganization(organizationId: string, query: CustomerQueryDto) {
+  async findByOrganization(
+    organizationId: string,
+    query: CustomerQueryDto,
+  ): Promise<PaginatedCustomers> {
     return this.customerRepository.findByOrganization(organizationId, {
       isActive: query.isActive,
       page: query.page ?? 1,
@@ -15,17 +26,17 @@ export class CustomerService {
     });
   }
 
-  async search(organizationId: string, q: string) {
+  async search(organizationId: string, q: string): Promise<Customer[]> {
     return this.customerRepository.search(organizationId, q);
   }
 
-  async findById(id: string, organizationId: string) {
+  async findById(id: string, organizationId: string): Promise<Customer> {
     const customer = await this.customerRepository.findById(id, organizationId);
     if (!customer) throw new NotFoundError('Customer', id);
     return customer;
   }
 
-  async create(organizationId: string, data: CreateCustomerDto) {
+  async create(organizationId: string, data: CreateCustomerDto): Promise<Customer> {
     const existing = await this.customerRepository.findByCode(organizationId, data.code);
     if (existing) throw new ConflictError(`Customer with code ${data.code} already exists`);
     return this.customerRepository.create({
@@ -51,7 +62,11 @@ export class CustomerService {
     });
   }
 
-  async update(id: string, organizationId: string, data: Omit<UpdateCustomerDto, 'id'>) {
+  async update(
+    id: string,
+    organizationId: string,
+    data: Omit<UpdateCustomerDto, 'id'>,
+  ): Promise<Customer> {
     const customer = await this.findById(id, organizationId);
     if (data.code) {
       const existing = await this.customerRepository.findByCode(customer.organizationId, data.code);
@@ -67,7 +82,7 @@ export class CustomerService {
     });
   }
 
-  async softDelete(id: string, organizationId: string) {
+  async softDelete(id: string, organizationId: string): Promise<Customer> {
     await this.findById(id, organizationId);
     return this.customerRepository.update(id, { isActive: false });
   }
