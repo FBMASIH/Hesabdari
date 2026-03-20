@@ -25,7 +25,7 @@ export interface ProductDetailDto {
 export interface ProductWarehouseStockDto {
   id: string;
   warehouseId: string;
-  warehouseName: string;
+  warehouse: { id: string; name: string; code: string };
   quantity: number;
   purchasePrice: string;
   totalPrice: string;
@@ -61,7 +61,10 @@ export const productCrudKeys = {
   stocks: (productId: string) => [...productKeys.all, 'stocks', productId] as const,
 };
 
-export function useProductsList(params: ProductListParams = {}) {
+export function useProductsList(
+  params: ProductListParams = {},
+  initialData?: PaginatedResponse<ProductDetailDto>,
+) {
   return useQuery({
     queryKey: productCrudKeys.list(params),
     queryFn: () =>
@@ -70,6 +73,7 @@ export function useProductsList(params: ProductListParams = {}) {
         toQueryParams(params),
       ),
     staleTime: STALE_TIME.MASTER_DATA,
+    initialData,
   });
 }
 
@@ -109,7 +113,22 @@ export function useDeleteProduct() {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: (id: string) => apiClient.delete(orgPath(`/products/${id}`)),
-    onSuccess: () => {
+    onMutate: async (id) => {
+      await queryClient.cancelQueries({ queryKey: productKeys.lists() });
+      const snapshots = queryClient.getQueriesData<PaginatedResponse<ProductDetailDto>>({
+        queryKey: productKeys.lists(),
+      });
+      queryClient.setQueriesData<PaginatedResponse<ProductDetailDto>>(
+        { queryKey: productKeys.lists() },
+        (old) =>
+          old ? { ...old, data: old.data.filter((c) => c.id !== id), total: old.total - 1 } : old,
+      );
+      return { snapshots };
+    },
+    onError: (_err, _id, ctx) => {
+      ctx?.snapshots.forEach(([key, data]) => queryClient.setQueryData(key, data));
+    },
+    onSettled: () => {
       queryClient.invalidateQueries({ queryKey: productKeys.lists() });
     },
   });
@@ -119,7 +138,7 @@ export function useProductStocks(productId: string) {
   return useQuery({
     queryKey: productCrudKeys.stocks(productId),
     queryFn: () =>
-      apiClient.get<ProductWarehouseStockDto[]>(orgPath(`/products/${productId}/stocks`)),
+      apiClient.get<ProductWarehouseStockDto[]>(orgPath(`/products/${productId}/warehouse-stocks`)),
     enabled: !!productId,
     staleTime: STALE_TIME.MASTER_DATA,
   });
@@ -129,7 +148,10 @@ export function useSaveProductStocks() {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: ({ productId, data }: { productId: string; data: SaveProductStocksPayload }) =>
-      apiClient.put<ProductWarehouseStockDto[]>(orgPath(`/products/${productId}/stocks`), data),
+      apiClient.put<ProductWarehouseStockDto[]>(
+        orgPath(`/products/${productId}/warehouse-stocks`),
+        data,
+      ),
     onSuccess: (_data, variables) => {
       queryClient.invalidateQueries({ queryKey: productCrudKeys.stocks(variables.productId) });
     },

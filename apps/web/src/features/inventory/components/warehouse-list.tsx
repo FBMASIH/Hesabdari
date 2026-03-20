@@ -29,6 +29,7 @@ import {
 } from '@/features/shared';
 import { useAppToast } from '@/providers/toast-provider';
 import { useWarehouses, useDeleteWarehouse, type WarehouseDto } from '../hooks/use-warehouses';
+import type { PaginatedResponse } from '@/shared/lib/query-helpers';
 import { useDebounce } from '@/shared/hooks/use-debounce';
 import { useTableSort } from '@/shared/hooks/use-table-sort';
 import { ApiError } from '@hesabdari/api-client';
@@ -43,7 +44,11 @@ const COSTING_METHOD_LABELS: Record<WarehouseDto['costingMethod'], string> = {
   AVERAGE: wh.costingMethods.WEIGHTED_AVG,
 };
 
-export function WarehouseListPage() {
+interface WarehouseListPageProps {
+  initialData?: PaginatedResponse<WarehouseDto>;
+}
+
+export function WarehouseListPage({ initialData }: WarehouseListPageProps) {
   const router = useRouter();
   const { showToast } = useAppToast();
   const [search, setSearch] = useState('');
@@ -52,13 +57,17 @@ export function WarehouseListPage() {
   const [deleteTarget, setDeleteTarget] = useState<WarehouseDto | null>(null);
 
   const debouncedSearch = useDebounce(search);
+  const isDefaultQuery = page === 1 && !debouncedSearch && !activeFilter;
 
-  const { data, isLoading, isError, error, refetch } = useWarehouses({
-    page,
-    pageSize: 10,
-    search: debouncedSearch || undefined,
-    isActive: activeFilter === 'active' ? true : activeFilter === 'inactive' ? false : undefined,
-  });
+  const { data, isLoading, isError, error, refetch } = useWarehouses(
+    {
+      page,
+      pageSize: 10,
+      search: debouncedSearch || undefined,
+      isActive: activeFilter === 'active' ? true : activeFilter === 'inactive' ? false : undefined,
+    },
+    isDefaultQuery ? initialData : undefined,
+  );
 
   const deleteMutation = useDeleteWarehouse();
 

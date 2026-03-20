@@ -6,3 +6,7 @@ export { ReceivedChequeListPage } from './components/received-cheque-list';
 export { ReceivedChequeForm } from './components/received-cheque-form';
 export { PaidChequeListPage } from './components/paid-cheque-list';
 export { PaidChequeForm } from './components/paid-cheque-form';
+export type { BankAccountDto } from './hooks/use-bank-accounts';
+export type { CashboxDto } from './hooks/use-cashboxes';
+export type { PaidChequeDto } from './hooks/use-paid-cheques';
+export type { ReceivedChequeDto } from './hooks/use-received-cheques';

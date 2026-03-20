@@ -27,6 +27,7 @@ import {
   TablePaginationFooter,
   type FilterPill,
 } from '@/features/shared';
+import type { PaginatedResponse } from '@/shared/lib/query-helpers';
 import { useAppToast } from '@/providers/toast-provider';
 import { useVendors, useDeleteVendor, type VendorDto } from '../hooks/use-vendors';
 import { useDebounce } from '@/shared/hooks/use-debounce';
@@ -37,7 +38,11 @@ const vnd = t('vendor');
 const common = t('common');
 const msgs = t('messages');
 
-export function VendorListPage() {
+interface VendorListPageProps {
+  initialData?: PaginatedResponse<VendorDto>;
+}
+
+export function VendorListPage({ initialData }: VendorListPageProps) {
   const router = useRouter();
   const { showToast } = useAppToast();
   const [search, setSearch] = useState('');
@@ -46,13 +51,17 @@ export function VendorListPage() {
   const [deleteTarget, setDeleteTarget] = useState<VendorDto | null>(null);
 
   const debouncedSearch = useDebounce(search);
+  const isDefaultQuery = page === 1 && !debouncedSearch && !activeFilter;
 
-  const { data, isLoading, isError, error, refetch } = useVendors({
-    page,
-    pageSize: 10,
-    search: debouncedSearch || undefined,
-    isActive: activeFilter === 'active' ? true : activeFilter === 'inactive' ? false : undefined,
-  });
+  const { data, isLoading, isError, error, refetch } = useVendors(
+    {
+      page,
+      pageSize: 10,
+      search: debouncedSearch || undefined,
+      isActive: activeFilter === 'active' ? true : activeFilter === 'inactive' ? false : undefined,
+    },
+    isDefaultQuery ? initialData : undefined,
+  );
 
   const deleteMutation = useDeleteVendor();
 

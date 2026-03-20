@@ -30,7 +30,7 @@ export interface CreateReceivedChequeInput {
   chequeNumber: string;
   sayadiNumber?: string;
   customerId: string;
-  currencyId?: string;
+  currencyId: string;
   amount: string;
   date: string;
   dueDate: string;
@@ -51,7 +51,10 @@ export interface ReceivedChequeListParams {
   status?: ReceivedChequeStatus;
 }
 
-export function useReceivedCheques(params: ReceivedChequeListParams = {}) {
+export function useReceivedCheques(
+  params: ReceivedChequeListParams = {},
+  initialData?: PaginatedResponse<ReceivedChequeDto>,
+) {
   return useQuery({
     queryKey: receivedChequeKeys.list(params),
     queryFn: () =>
@@ -60,6 +63,7 @@ export function useReceivedCheques(params: ReceivedChequeListParams = {}) {
         toQueryParams(params),
       ),
     staleTime: STALE_TIME.TRANSACTIONAL,
+    initialData,
   });
 }
 
@@ -78,7 +82,22 @@ export function useDeleteReceivedCheque() {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: (id: string) => apiClient.delete(orgPath(`/received-cheques/${id}`)),
-    onSuccess: () => {
+    onMutate: async (id) => {
+      await queryClient.cancelQueries({ queryKey: receivedChequeKeys.lists() });
+      const snapshots = queryClient.getQueriesData<PaginatedResponse<ReceivedChequeDto>>({
+        queryKey: receivedChequeKeys.lists(),
+      });
+      queryClient.setQueriesData<PaginatedResponse<ReceivedChequeDto>>(
+        { queryKey: receivedChequeKeys.lists() },
+        (old) =>
+          old ? { ...old, data: old.data.filter((c) => c.id !== id), total: old.total - 1 } : old,
+      );
+      return { snapshots };
+    },
+    onError: (_err, _id, ctx) => {
+      ctx?.snapshots.forEach(([key, data]) => queryClient.setQueryData(key, data));
+    },
+    onSettled: () => {
       queryClient.invalidateQueries({ queryKey: receivedChequeKeys.lists() });
     },
   });

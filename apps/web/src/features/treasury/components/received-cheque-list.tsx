@@ -36,6 +36,7 @@ import {
   type ReceivedChequeDto,
   type ReceivedChequeStatus,
 } from '../hooks/use-received-cheques';
+import type { PaginatedResponse } from '@/shared/lib/query-helpers';
 import { useDebounce } from '@/shared/hooks/use-debounce';
 import { useTableSort } from '@/shared/hooks/use-table-sort';
 import { ApiError } from '@hesabdari/api-client';
@@ -60,7 +61,11 @@ function statusLabel(status: ReceivedChequeStatus): string {
   return tr.chequeStatuses[status.toLowerCase() as keyof typeof tr.chequeStatuses] ?? status;
 }
 
-export function ReceivedChequeListPage() {
+interface ReceivedChequeListPageProps {
+  initialData?: PaginatedResponse<ReceivedChequeDto>;
+}
+
+export function ReceivedChequeListPage({ initialData }: ReceivedChequeListPageProps) {
   const router = useRouter();
   const { showToast } = useAppToast();
   const [search, setSearch] = useState('');
@@ -69,13 +74,17 @@ export function ReceivedChequeListPage() {
   const [deleteTarget, setDeleteTarget] = useState<ReceivedChequeDto | null>(null);
 
   const debouncedSearch = useDebounce(search);
+  const isDefaultQuery = page === 1 && !debouncedSearch && !statusFilter;
 
-  const { data, isLoading, isError, error, refetch } = useReceivedCheques({
-    page,
-    pageSize: 10,
-    search: debouncedSearch || undefined,
-    status: statusFilter ? (statusFilter as ReceivedChequeStatus) : undefined,
-  });
+  const { data, isLoading, isError, error, refetch } = useReceivedCheques(
+    {
+      page,
+      pageSize: 10,
+      search: debouncedSearch || undefined,
+      status: statusFilter ? (statusFilter as ReceivedChequeStatus) : undefined,
+    },
+    isDefaultQuery ? initialData : undefined,
+  );
 
   const deleteMutation = useDeleteReceivedCheque();
 

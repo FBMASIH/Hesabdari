@@ -33,6 +33,7 @@ import {
   useDeleteBankAccount,
   type BankAccountDto,
 } from '../hooks/use-bank-accounts';
+import type { PaginatedResponse } from '@/shared/lib/query-helpers';
 import { useDebounce } from '@/shared/hooks/use-debounce';
 import { useTableSort } from '@/shared/hooks/use-table-sort';
 import { ApiError } from '@hesabdari/api-client';
@@ -41,7 +42,11 @@ const tr = t('treasury');
 const common = t('common');
 const msgs = t('messages');
 
-export function BankAccountListPage() {
+interface BankAccountListPageProps {
+  initialData?: PaginatedResponse<BankAccountDto>;
+}
+
+export function BankAccountListPage({ initialData }: BankAccountListPageProps) {
   const router = useRouter();
   const { showToast } = useAppToast();
   const [search, setSearch] = useState('');
@@ -50,13 +55,17 @@ export function BankAccountListPage() {
   const [deleteTarget, setDeleteTarget] = useState<BankAccountDto | null>(null);
 
   const debouncedSearch = useDebounce(search);
+  const isDefaultQuery = page === 1 && !debouncedSearch && !activeFilter;
 
-  const { data, isLoading, isError, error, refetch } = useBankAccounts({
-    page,
-    pageSize: 10,
-    search: debouncedSearch || undefined,
-    isActive: activeFilter === 'active' ? true : activeFilter === 'inactive' ? false : undefined,
-  });
+  const { data, isLoading, isError, error, refetch } = useBankAccounts(
+    {
+      page,
+      pageSize: 10,
+      search: debouncedSearch || undefined,
+      isActive: activeFilter === 'active' ? true : activeFilter === 'inactive' ? false : undefined,
+    },
+    isDefaultQuery ? initialData : undefined,
+  );
 
   const deleteMutation = useDeleteBankAccount();
 

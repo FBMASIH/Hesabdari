@@ -41,12 +41,16 @@ export interface CashboxListParams {
   isActive?: boolean;
 }
 
-export function useCashboxes(params: CashboxListParams = {}) {
+export function useCashboxes(
+  params: CashboxListParams = {},
+  initialData?: PaginatedResponse<CashboxDto>,
+) {
   return useQuery({
     queryKey: cashboxKeys.list(params),
     queryFn: () =>
       apiClient.get<PaginatedResponse<CashboxDto>>(orgPath('/cashboxes'), toQueryParams(params)),
     staleTime: STALE_TIME.MASTER_DATA,
+    initialData,
   });
 }
 
@@ -74,7 +78,22 @@ export function useDeleteCashbox() {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: (id: string) => apiClient.delete(orgPath(`/cashboxes/${id}`)),
-    onSuccess: () => {
+    onMutate: async (id) => {
+      await queryClient.cancelQueries({ queryKey: cashboxKeys.lists() });
+      const snapshots = queryClient.getQueriesData<PaginatedResponse<CashboxDto>>({
+        queryKey: cashboxKeys.lists(),
+      });
+      queryClient.setQueriesData<PaginatedResponse<CashboxDto>>(
+        { queryKey: cashboxKeys.lists() },
+        (old) =>
+          old ? { ...old, data: old.data.filter((c) => c.id !== id), total: old.total - 1 } : old,
+      );
+      return { snapshots };
+    },
+    onError: (_err, _id, ctx) => {
+      ctx?.snapshots.forEach(([key, data]) => queryClient.setQueryData(key, data));
+    },
+    onSettled: () => {
       queryClient.invalidateQueries({ queryKey: cashboxKeys.lists() });
     },
   });

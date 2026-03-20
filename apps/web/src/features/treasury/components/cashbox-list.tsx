@@ -29,6 +29,7 @@ import {
 } from '@/features/shared';
 import { useAppToast } from '@/providers/toast-provider';
 import { useCashboxes, useDeleteCashbox, type CashboxDto } from '../hooks/use-cashboxes';
+import type { PaginatedResponse } from '@/shared/lib/query-helpers';
 import { useDebounce } from '@/shared/hooks/use-debounce';
 import { useTableSort } from '@/shared/hooks/use-table-sort';
 import { ApiError } from '@hesabdari/api-client';
@@ -37,7 +38,11 @@ const tr = t('treasury');
 const common = t('common');
 const msgs = t('messages');
 
-export function CashboxListPage() {
+interface CashboxListPageProps {
+  initialData?: PaginatedResponse<CashboxDto>;
+}
+
+export function CashboxListPage({ initialData }: CashboxListPageProps) {
   const router = useRouter();
   const { showToast } = useAppToast();
   const [search, setSearch] = useState('');
@@ -46,13 +51,17 @@ export function CashboxListPage() {
   const [deleteTarget, setDeleteTarget] = useState<CashboxDto | null>(null);
 
   const debouncedSearch = useDebounce(search);
+  const isDefaultQuery = page === 1 && !debouncedSearch && !activeFilter;
 
-  const { data, isLoading, isError, error, refetch } = useCashboxes({
-    page,
-    pageSize: 10,
-    search: debouncedSearch || undefined,
-    isActive: activeFilter === 'active' ? true : activeFilter === 'inactive' ? false : undefined,
-  });
+  const { data, isLoading, isError, error, refetch } = useCashboxes(
+    {
+      page,
+      pageSize: 10,
+      search: debouncedSearch || undefined,
+      isActive: activeFilter === 'active' ? true : activeFilter === 'inactive' ? false : undefined,
+    },
+    isDefaultQuery ? initialData : undefined,
+  );
 
   const deleteMutation = useDeleteCashbox();
 

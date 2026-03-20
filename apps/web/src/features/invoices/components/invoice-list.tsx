@@ -31,6 +31,7 @@ import {
   type FilterPill,
 } from '@/features/shared';
 import { useAppToast } from '@/providers/toast-provider';
+import type { PaginatedResponse } from '@/shared/lib/query-helpers';
 import { useDebounce } from '@/shared/hooks/use-debounce';
 import { useTableSort } from '@/shared/hooks/use-table-sort';
 import { useInvoices, useCancelInvoice, type InvoiceDto } from '../hooks/use-invoices';
@@ -63,7 +64,11 @@ const statusVariant: Record<InvoiceStatus, 'warning' | 'success' | 'danger'> = {
   CANCELLED: 'danger',
 };
 
-export function InvoiceListPage() {
+interface InvoiceListPageProps {
+  initialData?: PaginatedResponse<InvoiceDto>;
+}
+
+export function InvoiceListPage({ initialData }: InvoiceListPageProps) {
   const router = useRouter();
   const { showToast } = useAppToast();
   const [search, setSearch] = useState('');
@@ -71,13 +76,17 @@ export function InvoiceListPage() {
   const [page, setPage] = useState(1);
   const [cancelTarget, setCancelTarget] = useState<InvoiceDto | null>(null);
   const debouncedSearch = useDebounce(search);
+  const isDefaultQuery = page === 1 && !debouncedSearch && !statusFilter;
 
-  const { data, isLoading, isError, error, refetch } = useInvoices({
-    page,
-    pageSize: 10,
-    status: statusFilter || undefined,
-    search: debouncedSearch || undefined,
-  });
+  const { data, isLoading, isError, error, refetch } = useInvoices(
+    {
+      page,
+      pageSize: 10,
+      status: statusFilter || undefined,
+      search: debouncedSearch || undefined,
+    },
+    isDefaultQuery ? initialData : undefined,
+  );
 
   const cancelMutation = useCancelInvoice();
 
@@ -212,7 +221,7 @@ export function InvoiceListPage() {
                         <Button
                           variant="ghost"
                           size="icon-sm"
-                          onClick={() => router.push(`/invoices/${row.id}/edit` as never)}
+                          onClick={() => router.push(`/invoices/${row.id}/edit`)}
                           aria-label={inv.viewInvoiceAriaLabel(row.invoiceNumber)}
                           title={common.edit}
                         >

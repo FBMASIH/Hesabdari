@@ -33,12 +33,16 @@ export interface CustomerListParams {
   isActive?: boolean;
 }
 
-export function useCustomers(params: CustomerListParams = {}) {
+export function useCustomers(
+  params: CustomerListParams = {},
+  initialData?: PaginatedResponse<CustomerDto>,
+) {
   return useQuery({
     queryKey: customerKeys.list(params),
     queryFn: () =>
       apiClient.get<PaginatedResponse<CustomerDto>>(orgPath('/customers'), toQueryParams(params)),
     staleTime: STALE_TIME.MASTER_DATA,
+    initialData,
   });
 }
 
@@ -89,7 +93,22 @@ export function useDeleteCustomer() {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: (id: string) => apiClient.delete(orgPath(`/customers/${id}`)),
-    onSuccess: () => {
+    onMutate: async (id) => {
+      await queryClient.cancelQueries({ queryKey: customerKeys.lists() });
+      const snapshots = queryClient.getQueriesData<PaginatedResponse<CustomerDto>>({
+        queryKey: customerKeys.lists(),
+      });
+      queryClient.setQueriesData<PaginatedResponse<CustomerDto>>(
+        { queryKey: customerKeys.lists() },
+        (old) =>
+          old ? { ...old, data: old.data.filter((c) => c.id !== id), total: old.total - 1 } : old,
+      );
+      return { snapshots };
+    },
+    onError: (_err, _id, ctx) => {
+      ctx?.snapshots.forEach(([key, data]) => queryClient.setQueryData(key, data));
+    },
+    onSettled: () => {
       queryClient.invalidateQueries({ queryKey: customerKeys.lists() });
     },
   });

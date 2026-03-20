@@ -27,6 +27,7 @@ import {
   TablePaginationFooter,
   type FilterPill,
 } from '@/features/shared';
+import type { PaginatedResponse } from '@/shared/lib/query-helpers';
 import { useJournalEntries, type JournalEntryDto } from '../hooks/use-journal-entries';
 import { useDebounce } from '@/shared/hooks/use-debounce';
 import { useTableSort } from '@/shared/hooks/use-table-sort';
@@ -49,20 +50,28 @@ const statusVariant: Record<JournalEntryStatus, 'warning' | 'success' | 'danger'
   REVERSED: 'danger',
 };
 
-export function JournalEntryListPage() {
+interface JournalEntryListPageProps {
+  initialData?: PaginatedResponse<JournalEntryDto>;
+}
+
+export function JournalEntryListPage({ initialData }: JournalEntryListPageProps) {
   const router = useRouter();
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState<string>('');
   const [page, setPage] = useState(1);
 
   const debouncedSearch = useDebounce(search);
+  const isDefaultQuery = page === 1 && !debouncedSearch && !statusFilter;
 
-  const { data, isLoading, isError, error, refetch } = useJournalEntries({
-    page,
-    pageSize: 10,
-    status: statusFilter || undefined,
-    search: debouncedSearch || undefined,
-  });
+  const { data, isLoading, isError, error, refetch } = useJournalEntries(
+    {
+      page,
+      pageSize: 10,
+      status: statusFilter || undefined,
+      search: debouncedSearch || undefined,
+    },
+    isDefaultQuery ? initialData : undefined,
+  );
 
   const filters: FilterPill[] = [
     { key: '', label: common.all, active: statusFilter === '' },

@@ -19,10 +19,11 @@ export const accountKeys = {
   list: () => [...accountKeys.all, 'list'] as const,
 };
 
-export function useAccounts() {
+export function useAccounts(initialData?: AccountDto[]) {
   return useQuery({
     queryKey: accountKeys.list(),
     queryFn: () => apiClient.get<AccountDto[]>(orgPath('/accounts')),
     staleTime: STALE_TIME.MASTER_DATA,
+    initialData,
   });
 }

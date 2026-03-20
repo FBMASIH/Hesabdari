@@ -135,8 +135,12 @@ function AccountTreeNode({ account, children, childrenMap, depth }: TreeNodeProp
 
 // ── Page component ──────────────────────────────────
 
-export function AccountTreePage() {
-  const { data: accounts, isLoading, isError, error, refetch } = useAccounts();
+interface AccountTreePageProps {
+  initialData?: AccountDto[];
+}
+
+export function AccountTreePage({ initialData }: AccountTreePageProps) {
+  const { data: accounts, isLoading, isError, error, refetch } = useAccounts(initialData);
 
   // Build tree from flat list — O(n) map lookup instead of O(n²) filtering
   const accountTree = useMemo(() => {

@@ -18,7 +18,7 @@ export interface InvoiceDto {
   description: string | null;
   customer?: { id: string; name: string } | null;
   vendor?: { id: string; name: string } | null;
-  lines: InvoiceLineDto[];
+  lines?: InvoiceLineDto[];
   createdAt: string;
 }
 
@@ -56,27 +56,33 @@ export interface InvoiceListParams {
 
 // ── Hooks ───────────────────────────────────────────
 
-export function useInvoices(params: InvoiceListParams = {}) {
+export function useInvoices(
+  params: InvoiceListParams = {},
+  initialData?: PaginatedResponse<InvoiceDto>,
+) {
   return useQuery({
     queryKey: invoiceKeys.list(params),
     queryFn: () =>
       apiClient.get<PaginatedResponse<InvoiceDto>>(orgPath('/invoices'), toQueryParams(params)),
     staleTime: STALE_TIME.TRANSACTIONAL,
+    initialData,
   });
 }
 
-export function useInvoice(id: string) {
+export function useInvoice(id: string, initialData?: InvoiceDto) {
   return useQuery({
     queryKey: invoiceKeys.detail(id),
     queryFn: () => apiClient.get<InvoiceDto>(orgPath(`/invoices/${id}`)),
     enabled: !!id,
     staleTime: STALE_TIME.TRANSACTIONAL,
+    initialData,
   });
 }
 
 export function useCreateInvoice() {
   const queryClient = useQueryClient();
   return useMutation({
+    // TODO: Use CreateInvoiceDto from @hesabdari/contracts once the frontend import path is configured
     mutationFn: (data: Record<string, unknown>) =>
       apiClient.post<InvoiceDto>(orgPath('/invoices'), data),
     onSuccess: () => {
@@ -88,6 +94,7 @@ export function useCreateInvoice() {
 export function useUpdateInvoice() {
   const queryClient = useQueryClient();
   return useMutation({
+    // TODO: Use UpdateInvoiceDto from @hesabdari/contracts once the frontend import path is configured
     mutationFn: ({ id, data }: { id: string; data: Record<string, unknown> }) =>
       apiClient.put<InvoiceDto>(orgPath(`/invoices/${id}`), data),
     onSuccess: () => {
@@ -110,7 +117,29 @@ export function useCancelInvoice() {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: (id: string) => apiClient.post<InvoiceDto>(orgPath(`/invoices/${id}/cancel`)),
-    onSuccess: () => {
+    onMutate: async (id) => {
+      await queryClient.cancelQueries({ queryKey: invoiceKeys.lists() });
+      const snapshots = queryClient.getQueriesData<PaginatedResponse<InvoiceDto>>({
+        queryKey: invoiceKeys.lists(),
+      });
+      queryClient.setQueriesData<PaginatedResponse<InvoiceDto>>(
+        { queryKey: invoiceKeys.lists() },
+        (old) =>
+          old
+            ? {
+                ...old,
+                data: old.data.map((c) =>
+                  c.id === id ? { ...c, status: 'CANCELLED' as const } : c,
+                ),
+              }
+            : old,
+      );
+      return { snapshots };
+    },
+    onError: (_err, _id, ctx) => {
+      ctx?.snapshots.forEach(([key, data]) => queryClient.setQueryData(key, data));
+    },
+    onSettled: () => {
       queryClient.invalidateQueries({ queryKey: invoiceKeys.all });
     },
   });

@@ -33,12 +33,16 @@ export interface VendorListParams {
   isActive?: boolean;
 }
 
-export function useVendors(params: VendorListParams = {}) {
+export function useVendors(
+  params: VendorListParams = {},
+  initialData?: PaginatedResponse<VendorDto>,
+) {
   return useQuery({
     queryKey: vendorKeys.list(params),
     queryFn: () =>
       apiClient.get<PaginatedResponse<VendorDto>>(orgPath('/vendors'), toQueryParams(params)),
     staleTime: STALE_TIME.MASTER_DATA,
+    initialData,
   });
 }
 
@@ -52,12 +56,13 @@ export function useCreateVendor() {
   });
 }
 
-export function useVendor(id: string) {
+export function useVendor(id: string, initialData?: VendorDto) {
   return useQuery({
     queryKey: vendorKeys.detail(id),
     queryFn: () => apiClient.get<VendorDto>(orgPath(`/vendors/${id}`)),
     enabled: !!id,
     staleTime: STALE_TIME.MASTER_DATA,
+    initialData,
   });
 }
 
@@ -77,7 +82,22 @@ export function useDeleteVendor() {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: (id: string) => apiClient.delete(orgPath(`/vendors/${id}`)),
-    onSuccess: () => {
+    onMutate: async (id) => {
+      await queryClient.cancelQueries({ queryKey: vendorKeys.lists() });
+      const snapshots = queryClient.getQueriesData<PaginatedResponse<VendorDto>>({
+        queryKey: vendorKeys.lists(),
+      });
+      queryClient.setQueriesData<PaginatedResponse<VendorDto>>(
+        { queryKey: vendorKeys.lists() },
+        (old) =>
+          old ? { ...old, data: old.data.filter((c) => c.id !== id), total: old.total - 1 } : old,
+      );
+      return { snapshots };
+    },
+    onError: (_err, _id, ctx) => {
+      ctx?.snapshots.forEach(([key, data]) => queryClient.setQueryData(key, data));
+    },
+    onSettled: () => {
       queryClient.invalidateQueries({ queryKey: vendorKeys.lists() });
     },
   });

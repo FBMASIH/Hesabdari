@@ -48,7 +48,10 @@ export interface JournalListParams {
 
 // ── Hooks ───────────────────────────────────────────
 
-export function useJournalEntries(params: JournalListParams = {}) {
+export function useJournalEntries(
+  params: JournalListParams = {},
+  initialData?: PaginatedResponse<JournalEntryDto>,
+) {
   return useQuery({
     queryKey: journalKeys.list(params),
     queryFn: () =>
@@ -57,6 +60,7 @@ export function useJournalEntries(params: JournalListParams = {}) {
         toQueryParams(params),
       ),
     staleTime: STALE_TIME.TRANSACTIONAL,
+    initialData,
   });
 }
 

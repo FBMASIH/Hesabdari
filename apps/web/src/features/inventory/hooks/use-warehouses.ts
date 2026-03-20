@@ -29,12 +29,16 @@ export interface WarehouseListParams {
   isActive?: boolean;
 }
 
-export function useWarehouses(params: WarehouseListParams = {}) {
+export function useWarehouses(
+  params: WarehouseListParams = {},
+  initialData?: PaginatedResponse<WarehouseDto>,
+) {
   return useQuery({
     queryKey: warehouseKeys.list(params),
     queryFn: () =>
       apiClient.get<PaginatedResponse<WarehouseDto>>(orgPath('/warehouses'), toQueryParams(params)),
     staleTime: STALE_TIME.MASTER_DATA,
+    initialData,
   });
 }
 
@@ -53,7 +57,22 @@ export function useDeleteWarehouse() {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: (id: string) => apiClient.delete(orgPath(`/warehouses/${id}`)),
-    onSuccess: () => {
+    onMutate: async (id) => {
+      await queryClient.cancelQueries({ queryKey: warehouseKeys.lists() });
+      const snapshots = queryClient.getQueriesData<PaginatedResponse<WarehouseDto>>({
+        queryKey: warehouseKeys.lists(),
+      });
+      queryClient.setQueriesData<PaginatedResponse<WarehouseDto>>(
+        { queryKey: warehouseKeys.lists() },
+        (old) =>
+          old ? { ...old, data: old.data.filter((c) => c.id !== id), total: old.total - 1 } : old,
+      );
+      return { snapshots };
+    },
+    onError: (_err, _id, ctx) => {
+      ctx?.snapshots.forEach(([key, data]) => queryClient.setQueryData(key, data));
+    },
+    onSettled: () => {
       queryClient.invalidateQueries({ queryKey: warehouseKeys.lists() });
     },
   });

@@ -48,7 +48,10 @@ export interface BankAccountListParams {
   isActive?: boolean;
 }
 
-export function useBankAccounts(params: BankAccountListParams = {}) {
+export function useBankAccounts(
+  params: BankAccountListParams = {},
+  initialData?: PaginatedResponse<BankAccountDto>,
+) {
   return useQuery({
     queryKey: bankAccountKeys.list(params),
     queryFn: () =>
@@ -57,6 +60,7 @@ export function useBankAccounts(params: BankAccountListParams = {}) {
         toQueryParams(params),
       ),
     staleTime: STALE_TIME.MASTER_DATA,
+    initialData,
   });
 }
 
@@ -84,8 +88,45 @@ export function useDeleteBankAccount() {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: (id: string) => apiClient.delete(orgPath(`/bank-accounts/${id}`)),
-    onSuccess: () => {
+    onMutate: async (id) => {
+      await queryClient.cancelQueries({ queryKey: bankAccountKeys.lists() });
+      const snapshots = queryClient.getQueriesData<PaginatedResponse<BankAccountDto>>({
+        queryKey: bankAccountKeys.lists(),
+      });
+      queryClient.setQueriesData<PaginatedResponse<BankAccountDto>>(
+        { queryKey: bankAccountKeys.lists() },
+        (old) =>
+          old ? { ...old, data: old.data.filter((c) => c.id !== id), total: old.total - 1 } : old,
+      );
+      return { snapshots };
+    },
+    onError: (_err, _id, ctx) => {
+      ctx?.snapshots.forEach(([key, data]) => queryClient.setQueryData(key, data));
+    },
+    onSettled: () => {
       queryClient.invalidateQueries({ queryKey: bankAccountKeys.lists() });
     },
+  });
+}
+
+/* ------------------------------------------------------------------ */
+/*  Banks (system-wide master data)                                    */
+/* ------------------------------------------------------------------ */
+
+export interface BankDto {
+  id: string;
+  code: string;
+  name: string;
+}
+
+export const bankKeys = {
+  all: ['banks'] as const,
+};
+
+export function useBanks() {
+  return useQuery({
+    queryKey: bankKeys.all,
+    queryFn: () => apiClient.get<BankDto[]>('/api/v1/banks'),
+    staleTime: STALE_TIME.MASTER_DATA,
   });
 }

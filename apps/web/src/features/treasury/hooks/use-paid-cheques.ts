@@ -26,7 +26,7 @@ export interface CreatePaidChequeInput {
   sayadiNumber?: string;
   vendorId?: string;
   bankAccountId: string;
-  currencyId?: string;
+  currencyId: string;
   amount: string;
   date: string;
   dueDate: string;
@@ -47,7 +47,10 @@ export interface PaidChequeListParams {
   status?: PaidChequeStatus;
 }
 
-export function usePaidCheques(params: PaidChequeListParams = {}) {
+export function usePaidCheques(
+  params: PaidChequeListParams = {},
+  initialData?: PaginatedResponse<PaidChequeDto>,
+) {
   return useQuery({
     queryKey: paidChequeKeys.list(params),
     queryFn: () =>
@@ -56,6 +59,7 @@ export function usePaidCheques(params: PaidChequeListParams = {}) {
         toQueryParams(params),
       ),
     staleTime: STALE_TIME.TRANSACTIONAL,
+    initialData,
   });
 }
 
@@ -74,7 +78,22 @@ export function useDeletePaidCheque() {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: (id: string) => apiClient.delete(orgPath(`/paid-cheques/${id}`)),
-    onSuccess: () => {
+    onMutate: async (id) => {
+      await queryClient.cancelQueries({ queryKey: paidChequeKeys.lists() });
+      const snapshots = queryClient.getQueriesData<PaginatedResponse<PaidChequeDto>>({
+        queryKey: paidChequeKeys.lists(),
+      });
+      queryClient.setQueriesData<PaginatedResponse<PaidChequeDto>>(
+        { queryKey: paidChequeKeys.lists() },
+        (old) =>
+          old ? { ...old, data: old.data.filter((c) => c.id !== id), total: old.total - 1 } : old,
+      );
+      return { snapshots };
+    },
+    onError: (_err, _id, ctx) => {
+      ctx?.snapshots.forEach(([key, data]) => queryClient.setQueryData(key, data));
+    },
+    onSettled: () => {
       queryClient.invalidateQueries({ queryKey: paidChequeKeys.lists() });
     },
   });

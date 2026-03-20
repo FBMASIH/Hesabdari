@@ -39,10 +39,12 @@ export const useAuthStore = create<AuthState>((set) => ({
     localStorage.setItem(KEYS.accessToken, accessToken);
     localStorage.setItem(KEYS.refreshToken, refreshToken);
     setAuthCookie(AUTH_COOKIE, '1');
+    setAuthCookie(KEYS.accessToken, accessToken);
     set({ isAuthenticated: true, accessToken });
   },
   setOrganizationId: (orgId) => {
     localStorage.setItem(KEYS.organizationId, orgId);
+    setAuthCookie(KEYS.organizationId, orgId);
     set({ organizationId: orgId });
   },
   clearAuth: () => {
@@ -50,6 +52,8 @@ export const useAuthStore = create<AuthState>((set) => ({
     localStorage.removeItem(KEYS.refreshToken);
     localStorage.removeItem(KEYS.organizationId);
     deleteAuthCookie(AUTH_COOKIE);
+    deleteAuthCookie(KEYS.accessToken);
+    deleteAuthCookie(KEYS.organizationId);
     set({ isAuthenticated: false, accessToken: null, organizationId: null });
   },
   logout: async () => {
@@ -61,6 +65,8 @@ export const useAuthStore = create<AuthState>((set) => ({
     localStorage.removeItem(KEYS.refreshToken);
     localStorage.removeItem(KEYS.organizationId);
     deleteAuthCookie(AUTH_COOKIE);
+    deleteAuthCookie(KEYS.accessToken);
+    deleteAuthCookie(KEYS.organizationId);
     set({ isAuthenticated: false, accessToken: null, organizationId: null });
 
     // Best-effort server-side session invalidation

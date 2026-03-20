@@ -30,6 +30,7 @@ import {
 } from '@/features/shared';
 import { useAppToast } from '@/providers/toast-provider';
 import { useCustomers, useDeleteCustomer, type CustomerDto } from '../hooks/use-customers';
+import type { PaginatedResponse } from '@/shared/lib/query-helpers';
 import { useDebounce } from '@/shared/hooks/use-debounce';
 import { useTableSort } from '@/shared/hooks/use-table-sort';
 import { ApiError } from '@hesabdari/api-client';
@@ -38,7 +39,11 @@ const cust = t('customer');
 const common = t('common');
 const msgs = t('messages');
 
-export function CustomerListPage() {
+interface CustomerListPageProps {
+  initialData?: PaginatedResponse<CustomerDto>;
+}
+
+export function CustomerListPage({ initialData }: CustomerListPageProps) {
   const router = useRouter();
   const { showToast } = useAppToast();
   const [search, setSearch] = useState('');
@@ -47,13 +52,17 @@ export function CustomerListPage() {
   const [deleteTarget, setDeleteTarget] = useState<CustomerDto | null>(null);
 
   const debouncedSearch = useDebounce(search);
+  const isDefaultQuery = page === 1 && !debouncedSearch && !activeFilter;
 
-  const { data, isLoading, isError, error, refetch } = useCustomers({
-    page,
-    pageSize: 10,
-    search: debouncedSearch || undefined,
-    isActive: activeFilter === 'active' ? true : activeFilter === 'inactive' ? false : undefined,
-  });
+  const { data, isLoading, isError, error, refetch } = useCustomers(
+    {
+      page,
+      pageSize: 10,
+      search: debouncedSearch || undefined,
+      isActive: activeFilter === 'active' ? true : activeFilter === 'inactive' ? false : undefined,
+    },
+    isDefaultQuery ? initialData : undefined,
+  );
 
   const deleteMutation = useDeleteCustomer();
 
@@ -158,15 +167,15 @@ export function CustomerListPage() {
               <TableBody>
                 {sorted.map((row) => (
                   <TableRow key={row.id}>
-                    <TableCell className="font-medium ltr-text" dir="ltr">
-                      {row.code}
-                    </TableCell>
+                    <TableCell className="font-medium ltr-text">{row.code}</TableCell>
                     <TableCell>{row.name}</TableCell>
-                    <TableCell className="text-fg-secondary ltr-text" dir="ltr">
+                    <TableCell className="text-fg-secondary ltr-text">
                       {row.phone1 ?? '—'}
                     </TableCell>
                     <TableCell className="tabular-nums">
-                      {row.creditLimit ? formatMoney(row.creditLimit, { showUnit: false }) : '—'}
+                      {row.creditLimit && row.creditLimit !== '0'
+                        ? formatMoney(row.creditLimit, { showUnit: false })
+                        : '—'}
                     </TableCell>
                     <TableCell>
                       <ActiveBadge isActive={row.isActive} />
