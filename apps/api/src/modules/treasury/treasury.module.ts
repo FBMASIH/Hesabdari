@@ -1,4 +1,5 @@
 import { Module } from '@nestjs/common';
+import { AuditModule } from '../audit/audit.module';
 // Controllers
 import { BanksController } from './presentation/http/controllers/banks.controller';
 import { BankAccountsController } from './presentation/http/controllers/bank-accounts.controller';
@@ -25,6 +26,7 @@ import { BankOpeningBalanceRepository } from './infrastructure/repositories/bank
 import { CashboxOpeningBalanceRepository } from './infrastructure/repositories/cashbox-opening-balance.repository';
 
 @Module({
+  imports: [AuditModule],
   controllers: [
     BanksController,
     BankAccountsController,

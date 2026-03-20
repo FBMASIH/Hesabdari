@@ -1,15 +1,21 @@
 export type InvoiceStatus = 'DRAFT' | 'CONFIRMED' | 'CANCELLED';
 
+export type DocumentType = 'SALES' | 'PURCHASE' | 'SALES_RETURN' | 'PURCHASE_RETURN' | 'PROFORMA';
+
 export interface InvoiceEntity {
   id: string;
   organizationId: string;
+  documentType: DocumentType;
   invoiceNumber: string;
-  status: InvoiceStatus;
-  customerId: string;
+  invoiceDate: Date;
+  dueDate: Date | null;
+  customerId: string | null;
+  vendorId: string | null;
+  currencyId: string;
   totalAmount: bigint;
-  currency: string;
-  issueDate: Date;
-  dueDate: Date;
+  description: string | null;
+  status: InvoiceStatus;
+  journalEntryId: string | null;
   createdAt: Date;
   updatedAt: Date;
 }

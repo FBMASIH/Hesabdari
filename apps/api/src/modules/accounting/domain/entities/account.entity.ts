@@ -1,4 +1,4 @@
-import type { AccountType } from '@hesabdari/db';
+type AccountType = 'ASSET' | 'LIABILITY' | 'EQUITY' | 'REVENUE' | 'EXPENSE';
 
 export interface AccountEntity {
   id: string;

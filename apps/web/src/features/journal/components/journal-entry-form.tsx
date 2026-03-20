@@ -260,7 +260,7 @@ export function JournalEntryForm() {
       {/* ── Journal lines ── */}
       <FormSection title={j.lines} description={j.linesDescription}>
         <div className="overflow-auto">
-          <table className="w-full text-sm">
+          <table className="w-full text-sm" dir="rtl">
             <thead>
               <tr className="border-b border-border-secondary">
                 <th className="py-2 pe-3 text-start text-xs font-medium text-fg-tertiary w-8">#</th>

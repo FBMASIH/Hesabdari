@@ -48,6 +48,7 @@ function AccountTreeNode({ account, children, childrenMap, depth }: TreeNodeProp
       <button
         type="button"
         onClick={() => hasChildren && setExpanded(!expanded)}
+        aria-expanded={hasChildren ? expanded : undefined}
         className={cn(
           'group/node flex w-full items-center gap-3 border-b border-border-secondary/50 pe-5 transition-colors duration-150',
           hasChildren ? 'cursor-pointer' : 'cursor-default',

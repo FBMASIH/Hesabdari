@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { type ReceivedChequeRepository } from '../../infrastructure/repositories/received-cheque.repository';
 import { type BankAccountRepository } from '../../infrastructure/repositories/bank-account.repository';
+import { type AuditService } from '../../../audit/application/services/audit.service';
 import { NotFoundError, ConflictError, ApplicationError } from '@/platform/errors';
 import type { Prisma } from '@hesabdari/db';
 import type {
@@ -24,6 +25,7 @@ export class ReceivedChequeService {
   constructor(
     private readonly chequeRepository: ReceivedChequeRepository,
     private readonly bankAccountRepository: BankAccountRepository,
+    private readonly auditService: AuditService,
   ) {}
 
   async findByOrganization(organizationId: string, query: ReceivedChequeQueryDto) {
@@ -97,13 +99,19 @@ export class ReceivedChequeService {
     );
   }
 
-  async changeStatus(id: string, organizationId: string, data: ReceivedChequeStatusDto) {
+  async changeStatus(
+    id: string,
+    organizationId: string,
+    data: ReceivedChequeStatusDto,
+    actorId: string,
+  ) {
     const cheque = await this.findById(id, organizationId);
-    const allowed = VALID_TRANSITIONS[cheque.status] ?? [];
+    const previousStatus = cheque.status;
+    const allowed = VALID_TRANSITIONS[previousStatus] ?? [];
     if (!allowed.includes(data.status)) {
       throw new ApplicationError(
         'INVALID_TRANSITION',
-        `Cannot transition from ${cheque.status} to ${data.status}`,
+        `Cannot transition from ${previousStatus} to ${data.status}`,
       );
     }
 
@@ -123,11 +131,22 @@ export class ReceivedChequeService {
       }
     }
 
-    return this.chequeRepository.updateStatus(
+    const updated = await this.chequeRepository.updateStatus(
       id,
       organizationId,
       data.status,
       data.status === 'DEPOSITED' ? data.depositBankAccountId : undefined,
     );
+
+    await this.auditService.log({
+      organizationId,
+      actorId,
+      action: 'RECEIVED_CHEQUE_STATUS_CHANGED',
+      targetType: 'ReceivedCheque',
+      targetId: id,
+      metadata: { before: { status: previousStatus }, after: { status: data.status } },
+    });
+
+    return updated;
   }
 }

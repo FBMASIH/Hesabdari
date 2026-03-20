@@ -1,4 +1,4 @@
-import type { JournalEntryStatus } from '@hesabdari/db';
+type JournalEntryStatus = 'DRAFT' | 'POSTED' | 'REVERSED';
 
 export interface JournalEntryEntity {
   id: string;

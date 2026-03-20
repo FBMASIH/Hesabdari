@@ -8,6 +8,7 @@ import {
   FormField,
   FormLabel,
   FormErrorBanner,
+  Spinner,
   Table,
   TableHeader,
   TableBody,
@@ -273,7 +274,10 @@ export function ProductForm({ initialData }: ProductFormProps = {}) {
         {!isEditing && (
           <FormSection title={prod.openingStock} description={prod.openingStockDesc}>
             {warehouseQuery.isLoading && (
-              <p className="text-sm text-fg-tertiary">{common.loading}</p>
+              <div className="flex items-center gap-2 py-4">
+                <Spinner size="sm" />
+                <span className="text-sm text-fg-tertiary">{common.loading}</span>
+              </div>
             )}
 
             {!warehouseQuery.isLoading && warehouses.length === 0 && (

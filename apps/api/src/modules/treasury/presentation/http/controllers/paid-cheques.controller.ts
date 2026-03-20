@@ -1,12 +1,13 @@
 import { Controller, Get, Post, Put, Patch, Body, Param, Query } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
-import { PaidChequeService } from '../../../application/services/paid-cheque.service';
+import { type PaidChequeService } from '../../../application/services/paid-cheque.service';
 import {
   createPaidChequeSchema,
   updatePaidChequeSchema,
   paidChequeStatusSchema,
   paidChequeQuerySchema,
 } from '@hesabdari/contracts';
+import { CurrentUser, type RequestUser } from '@/platform/decorators';
 
 @ApiTags('Paid Cheques')
 @ApiBearerAuth()
@@ -48,8 +49,9 @@ export class PaidChequesController {
     @Param('orgId') orgId: string,
     @Param('id') id: string,
     @Body() body: unknown,
+    @CurrentUser() user: RequestUser,
   ) {
     const data = paidChequeStatusSchema.parse(body);
-    return this.chequeService.changeStatus(id, orgId, data);
+    return this.chequeService.changeStatus(id, orgId, data, user.userId);
   }
 }

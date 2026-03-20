@@ -1,4 +1,4 @@
-import { DomainError } from '@/platform/errors';
+import { DomainError } from '../errors/domain.error';
 
 /**
  * Value object for monetary amounts stored as integer minor units (e.g. cents).

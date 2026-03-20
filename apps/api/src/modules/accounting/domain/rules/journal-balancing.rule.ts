@@ -1,5 +1,5 @@
 import type { JournalLineEntity } from '../entities/journal-entry.entity';
-import { DomainError } from '@/platform/errors';
+import { DomainError } from '../errors/domain.error';
 
 /**
  * Domain rule: debits must equal credits in a journal entry.

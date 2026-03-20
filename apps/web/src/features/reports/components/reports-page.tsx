@@ -44,6 +44,7 @@ export function ReportsPage() {
             key={r.key}
             type="button"
             onClick={() => setSelectedReport(r.key)}
+            aria-pressed={selectedReport === r.key}
             className={cn(
               'glass-surface-static flex flex-col items-center gap-2.5 rounded-2xl p-4 text-center transition-all',
               selectedReport === r.key
@@ -62,16 +63,22 @@ export function ReportsPage() {
         <FormSection title={rpt.fiscalPeriod} className="mb-5">
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
             <div>
-              <label className="mb-1 block text-xs font-medium text-fg-secondary">
+              <label
+                htmlFor="report-from-date"
+                className="mb-1 block text-xs font-medium text-fg-secondary"
+              >
                 {rpt.fromDate}
               </label>
-              <DatePicker value={fromDate} onChange={setFromDate} />
+              <DatePicker id="report-from-date" value={fromDate} onChange={setFromDate} />
             </div>
             <div>
-              <label className="mb-1 block text-xs font-medium text-fg-secondary">
+              <label
+                htmlFor="report-to-date"
+                className="mb-1 block text-xs font-medium text-fg-secondary"
+              >
                 {rpt.toDate}
               </label>
-              <DatePicker value={toDate} onChange={setToDate} />
+              <DatePicker id="report-to-date" value={toDate} onChange={setToDate} />
             </div>
             <div className="flex items-end">
               <Button type="button" size="sm">

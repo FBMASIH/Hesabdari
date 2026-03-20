@@ -1,6 +1,6 @@
 import { Controller, Get, Post, Put, Body, Param } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
-import { JournalEntryService } from '../../../application/services/journal-entry.service';
+import { type JournalEntryService } from '../../../application/services/journal-entry.service';
 import { createJournalEntrySchema, updateJournalEntrySchema } from '@hesabdari/contracts';
 import { CurrentUser, type RequestUser } from '@/platform/decorators';
 
@@ -24,9 +24,13 @@ export class JournalEntriesController {
 
   @Post()
   @ApiOperation({ summary: 'Create a draft journal entry with lines (transactional)' })
-  async create(@Param('orgId') orgId: string, @Body() body: unknown) {
+  async create(
+    @Param('orgId') orgId: string,
+    @Body() body: unknown,
+    @CurrentUser() user: RequestUser,
+  ) {
     const data = createJournalEntrySchema.parse(body);
-    return this.journalEntryService.create(orgId, data);
+    return this.journalEntryService.create(orgId, data, user.userId);
   }
 
   @Put(':id')

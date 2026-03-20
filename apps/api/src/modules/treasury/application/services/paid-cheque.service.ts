@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { type PaidChequeRepository } from '../../infrastructure/repositories/paid-cheque.repository';
 import { type BankAccountRepository } from '../../infrastructure/repositories/bank-account.repository';
+import { type AuditService } from '../../../audit/application/services/audit.service';
 import { NotFoundError, ConflictError, ApplicationError } from '@/platform/errors';
 import type { Prisma } from '@hesabdari/db';
 import type {
@@ -22,6 +23,7 @@ export class PaidChequeService {
   constructor(
     private readonly chequeRepository: PaidChequeRepository,
     private readonly bankAccountRepository: BankAccountRepository,
+    private readonly auditService: AuditService,
   ) {}
 
   async findByOrganization(organizationId: string, query: PaidChequeQueryDto) {
@@ -109,15 +111,33 @@ export class PaidChequeService {
     );
   }
 
-  async changeStatus(id: string, organizationId: string, data: PaidChequeStatusDto) {
+  async changeStatus(
+    id: string,
+    organizationId: string,
+    data: PaidChequeStatusDto,
+    actorId: string,
+  ) {
     const cheque = await this.findById(id, organizationId);
-    const allowed = VALID_TRANSITIONS[cheque.status] ?? [];
+    const previousStatus = cheque.status;
+    const allowed = VALID_TRANSITIONS[previousStatus] ?? [];
     if (!allowed.includes(data.status)) {
       throw new ApplicationError(
         'INVALID_TRANSITION',
-        `Cannot transition from ${cheque.status} to ${data.status}`,
+        `Cannot transition from ${previousStatus} to ${data.status}`,
       );
     }
-    return this.chequeRepository.updateStatus(id, organizationId, data.status);
+
+    const updated = await this.chequeRepository.updateStatus(id, organizationId, data.status);
+
+    await this.auditService.log({
+      organizationId,
+      actorId,
+      action: 'PAID_CHEQUE_STATUS_CHANGED',
+      targetType: 'PaidCheque',
+      targetId: id,
+      metadata: { before: { status: previousStatus }, after: { status: data.status } },
+    });
+
+    return updated;
   }
 }

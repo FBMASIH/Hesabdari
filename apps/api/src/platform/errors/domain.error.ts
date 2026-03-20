@@ -1,9 +1,3 @@
-export class DomainError extends Error {
-  public readonly code: string;
-
-  constructor(code: string, message: string) {
-    super(message);
-    this.name = 'DomainError';
-    this.code = code;
-  }
-}
+// Re-export from the domain layer — DomainError belongs to the domain,
+// but is re-exported here so existing platform consumers keep working.
+export { DomainError } from '@/modules/accounting/domain/errors/domain.error';

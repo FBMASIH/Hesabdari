@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import type { CreateJournalEntryDto, UpdateJournalEntryDto } from '@hesabdari/contracts';
 import { type JournalEntryRepository } from '../../infrastructure/repositories/journal-entry.repository';
 import { type PeriodRepository } from '../../infrastructure/repositories/period.repository';
+import { type AuditService } from '../../../audit/application/services/audit.service';
 import {
   assertJournalBalances,
   assertMinimumLines,
@@ -14,6 +15,7 @@ export class JournalEntryService {
   constructor(
     private readonly journalEntryRepository: JournalEntryRepository,
     private readonly periodRepository: PeriodRepository,
+    private readonly auditService: AuditService,
   ) {}
 
   async findById(id: string, organizationId: string) {
@@ -26,7 +28,7 @@ export class JournalEntryService {
     return this.journalEntryRepository.findByOrganizationId(organizationId);
   }
 
-  async create(organizationId: string, data: CreateJournalEntryDto) {
+  async create(organizationId: string, data: CreateJournalEntryDto, actorId: string) {
     // Idempotency check: return existing entry if idempotency key matches
     if (data.idempotencyKey) {
       const existing = await this.journalEntryRepository.findByIdempotencyKey(
@@ -62,7 +64,7 @@ export class JournalEntryService {
     assertMinimumLines(lines);
     assertJournalBalances(lines);
 
-    return this.journalEntryRepository.createWithLines({
+    const entry = await this.journalEntryRepository.createWithLines({
       organizationId,
       periodId: data.periodId,
       entryNumber: data.entryNumber,
@@ -71,6 +73,17 @@ export class JournalEntryService {
       idempotencyKey: data.idempotencyKey,
       lines,
     });
+
+    await this.auditService.log({
+      organizationId,
+      actorId,
+      action: 'JOURNAL_ENTRY_CREATED',
+      targetType: 'JournalEntry',
+      targetId: entry.id,
+      metadata: { status: 'DRAFT', entryNumber: data.entryNumber },
+    });
+
+    return entry;
   }
 
   async update(id: string, organizationId: string, data: UpdateJournalEntryDto) {
@@ -118,12 +131,23 @@ export class JournalEntryService {
     assertMinimumLines(entry.lines);
     assertJournalBalances(entry.lines);
 
-    return this.journalEntryRepository.updateStatus(
+    const posted = await this.journalEntryRepository.updateStatus(
       id,
       organizationId,
       'POSTED',
       new Date(),
       postedBy,
     );
+
+    await this.auditService.log({
+      organizationId,
+      actorId: postedBy,
+      action: 'JOURNAL_ENTRY_POSTED',
+      targetType: 'JournalEntry',
+      targetId: id,
+      metadata: { before: { status: 'DRAFT' }, after: { status: 'POSTED' } },
+    });
+
+    return posted;
   }
 }

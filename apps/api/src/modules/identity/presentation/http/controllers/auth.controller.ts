@@ -1,13 +1,8 @@
 import { Controller, Get, Post, Body, HttpCode, HttpStatus } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth } from '@nestjs/swagger';
+import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
 import { Public, CurrentUser, type RequestUser } from '@/platform/decorators';
 import { type AuthService } from '../../../application/services/auth.service';
-import {
-  type LoginRequestDto,
-  type RegisterRequestDto,
-  type RefreshTokenRequestDto,
-  AuthResponseDto,
-} from '../../../application/dto/auth.dto';
+import { loginSchema, registerSchema, refreshTokenSchema } from '@hesabdari/contracts';
 
 @ApiTags('Authentication')
 @Controller('auth')
@@ -24,43 +19,42 @@ export class AuthController {
   @Public()
   @Post('register')
   @ApiOperation({ summary: 'Register a new user' })
-  @ApiResponse({ status: 201, type: AuthResponseDto })
-  async register(@Body() dto: RegisterRequestDto): Promise<AuthResponseDto> {
-    return this.authService.register(dto);
+  async register(@Body() body: unknown) {
+    const data = registerSchema.parse(body);
+    return this.authService.register(data);
   }
 
   @Public()
   @Post('login')
   @HttpCode(HttpStatus.OK)
   @ApiOperation({ summary: 'Login with credentials' })
-  @ApiResponse({ status: 200, type: AuthResponseDto })
-  async login(@Body() dto: LoginRequestDto): Promise<AuthResponseDto> {
-    return this.authService.login(dto);
+  async login(@Body() body: unknown) {
+    const data = loginSchema.parse(body);
+    return this.authService.login(data);
   }
 
   @Public()
   @Post('refresh')
   @HttpCode(HttpStatus.OK)
   @ApiOperation({ summary: 'Refresh access token' })
-  @ApiResponse({ status: 200, type: AuthResponseDto })
-  async refresh(@Body() dto: RefreshTokenRequestDto): Promise<AuthResponseDto> {
-    return this.authService.refreshToken(dto.refreshToken);
+  async refresh(@Body() body: unknown) {
+    const { refreshToken } = refreshTokenSchema.parse(body);
+    return this.authService.refreshToken(refreshToken);
   }
 
   @Post('logout')
   @ApiBearerAuth()
   @HttpCode(HttpStatus.NO_CONTENT)
   @ApiOperation({ summary: 'Logout and invalidate refresh token' })
-  @ApiResponse({ status: 204, description: 'Logged out successfully' })
-  async logout(@Body() dto: RefreshTokenRequestDto): Promise<void> {
-    return this.authService.logout(dto.refreshToken);
+  async logout(@Body() body: unknown): Promise<void> {
+    const { refreshToken } = refreshTokenSchema.parse(body);
+    return this.authService.logout(refreshToken);
   }
 
   @Post('logout-all')
   @ApiBearerAuth()
   @HttpCode(HttpStatus.NO_CONTENT)
   @ApiOperation({ summary: 'Logout from all devices' })
-  @ApiResponse({ status: 204, description: 'All sessions invalidated' })
   async logoutAll(@CurrentUser() user: RequestUser): Promise<void> {
     return this.authService.logoutAll(user.userId);
   }

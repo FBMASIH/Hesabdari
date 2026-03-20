@@ -1,7 +1,8 @@
 'use client';
 
-import { Spinner, EmptyState, IconDocument, IconBan } from '@hesabdari/ui';
+import { EmptyState, IconDocument, IconBan } from '@hesabdari/ui';
 import { t } from '@/shared/lib/i18n';
+import { FormPageSkeleton } from '@/shared/components/page-skeletons';
 import { useInvoice, type InvoiceDto } from '../hooks/use-invoices';
 import { InvoiceForm } from './invoice-form';
 import { DataPageHeader } from '@/features/shared';
@@ -19,11 +20,7 @@ export function InvoiceEditPage({
   const { data: invoice, isLoading, isError } = useInvoice(invoiceId, initialData);
 
   if (isLoading) {
-    return (
-      <div className="flex items-center justify-center py-20">
-        <Spinner size="lg" />
-      </div>
-    );
+    return <FormPageSkeleton />;
   }
 
   if (isError || !invoice) {

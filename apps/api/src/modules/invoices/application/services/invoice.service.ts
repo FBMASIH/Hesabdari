@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { type InvoiceRepository } from '../../infrastructure/repositories/invoice.repository';
+import { type AuditService } from '../../../audit/application/services/audit.service';
 import { NotFoundError, ConflictError, ApplicationError } from '@/platform/errors';
 import type { CreateInvoiceDto, UpdateInvoiceDto, InvoiceQueryDto } from '@hesabdari/contracts';
 import type { Prisma } from '@hesabdari/db';
@@ -32,7 +33,10 @@ const VALID_TRANSITIONS: Record<string, string[]> = {
 
 @Injectable()
 export class InvoiceService {
-  constructor(private readonly invoiceRepository: InvoiceRepository) {}
+  constructor(
+    private readonly invoiceRepository: InvoiceRepository,
+    private readonly auditService: AuditService,
+  ) {}
 
   async findByOrganization(
     organizationId: string,
@@ -59,6 +63,7 @@ export class InvoiceService {
   async create(
     organizationId: string,
     data: CreateInvoiceDto,
+    actorId: string,
   ): Promise<InvoiceWithRelations | null> {
     // Check invoice number uniqueness per org+type
     const existing = await this.invoiceRepository.findByNumber(
@@ -93,7 +98,7 @@ export class InvoiceService {
 
     const totalAmount = lines.reduce((sum, l) => sum + l.totalPrice, 0n);
 
-    return this.invoiceRepository.createWithLines({
+    const invoice = await this.invoiceRepository.createWithLines({
       organizationId,
       documentType: data.documentType,
       invoiceNumber: data.invoiceNumber,
@@ -106,6 +111,23 @@ export class InvoiceService {
       totalAmount,
       lines,
     });
+
+    if (invoice) {
+      await this.auditService.log({
+        organizationId,
+        actorId,
+        action: 'INVOICE_CREATED',
+        targetType: 'Invoice',
+        targetId: invoice.id,
+        metadata: {
+          documentType: data.documentType,
+          invoiceNumber: data.invoiceNumber,
+          status: 'DRAFT',
+        },
+      });
+    }
+
+    return invoice;
   }
 
   async update(
@@ -162,17 +184,43 @@ export class InvoiceService {
     );
   }
 
-  async confirm(id: string, organizationId: string): Promise<InvoiceWithRelations> {
+  async confirm(
+    id: string,
+    organizationId: string,
+    actorId: string,
+  ): Promise<InvoiceWithRelations> {
     const invoice = await this.findById(id, organizationId);
-    this.validateTransition(invoice.status, 'CONFIRMED');
+    const previousStatus = invoice.status;
+    this.validateTransition(previousStatus, 'CONFIRMED');
     await this.invoiceRepository.updateStatus(id, organizationId, 'CONFIRMED');
+
+    await this.auditService.log({
+      organizationId,
+      actorId,
+      action: 'INVOICE_CONFIRMED',
+      targetType: 'Invoice',
+      targetId: id,
+      metadata: { before: { status: previousStatus }, after: { status: 'CONFIRMED' } },
+    });
+
     return this.findById(id, organizationId);
   }
 
-  async cancel(id: string, organizationId: string): Promise<InvoiceWithRelations> {
+  async cancel(id: string, organizationId: string, actorId: string): Promise<InvoiceWithRelations> {
     const invoice = await this.findById(id, organizationId);
-    this.validateTransition(invoice.status, 'CANCELLED');
+    const previousStatus = invoice.status;
+    this.validateTransition(previousStatus, 'CANCELLED');
     await this.invoiceRepository.updateStatus(id, organizationId, 'CANCELLED');
+
+    await this.auditService.log({
+      organizationId,
+      actorId,
+      action: 'INVOICE_CANCELLED',
+      targetType: 'Invoice',
+      targetId: id,
+      metadata: { before: { status: previousStatus }, after: { status: 'CANCELLED' } },
+    });
+
     return this.findById(id, organizationId);
   }
 

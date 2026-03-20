@@ -1,4 +1,5 @@
 import { Module } from '@nestjs/common';
+import { AuditModule } from '../audit/audit.module';
 import { AccountsController } from './presentation/http/controllers/accounts.controller';
 import { JournalEntriesController } from './presentation/http/controllers/journal-entries.controller';
 import { PeriodsController } from './presentation/http/controllers/periods.controller';
@@ -16,6 +17,7 @@ import { CurrencyRepository } from './infrastructure/repositories/currency.repos
 import { ExpenseRepository } from './infrastructure/repositories/expense.repository';
 
 @Module({
+  imports: [AuditModule],
   controllers: [
     AccountsController,
     JournalEntriesController,

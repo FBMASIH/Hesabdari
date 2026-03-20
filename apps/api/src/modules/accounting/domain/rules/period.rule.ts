@@ -1,5 +1,6 @@
-import type { AccountingPeriodStatus } from '@hesabdari/db';
-import { DomainError } from '@/platform/errors';
+import { DomainError } from '../errors/domain.error';
+
+type AccountingPeriodStatus = 'OPEN' | 'CLOSED';
 
 /**
  * Domain rule: closed periods must not accept ordinary writes.
