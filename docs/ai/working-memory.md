@@ -1,69 +1,50 @@
 # Working Memory — Hesabdari
 
-**Last updated:** 2026-03-19 (Session 6)
+**Last updated:** 2026-03-20 (Session 7)
 
 ## Current Phase
 
-Backend stabilization complete. Runtime safety hardening done: BigInt serialization, global auth guard, structured error handling. 45 unit tests passing. Frontend scaffolded but untouched.
+Frontend architecture refactor complete. Server-side initial data fetch implemented across all list and edit pages. Optimistic mutations added. Architecture documented and frozen.
 
 ## Project Truth
 
 - **Stack:** NestJS 11.1 + Fastify, Next.js 16.1, Prisma 7, PostgreSQL 18, Zod contracts
 - **Build:** 8/8 tasks pass. Tests: 6 files, 45 tests all pass.
-- **DB package:** ESM (`"type": "module"`), exports `PrismaClient` + `Prisma` namespace
+- **Routes:** 15 dynamic (server-fetch), 13 static (prerendered)
 
 ## Architecture Snapshot
 
 ```
-apps/api/          NestJS backend (webpack builder)
-apps/web/          Next.js 16.1 frontend (scaffolded, minimal)
-packages/db/       Prisma 7 schema (30 models, 9 enums) + generated client
-packages/contracts/ Zod schemas (18 files)
-packages/shared/   Shared types/utils
-packages/ui/       Radix-based UI components (11)
+apps/api/              NestJS backend (webpack builder)
+apps/web/              Next.js 16.1 frontend (App Router, 29 pages)
+packages/db/           Prisma 7 schema (30 models, 9 enums)
+packages/contracts/    Zod schemas (18 files)
+packages/shared/       Shared types/utils
+packages/ui/           Radix-based UI components
 packages/design-tokens/ Tailwind theme tokens
-packages/api-client/    Typed HTTP client (stub)
-packages/config/        TS/ESLint/Prettier configs
+packages/api-client/   Typed HTTP client (used by both client and server)
+packages/config/       TS/ESLint/Prettier configs
 ```
 
-## Runtime Safety (new in Session 5)
+## Frontend Architecture (D020, frozen)
 
-- **BigInt serialization:** `BigIntSerializerInterceptor` — global, converts BigInt→string (integer strings) in all responses per CLAUDE.md
-- **Auth:** `JwtAuthGuard` + `OrgMembershipGuard` registered as `APP_GUARD` — deny-by-default. Only `@Public()` endpoints skip auth. Org membership validated on `:orgId` routes.
-- **Error handling:** `GlobalExceptionFilter` — ZodError→400, ApplicationError→statusCode, DomainError→422, HttpException→status, unknown→500. Consistent `{ error: { code, message, details? } }` shape.
-- **Logging:** `LoggingInterceptor` — global, logs `METHOD URL - Xms` for every request.
-
-## Active Backend Modules
-
-| Module                                  | Status                                                              |
-| --------------------------------------- | ------------------------------------------------------------------- |
-| identity                                | Auth flow (JWT, sessions, register/login)                           |
-| organizations                           | CRUD                                                                |
-| accounting                              | Full CRUD (Account, Period, JournalEntry, Currency, Expense), typed |
-| customers                               | Full CRUD + search + opening balances                               |
-| vendors                                 | Full CRUD + search + opening balances                               |
-| treasury                                | Full CRUD + state machines (cheques), typed                         |
-| inventory                               | Full CRUD + stock upsert, typed                                     |
-| invoices                                | Full CRUD + transactional + status transitions, typed               |
-| audit / reports / notifications / files | Stubs                                                               |
-
-## Public Endpoints
-
-- `POST /api/v1/auth/register`, `/login`, `/refresh` — @Public()
-- `GET /api/v1/health`, `/health/ready` — @Public()
-- All other endpoints require JWT
-
-## Current Priorities
-
-1. Commit all changes (type-safety + runtime hardening + tests)
-2. Database migrations (requires PostgreSQL)
-3. Seed data (IRR currency, 22 Iranian banks)
-4. Integration tests (service-level with mocked repos)
-5. Organization membership validation in guards
+- **Server Components:** page.tsx files fetch initial data via `createServerClient()`, pass as props
+- **Client Components:** all feature components (forms, lists, dropdowns, modals)
+- **Auth:** cookies synced with localStorage in `useAuthStore`; server reads via `cookies()`
+- **Data fetching:** TanStack Query for client cache/mutations; server-prefetch for first render
+- **Optimistic mutations:** 9 hooks (8 deletes + 1 cancel)
+- **Guide:** `docs/ai/frontend-architecture.md`
 
 ## Active Constraints
 
-- All money: BigInt in IRR, serialized as number in API responses
-- Integer-only quantities
-- No auth guards validate org membership yet (JWT auth only, no RBAC)
-- Per-record audit fields deferred (D013)
+- All money: BigInt in IRR, serialized as string in API responses (D019)
+- Auth: deny-by-default via APP_GUARD (D017), cookie-synced for server fetch (D020)
+- Server prefetch: list page 1 + edit entity only. No dropdown/secondary data.
+- Forms: Client Components only. Do not attempt server-rendered forms.
+
+## Current Priorities
+
+1. Database migrations (requires PostgreSQL)
+2. Seed data (IRR currency, 22 Iranian banks)
+3. Integration tests (service-level with mocked repos)
+4. Reports / Notifications / Files module implementation
