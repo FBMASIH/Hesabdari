@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { PrismaService } from '@/platform/database/prisma.service';
+import type { PrismaService } from '@/platform/database/prisma.service';
 import type { CostingMethod } from '@hesabdari/db';
 
 @Injectable()
@@ -46,6 +46,7 @@ export class WarehouseRepository {
 
   async update(
     id: string,
+    organizationId: string,
     data: Partial<{
       code: string;
       name: string;
@@ -53,6 +54,8 @@ export class WarehouseRepository {
       isActive: boolean;
     }>,
   ) {
-    return this.prisma.warehouse.update({ where: { id }, data });
+    // Scope update by organizationId — updateMany accepts non-unique where
+    await this.prisma.warehouse.updateMany({ where: { id, organizationId }, data });
+    return this.findById(id, organizationId);
   }
 }

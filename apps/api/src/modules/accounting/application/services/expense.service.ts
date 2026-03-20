@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { ExpenseRepository } from '../../infrastructure/repositories/expense.repository';
+import type { ExpenseRepository } from '../../infrastructure/repositories/expense.repository';
 import { NotFoundError, ConflictError } from '@/platform/errors';
 import type { CreateExpenseDto, UpdateExpenseDto } from '@hesabdari/contracts';
 
@@ -36,6 +36,6 @@ export class ExpenseService {
         throw new ConflictError(`Expense with code ${data.code} already exists`);
       }
     }
-    return this.expenseRepository.update(id, data);
+    return this.expenseRepository.update(id, organizationId, data);
   }
 }

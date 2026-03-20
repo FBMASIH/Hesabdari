@@ -1,13 +1,13 @@
 import { Injectable } from '@nestjs/common';
-import { PrismaService } from '@/platform/database/prisma.service';
+import type { PrismaService } from '@/platform/database/prisma.service';
 
 @Injectable()
 export class ProductWarehouseStockRepository {
   constructor(private readonly prisma: PrismaService) {}
 
-  async findByProduct(productId: string) {
+  async findByProduct(productId: string, organizationId: string) {
     return this.prisma.productWarehouseStock.findMany({
-      where: { productId },
+      where: { productId, organizationId },
       include: { warehouse: true },
       orderBy: { warehouse: { code: 'asc' } },
     });

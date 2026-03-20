@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
-import { ProductRepository } from '../../infrastructure/repositories/product.repository';
-import { ProductWarehouseStockRepository } from '../../infrastructure/repositories/product-warehouse-stock.repository';
+import type { ProductRepository } from '../../infrastructure/repositories/product.repository';
+import type { ProductWarehouseStockRepository } from '../../infrastructure/repositories/product-warehouse-stock.repository';
 import { NotFoundError, ConflictError } from '@/platform/errors';
 import type { Prisma } from '@hesabdari/db';
 import type {
@@ -78,7 +78,7 @@ export class ProductService {
   // Warehouse stock methods
   async getWarehouseStocks(productId: string, organizationId: string) {
     await this.findById(productId, organizationId);
-    return this.stockRepository.findByProduct(productId);
+    return this.stockRepository.findByProduct(productId, organizationId);
   }
 
   async upsertWarehouseStock(

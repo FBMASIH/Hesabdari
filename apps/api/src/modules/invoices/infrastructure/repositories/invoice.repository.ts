@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { PrismaService } from '@/platform/database/prisma.service';
+import type { PrismaService } from '@/platform/database/prisma.service';
 import type { Prisma } from '@hesabdari/db';
 import type { DocumentType, InvoiceStatus } from '@hesabdari/db';
 
@@ -126,6 +126,10 @@ export class InvoiceRepository {
     }>,
   ) {
     return this.prisma.$transaction(async (tx) => {
+      // Verify ownership before mutation
+      const existing = await tx.invoice.findFirst({ where: { id, organizationId } });
+      if (!existing) return null;
+
       await tx.invoice.update({ where: { id }, data });
       if (lines) {
         await tx.invoiceLine.deleteMany({ where: { invoiceId: id } });
@@ -141,10 +145,12 @@ export class InvoiceRepository {
     });
   }
 
-  async updateStatus(id: string, status: string) {
-    return this.prisma.invoice.update({
-      where: { id },
+  async updateStatus(id: string, organizationId: string, status: string) {
+    // Scope update by organizationId — updateMany accepts non-unique where
+    const result = await this.prisma.invoice.updateMany({
+      where: { id, organizationId },
       data: { status: status as InvoiceStatus },
     });
+    return result;
   }
 }

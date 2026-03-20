@@ -13,5 +13,11 @@ export interface IJournalEntryRepository {
     entry: JournalEntryEntity,
     lines: Omit<JournalLineEntity, 'id' | 'createdAt'>[],
   ): Promise<JournalEntryEntity>;
-  updateStatus(id: string, status: string, postedAt?: Date, postedBy?: string): Promise<void>;
+  updateStatus(
+    id: string,
+    organizationId: string,
+    status: string,
+    postedAt?: Date,
+    postedBy?: string,
+  ): Promise<void>;
 }

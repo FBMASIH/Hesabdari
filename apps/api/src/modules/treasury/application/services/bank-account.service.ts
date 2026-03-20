@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { BankAccountRepository } from '../../infrastructure/repositories/bank-account.repository';
+import type { BankAccountRepository } from '../../infrastructure/repositories/bank-account.repository';
 import { NotFoundError, ConflictError } from '@/platform/errors';
 import type {
   CreateBankAccountDto,
@@ -52,11 +52,11 @@ export class BankAccountService {
         throw new ConflictError(`Bank account with code ${data.code} already exists`);
       }
     }
-    return this.bankAccountRepository.update(id, data);
+    return this.bankAccountRepository.update(id, organizationId, data);
   }
 
   async softDelete(id: string, organizationId: string) {
     await this.findById(id, organizationId);
-    return this.bankAccountRepository.update(id, { isActive: false });
+    return this.bankAccountRepository.update(id, organizationId, { isActive: false });
   }
 }

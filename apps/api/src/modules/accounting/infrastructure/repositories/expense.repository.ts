@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { PrismaService } from '@/platform/database/prisma.service';
+import type { PrismaService } from '@/platform/database/prisma.service';
 
 @Injectable()
 export class ExpenseRepository {
@@ -29,7 +29,13 @@ export class ExpenseRepository {
     return this.prisma.expense.create({ data });
   }
 
-  async update(id: string, data: Partial<{ code: string; name: string; isActive: boolean }>) {
-    return this.prisma.expense.update({ where: { id }, data });
+  async update(
+    id: string,
+    organizationId: string,
+    data: Partial<{ code: string; name: string; isActive: boolean }>,
+  ) {
+    // Scope update by organizationId — updateMany accepts non-unique where
+    await this.prisma.expense.updateMany({ where: { id, organizationId }, data });
+    return this.findById(id, organizationId);
   }
 }

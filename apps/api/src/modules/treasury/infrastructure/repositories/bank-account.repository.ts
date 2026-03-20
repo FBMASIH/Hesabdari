@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { PrismaService } from '@/platform/database/prisma.service';
+import type { PrismaService } from '@/platform/database/prisma.service';
 
 @Injectable()
 export class BankAccountRepository {
@@ -53,6 +53,7 @@ export class BankAccountRepository {
 
   async update(
     id: string,
+    organizationId: string,
     data: Partial<{
       code: string;
       name: string;
@@ -63,6 +64,8 @@ export class BankAccountRepository {
       isActive: boolean;
     }>,
   ) {
-    return this.prisma.bankAccount.update({ where: { id }, data });
+    // Scope update by organizationId — updateMany accepts non-unique where
+    await this.prisma.bankAccount.updateMany({ where: { id, organizationId }, data });
+    return this.findById(id, organizationId);
   }
 }

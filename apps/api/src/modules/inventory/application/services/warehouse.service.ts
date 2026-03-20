@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { WarehouseRepository } from '../../infrastructure/repositories/warehouse.repository';
+import type { WarehouseRepository } from '../../infrastructure/repositories/warehouse.repository';
 import { NotFoundError, ConflictError } from '@/platform/errors';
 import type { CostingMethod } from '@hesabdari/db';
 import type {
@@ -50,7 +50,7 @@ export class WarehouseService {
       }
     }
     const { costingMethod, ...rest } = data;
-    return this.warehouseRepository.update(id, {
+    return this.warehouseRepository.update(id, organizationId, {
       ...rest,
       ...(costingMethod ? { costingMethod: costingMethod as CostingMethod } : {}),
     });

@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { PeriodRepository } from '../../infrastructure/repositories/period.repository';
+import type { PeriodRepository } from '../../infrastructure/repositories/period.repository';
 import { NotFoundError } from '@/platform/errors';
 
 @Injectable()
@@ -18,6 +18,6 @@ export class PeriodService {
 
   async close(id: string, organizationId: string, closedBy: string) {
     await this.findById(id, organizationId);
-    return this.periodRepository.close(id, closedBy);
+    return this.periodRepository.close(id, organizationId, closedBy);
   }
 }

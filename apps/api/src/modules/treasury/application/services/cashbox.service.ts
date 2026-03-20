@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { CashboxRepository } from '../../infrastructure/repositories/cashbox.repository';
+import type { CashboxRepository } from '../../infrastructure/repositories/cashbox.repository';
 import { NotFoundError, ConflictError } from '@/platform/errors';
 import type { CreateCashboxDto, UpdateCashboxDto, CashboxQueryDto } from '@hesabdari/contracts';
 
@@ -41,11 +41,11 @@ export class CashboxService {
         throw new ConflictError(`Cashbox with code ${data.code} already exists`);
       }
     }
-    return this.cashboxRepository.update(id, data);
+    return this.cashboxRepository.update(id, organizationId, data);
   }
 
   async softDelete(id: string, organizationId: string) {
     await this.findById(id, organizationId);
-    return this.cashboxRepository.update(id, { isActive: false });
+    return this.cashboxRepository.update(id, organizationId, { isActive: false });
   }
 }

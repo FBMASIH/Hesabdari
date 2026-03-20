@@ -1,7 +1,28 @@
 import { Injectable } from '@nestjs/common';
-import { InvoiceRepository } from '../../infrastructure/repositories/invoice.repository';
+import type { InvoiceRepository } from '../../infrastructure/repositories/invoice.repository';
 import { NotFoundError, ConflictError, ApplicationError } from '@/platform/errors';
 import type { CreateInvoiceDto, UpdateInvoiceDto, InvoiceQueryDto } from '@hesabdari/contracts';
+import type { Prisma } from '@hesabdari/db';
+
+type InvoiceWithRelations = Prisma.InvoiceGetPayload<{
+  include: {
+    lines: { include: { product: true; warehouse: true } };
+    customer: true;
+    vendor: true;
+    currency: true;
+  };
+}>;
+
+type InvoiceListItem = Prisma.InvoiceGetPayload<{
+  include: { customer: true; vendor: true; currency: true };
+}>;
+
+export interface PaginatedInvoices {
+  data: InvoiceListItem[];
+  total: number;
+  page: number;
+  pageSize: number;
+}
 
 const VALID_TRANSITIONS: Record<string, string[]> = {
   DRAFT: ['CONFIRMED', 'CANCELLED'],
@@ -13,26 +34,32 @@ const VALID_TRANSITIONS: Record<string, string[]> = {
 export class InvoiceService {
   constructor(private readonly invoiceRepository: InvoiceRepository) {}
 
-  async findByOrganization(organizationId: string, query: InvoiceQueryDto) {
+  async findByOrganization(
+    organizationId: string,
+    query: InvoiceQueryDto,
+  ): Promise<PaginatedInvoices> {
     return this.invoiceRepository.findByOrganization(organizationId, {
       type: query.type,
       status: query.status,
       customerId: query.customerId,
       vendorId: query.vendorId,
-      fromDate: query.fromDate,
-      toDate: query.toDate,
+      fromDate: query.fromDate ? new Date(query.fromDate) : undefined,
+      toDate: query.toDate ? new Date(query.toDate) : undefined,
       page: query.page ?? 1,
       pageSize: query.pageSize ?? 25,
     });
   }
 
-  async findById(id: string, organizationId: string) {
+  async findById(id: string, organizationId: string): Promise<InvoiceWithRelations> {
     const invoice = await this.invoiceRepository.findById(id, organizationId);
     if (!invoice) throw new NotFoundError('Invoice', id);
     return invoice;
   }
 
-  async create(organizationId: string, data: CreateInvoiceDto) {
+  async create(
+    organizationId: string,
+    data: CreateInvoiceDto,
+  ): Promise<InvoiceWithRelations | null> {
     // Check invoice number uniqueness per org+type
     const existing = await this.invoiceRepository.findByNumber(
       organizationId,
@@ -63,8 +90,8 @@ export class InvoiceService {
       organizationId,
       documentType: data.documentType,
       invoiceNumber: data.invoiceNumber,
-      invoiceDate: data.invoiceDate,
-      dueDate: data.dueDate ?? null,
+      invoiceDate: new Date(data.invoiceDate),
+      dueDate: data.dueDate ? new Date(data.dueDate) : null,
       description: data.description ?? null,
       customerId: 'customerId' in data ? (data.customerId as string) : null,
       vendorId: 'vendorId' in data ? (data.vendorId as string) : null,
@@ -74,7 +101,11 @@ export class InvoiceService {
     });
   }
 
-  async update(id: string, organizationId: string, data: UpdateInvoiceDto) {
+  async update(
+    id: string,
+    organizationId: string,
+    data: UpdateInvoiceDto,
+  ): Promise<InvoiceWithRelations | null> {
     const invoice = await this.findById(id, organizationId);
     if (invoice.status !== 'DRAFT') {
       throw new ApplicationError(
@@ -115,8 +146,8 @@ export class InvoiceService {
       id,
       invoice.organizationId,
       {
-        invoiceDate: data.invoiceDate,
-        dueDate: data.dueDate,
+        invoiceDate: data.invoiceDate ? new Date(data.invoiceDate) : undefined,
+        dueDate: data.dueDate ? new Date(data.dueDate) : undefined,
         description: data.description,
         totalAmount,
       },
@@ -124,21 +155,21 @@ export class InvoiceService {
     );
   }
 
-  async confirm(id: string, organizationId: string) {
+  async confirm(id: string, organizationId: string): Promise<InvoiceWithRelations> {
     const invoice = await this.findById(id, organizationId);
     this.validateTransition(invoice.status, 'CONFIRMED');
-    await this.invoiceRepository.updateStatus(id, 'CONFIRMED');
+    await this.invoiceRepository.updateStatus(id, organizationId, 'CONFIRMED');
     return this.findById(id, organizationId);
   }
 
-  async cancel(id: string, organizationId: string) {
+  async cancel(id: string, organizationId: string): Promise<InvoiceWithRelations> {
     const invoice = await this.findById(id, organizationId);
     this.validateTransition(invoice.status, 'CANCELLED');
-    await this.invoiceRepository.updateStatus(id, 'CANCELLED');
+    await this.invoiceRepository.updateStatus(id, organizationId, 'CANCELLED');
     return this.findById(id, organizationId);
   }
 
-  private validateTransition(currentStatus: string, targetStatus: string) {
+  private validateTransition(currentStatus: string, targetStatus: string): void {
     const allowed = VALID_TRANSITIONS[currentStatus] ?? [];
     if (!allowed.includes(targetStatus)) {
       throw new ApplicationError(

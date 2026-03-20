@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import type { CreateJournalEntryDto, UpdateJournalEntryDto } from '@hesabdari/contracts';
-import { JournalEntryRepository } from '../../infrastructure/repositories/journal-entry.repository';
-import { PeriodRepository } from '../../infrastructure/repositories/period.repository';
+import type { JournalEntryRepository } from '../../infrastructure/repositories/journal-entry.repository';
+import type { PeriodRepository } from '../../infrastructure/repositories/period.repository';
 import {
   assertJournalBalances,
   assertMinimumLines,
@@ -33,9 +33,7 @@ export class JournalEntryService {
       data.entryNumber,
     );
     if (existing) {
-      throw new ConflictError(
-        `Journal entry number ${data.entryNumber} already exists`,
-      );
+      throw new ConflictError(`Journal entry number ${data.entryNumber} already exists`);
     }
 
     // Validate period is open
@@ -74,7 +72,14 @@ export class JournalEntryService {
       throw new ConflictError('Only DRAFT journal entries can be edited');
     }
 
-    let lines: { accountId: string; description: string | null; debitAmount: bigint; creditAmount: bigint }[] | undefined;
+    let lines:
+      | {
+          accountId: string;
+          description: string | null;
+          debitAmount: bigint;
+          creditAmount: bigint;
+        }[]
+      | undefined;
     if (data.lines) {
       lines = data.lines.map((line) => ({
         accountId: line.accountId,
@@ -88,6 +93,7 @@ export class JournalEntryService {
 
     return this.journalEntryRepository.updateWithLines(
       id,
+      organizationId,
       { date: data.date, description: data.description },
       lines,
     );
@@ -103,6 +109,12 @@ export class JournalEntryService {
     assertMinimumLines(entry.lines);
     assertJournalBalances(entry.lines);
 
-    await this.journalEntryRepository.updateStatus(id, 'POSTED', new Date(), postedBy);
+    return this.journalEntryRepository.updateStatus(
+      id,
+      organizationId,
+      'POSTED',
+      new Date(),
+      postedBy,
+    );
   }
 }

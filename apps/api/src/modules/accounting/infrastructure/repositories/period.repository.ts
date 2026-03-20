@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { PrismaService } from '@/platform/database/prisma.service';
+import type { PrismaService } from '@/platform/database/prisma.service';
 
 @Injectable()
 export class PeriodRepository {
@@ -16,10 +16,12 @@ export class PeriodRepository {
     });
   }
 
-  async close(id: string, closedBy: string) {
-    return this.prisma.accountingPeriod.update({
-      where: { id },
+  async close(id: string, organizationId: string, closedBy: string) {
+    // Scope update by organizationId — updateMany accepts non-unique where
+    const result = await this.prisma.accountingPeriod.updateMany({
+      where: { id, organizationId },
       data: { status: 'CLOSED', closedAt: new Date(), closedBy },
     });
+    return result;
   }
 }

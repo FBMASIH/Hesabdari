@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { PrismaService } from '@/platform/database/prisma.service';
+import type { PrismaService } from '@/platform/database/prisma.service';
 import type { JournalEntryStatus } from '@hesabdari/db';
 
 interface CreateJournalEntryData {
@@ -70,10 +70,20 @@ export class JournalEntryRepository {
 
   async updateWithLines(
     id: string,
+    organizationId: string,
     data: { date?: Date; description?: string },
-    lines?: { accountId: string; description: string | null; debitAmount: bigint; creditAmount: bigint }[],
+    lines?: {
+      accountId: string;
+      description: string | null;
+      debitAmount: bigint;
+      creditAmount: bigint;
+    }[],
   ) {
     return this.prisma.$transaction(async (tx) => {
+      // Verify ownership before mutation
+      const existing = await tx.journalEntry.findFirst({ where: { id, organizationId } });
+      if (!existing) return null;
+
       if (lines) {
         // Delete old lines and create new ones
         await tx.journalLine.deleteMany({ where: { journalEntryId: id } });
@@ -98,10 +108,18 @@ export class JournalEntryRepository {
     });
   }
 
-  async updateStatus(id: string, status: JournalEntryStatus, postedAt?: Date, postedBy?: string) {
-    return this.prisma.journalEntry.update({
-      where: { id },
+  async updateStatus(
+    id: string,
+    organizationId: string,
+    status: JournalEntryStatus,
+    postedAt?: Date,
+    postedBy?: string,
+  ) {
+    // Scope update by organizationId — updateMany accepts non-unique where
+    const result = await this.prisma.journalEntry.updateMany({
+      where: { id, organizationId },
       data: { status, postedAt, postedBy },
     });
+    return result;
   }
 }
