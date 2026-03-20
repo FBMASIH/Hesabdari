@@ -7,18 +7,26 @@ export class BankAccountRepository {
 
   async findByOrganization(
     organizationId: string,
-    opts: { isActive?: boolean; bankId?: string; page: number; pageSize: number },
+    opts: {
+      isActive?: boolean;
+      bankId?: string;
+      page: number;
+      pageSize: number;
+      sortBy?: string;
+      sortOrder?: 'asc' | 'desc';
+    },
   ) {
     const where = {
       organizationId,
       ...(opts.isActive !== undefined ? { isActive: opts.isActive } : {}),
       ...(opts.bankId ? { bankId: opts.bankId } : {}),
     };
+    const orderBy = { [opts.sortBy ?? 'code']: opts.sortOrder ?? 'asc' };
     const [data, total] = await Promise.all([
       this.prisma.bankAccount.findMany({
         where,
         include: { bank: true, currency: true },
-        orderBy: { code: 'asc' },
+        orderBy,
         skip: (opts.page - 1) * opts.pageSize,
         take: opts.pageSize,
       }),

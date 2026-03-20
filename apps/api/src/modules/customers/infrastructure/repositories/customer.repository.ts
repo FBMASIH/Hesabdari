@@ -9,16 +9,23 @@ export class CustomerRepository {
 
   async findByOrganization(
     organizationId: string,
-    opts: { isActive?: boolean; page: number; pageSize: number },
+    opts: {
+      isActive?: boolean;
+      page: number;
+      pageSize: number;
+      sortBy?: string;
+      sortOrder?: 'asc' | 'desc';
+    },
   ) {
     const where = {
       organizationId,
       ...(opts.isActive !== undefined ? { isActive: opts.isActive } : {}),
     };
+    const orderBy = { [opts.sortBy ?? 'code']: opts.sortOrder ?? 'asc' };
     const [data, total] = await Promise.all([
       this.prisma.customer.findMany({
         where,
-        orderBy: { code: 'asc' },
+        orderBy,
         skip: (opts.page - 1) * opts.pageSize,
         take: opts.pageSize,
       }),

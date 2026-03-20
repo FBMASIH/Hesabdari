@@ -35,8 +35,8 @@ import {
 } from '../hooks/use-bank-accounts';
 import type { PaginatedResponse } from '@/shared/lib/query-helpers';
 import { useDebounce } from '@/shared/hooks/use-debounce';
-import { useTableSort } from '@/shared/hooks/use-table-sort';
 import { ApiError } from '@hesabdari/api-client';
+import type { SortState } from '@hesabdari/ui';
 
 const tr = t('treasury');
 const common = t('common');
@@ -53,9 +53,19 @@ export function BankAccountListPage({ initialData }: BankAccountListPageProps) {
   const [activeFilter, setActiveFilter] = useState<string>('');
   const [page, setPage] = useState(1);
   const [deleteTarget, setDeleteTarget] = useState<BankAccountDto | null>(null);
+  const [sort, setSort] = useState<SortState | null>(null);
+
+  function toggleSort(key: string) {
+    setSort((prev) => {
+      if (!prev || prev.key !== key) return { key, direction: 'asc' };
+      if (prev.direction === 'asc') return { key, direction: 'desc' };
+      return null;
+    });
+    setPage(1);
+  }
 
   const debouncedSearch = useDebounce(search);
-  const isDefaultQuery = page === 1 && !debouncedSearch && !activeFilter;
+  const isDefaultQuery = page === 1 && !debouncedSearch && !activeFilter && !sort;
 
   const { data, isLoading, isError, error, refetch } = useBankAccounts(
     {
@@ -63,6 +73,8 @@ export function BankAccountListPage({ initialData }: BankAccountListPageProps) {
       pageSize: 10,
       search: debouncedSearch || undefined,
       isActive: activeFilter === 'active' ? true : activeFilter === 'inactive' ? false : undefined,
+      sortBy: sort?.key,
+      sortOrder: sort?.direction,
     },
     isDefaultQuery ? initialData : undefined,
   );
@@ -92,7 +104,6 @@ export function BankAccountListPage({ initialData }: BankAccountListPageProps) {
   }
 
   const items = data?.data ?? [];
-  const { sort, toggleSort, sorted } = useTableSort(items);
   const totalPages = data ? Math.ceil(data.total / data.pageSize) : 0;
 
   return (
@@ -171,7 +182,7 @@ export function BankAccountListPage({ initialData }: BankAccountListPageProps) {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {sorted.map((row) => (
+                {items.map((row) => (
                   <TableRow key={row.id}>
                     <TableCell className="font-medium ltr-text" dir="ltr">
                       {row.code}

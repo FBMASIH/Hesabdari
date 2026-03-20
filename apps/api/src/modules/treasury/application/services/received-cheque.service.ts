@@ -36,6 +36,8 @@ export class ReceivedChequeService {
       toDueDate: query.toDueDate,
       page: query.page ?? 1,
       pageSize: query.pageSize ?? 25,
+      sortBy: query.sortBy ?? 'dueDate',
+      sortOrder: query.sortOrder ?? 'asc',
     });
   }
 

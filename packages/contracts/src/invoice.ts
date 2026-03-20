@@ -86,6 +86,17 @@ export const updateInvoiceSchema = z.object({
   lines: z.array(createInvoiceLineSchema).min(1).optional(),
 });
 
+const INVOICE_SORTABLE_FIELDS = [
+  'invoiceNumber',
+  'invoiceDate',
+  'dueDate',
+  'totalAmount',
+  'status',
+  'documentType',
+  'createdAt',
+  'updatedAt',
+] as const;
+
 export const invoiceQuerySchema = paginationSchema.extend({
   type: documentTypeEnum.optional(),
   status: invoiceStatusEnum.optional(),
@@ -99,6 +110,8 @@ export const invoiceQuerySchema = paginationSchema.extend({
     .string()
     .regex(/^\d{4}-\d{2}-\d{2}$/, 'ISO 8601 date required (YYYY-MM-DD)')
     .optional(),
+  sortBy: z.enum(INVOICE_SORTABLE_FIELDS).default('invoiceDate'),
+  sortOrder: z.enum(['asc', 'desc']).default('desc'),
 });
 
 export type CreateInvoiceDto = z.infer<typeof createInvoiceSchema>;

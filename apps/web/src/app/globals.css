@@ -153,13 +153,25 @@ body {
   background: color-mix(in srgb, var(--color-bg-primary) 60%, var(--color-bg-tertiary));
 }
 
-/* Sticky header — solid bg with short fade at bottom edge */
+/* Header — no background */
 .app-shell-header {
-  background: linear-gradient(
-    to bottom,
-    color-mix(in srgb, var(--color-bg-primary) 60%, var(--color-bg-tertiary)) 85%,
-    transparent 100%
-  );
+  background: none;
+}
+
+/* Thin frosted glass strip at top — blurs to transparent */
+.app-shell-header::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 100%;
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  mask-image: linear-gradient(to bottom, black 0%, transparent 70%);
+  -webkit-mask-image: linear-gradient(to bottom, black 0%, transparent 70%);
+  z-index: -1;
+  pointer-events: none;
 }
 
 /* Each floating capsule in the navbar */

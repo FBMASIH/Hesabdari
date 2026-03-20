@@ -37,11 +37,23 @@ export const receivedChequeStatusSchema = z
     path: ['depositBankAccountId'],
   });
 
+const RECEIVED_CHEQUE_SORTABLE_FIELDS = [
+  'chequeNumber',
+  'amount',
+  'date',
+  'dueDate',
+  'status',
+  'createdAt',
+  'updatedAt',
+] as const;
+
 export const receivedChequeQuerySchema = paginationSchema.extend({
   status: chequeStatusEnum.optional(),
   customerId: z.string().uuid().optional(),
   fromDueDate: z.coerce.date().optional(),
   toDueDate: z.coerce.date().optional(),
+  sortBy: z.enum(RECEIVED_CHEQUE_SORTABLE_FIELDS).default('dueDate'),
+  sortOrder: z.enum(['asc', 'desc']).default('asc'),
 });
 
 // Paid cheque — schema: date (not issueDate), no payeeName
@@ -65,12 +77,24 @@ export const paidChequeStatusSchema = z.object({
   status: paidChequeStatusEnum,
 });
 
+const PAID_CHEQUE_SORTABLE_FIELDS = [
+  'chequeNumber',
+  'amount',
+  'date',
+  'dueDate',
+  'status',
+  'createdAt',
+  'updatedAt',
+] as const;
+
 export const paidChequeQuerySchema = paginationSchema.extend({
   status: paidChequeStatusEnum.optional(),
   vendorId: z.string().uuid().optional(),
   bankAccountId: z.string().uuid().optional(),
   fromDueDate: z.coerce.date().optional(),
   toDueDate: z.coerce.date().optional(),
+  sortBy: z.enum(PAID_CHEQUE_SORTABLE_FIELDS).default('dueDate'),
+  sortOrder: z.enum(['asc', 'desc']).default('asc'),
 });
 
 export type CreateReceivedChequeDto = z.infer<typeof createReceivedChequeSchema>;

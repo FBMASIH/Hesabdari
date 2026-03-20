@@ -45,6 +45,8 @@ export interface PaidChequeListParams {
   pageSize?: number;
   search?: string;
   status?: PaidChequeStatus;
+  sortBy?: string;
+  sortOrder?: 'asc' | 'desc';
 }
 
 export function usePaidCheques(

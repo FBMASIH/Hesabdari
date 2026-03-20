@@ -14,5 +14,20 @@ export const updateAccountSchema = createAccountSchema.partial().extend({
   id: z.string().uuid(),
 });
 
+const ACCOUNT_SORTABLE_FIELDS = [
+  'code',
+  'name',
+  'type',
+  'createdAt',
+  'updatedAt',
+  'isActive',
+] as const;
+
+export const accountQuerySchema = z.object({
+  sortBy: z.enum(ACCOUNT_SORTABLE_FIELDS).default('code'),
+  sortOrder: z.enum(['asc', 'desc']).default('asc'),
+});
+
 export type CreateAccountDto = z.infer<typeof createAccountSchema>;
 export type UpdateAccountDto = z.infer<typeof updateAccountSchema>;
+export type AccountQueryDto = z.infer<typeof accountQuerySchema>;

@@ -29,9 +29,20 @@ export const updateVendorSchema = createVendorSchema.partial().extend({
   id: z.string().uuid(),
 });
 
+const VENDOR_SORTABLE_FIELDS = [
+  'code',
+  'name',
+  'createdAt',
+  'updatedAt',
+  'creditLimit',
+  'isActive',
+] as const;
+
 export const vendorQuerySchema = paginationSchema.extend({
   isActive: z.coerce.boolean().optional(),
   search: z.string().optional(),
+  sortBy: z.enum(VENDOR_SORTABLE_FIELDS).default('code'),
+  sortOrder: z.enum(['asc', 'desc']).default('asc'),
 });
 
 export const vendorSearchSchema = z.object({

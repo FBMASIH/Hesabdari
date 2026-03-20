@@ -2,13 +2,17 @@ import { Injectable } from '@nestjs/common';
 import { type AccountRepository } from '../../infrastructure/repositories/account.repository';
 import { NotFoundError, ConflictError } from '@/platform/errors';
 import type { AccountType } from '@hesabdari/db';
+import type { AccountQueryDto } from '@hesabdari/contracts';
 
 @Injectable()
 export class AccountService {
   constructor(private readonly accountRepository: AccountRepository) {}
 
-  async findByOrganization(organizationId: string) {
-    return this.accountRepository.findByOrganizationId(organizationId);
+  async findByOrganization(organizationId: string, query?: AccountQueryDto) {
+    return this.accountRepository.findByOrganizationId(organizationId, {
+      sortBy: query?.sortBy ?? 'code',
+      sortOrder: query?.sortOrder ?? 'asc',
+    });
   }
 
   async findById(id: string, organizationId: string) {

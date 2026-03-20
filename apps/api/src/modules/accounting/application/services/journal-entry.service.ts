@@ -1,5 +1,9 @@
 import { Injectable } from '@nestjs/common';
-import type { CreateJournalEntryDto, UpdateJournalEntryDto } from '@hesabdari/contracts';
+import type {
+  CreateJournalEntryDto,
+  UpdateJournalEntryDto,
+  JournalEntryQueryDto,
+} from '@hesabdari/contracts';
 import { type JournalEntryRepository } from '../../infrastructure/repositories/journal-entry.repository';
 import { type PeriodRepository } from '../../infrastructure/repositories/period.repository';
 import { type AuditService } from '../../../audit/application/services/audit.service';
@@ -24,8 +28,16 @@ export class JournalEntryService {
     return entry;
   }
 
-  async findByOrganization(organizationId: string) {
-    return this.journalEntryRepository.findByOrganizationId(organizationId);
+  async findByOrganization(organizationId: string, query?: JournalEntryQueryDto) {
+    return this.journalEntryRepository.findByOrganizationId(organizationId, {
+      status: query?.status,
+      fromDate: query?.fromDate,
+      toDate: query?.toDate,
+      page: query?.page ?? 1,
+      pageSize: query?.pageSize ?? 25,
+      sortBy: query?.sortBy ?? 'createdAt',
+      sortOrder: query?.sortOrder ?? 'desc',
+    });
   }
 
   async create(organizationId: string, data: CreateJournalEntryDto, actorId: string) {

@@ -14,9 +14,20 @@ export const updateWarehouseSchema = createWarehouseSchema.partial().extend({
   id: z.string().uuid(),
 });
 
+const WAREHOUSE_SORTABLE_FIELDS = [
+  'code',
+  'name',
+  'createdAt',
+  'updatedAt',
+  'costingMethod',
+  'isActive',
+] as const;
+
 export const warehouseQuerySchema = paginationSchema.extend({
   isActive: z.coerce.boolean().optional(),
   search: z.string().optional(),
+  sortBy: z.enum(WAREHOUSE_SORTABLE_FIELDS).default('code'),
+  sortOrder: z.enum(['asc', 'desc']).default('asc'),
 });
 
 export type CreateWarehouseDto = z.infer<typeof createWarehouseSchema>;

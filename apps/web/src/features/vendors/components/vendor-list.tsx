@@ -31,8 +31,8 @@ import type { PaginatedResponse } from '@/shared/lib/query-helpers';
 import { useAppToast } from '@/providers/toast-provider';
 import { useVendors, useDeleteVendor, type VendorDto } from '../hooks/use-vendors';
 import { useDebounce } from '@/shared/hooks/use-debounce';
-import { useTableSort } from '@/shared/hooks/use-table-sort';
 import { ApiError } from '@hesabdari/api-client';
+import type { SortState } from '@hesabdari/ui';
 
 const vnd = t('vendor');
 const common = t('common');
@@ -49,9 +49,19 @@ export function VendorListPage({ initialData }: VendorListPageProps) {
   const [activeFilter, setActiveFilter] = useState<string>('');
   const [page, setPage] = useState(1);
   const [deleteTarget, setDeleteTarget] = useState<VendorDto | null>(null);
+  const [sort, setSort] = useState<SortState | null>(null);
+
+  function toggleSort(key: string) {
+    setSort((prev) => {
+      if (!prev || prev.key !== key) return { key, direction: 'asc' };
+      if (prev.direction === 'asc') return { key, direction: 'desc' };
+      return null;
+    });
+    setPage(1);
+  }
 
   const debouncedSearch = useDebounce(search);
-  const isDefaultQuery = page === 1 && !debouncedSearch && !activeFilter;
+  const isDefaultQuery = page === 1 && !debouncedSearch && !activeFilter && !sort;
 
   const { data, isLoading, isError, error, refetch } = useVendors(
     {
@@ -59,6 +69,8 @@ export function VendorListPage({ initialData }: VendorListPageProps) {
       pageSize: 10,
       search: debouncedSearch || undefined,
       isActive: activeFilter === 'active' ? true : activeFilter === 'inactive' ? false : undefined,
+      sortBy: sort?.key,
+      sortOrder: sort?.direction,
     },
     isDefaultQuery ? initialData : undefined,
   );
@@ -88,7 +100,6 @@ export function VendorListPage({ initialData }: VendorListPageProps) {
   }
 
   const vendors = data?.data ?? [];
-  const { sort, toggleSort, sorted } = useTableSort(vendors);
   const totalPages = data ? Math.ceil(data.total / data.pageSize) : 0;
 
   return (
@@ -154,7 +165,7 @@ export function VendorListPage({ initialData }: VendorListPageProps) {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {sorted.map((row) => (
+                {vendors.map((row) => (
                   <TableRow key={row.id}>
                     <TableCell className="font-medium ltr-text" dir="ltr">
                       {row.code}

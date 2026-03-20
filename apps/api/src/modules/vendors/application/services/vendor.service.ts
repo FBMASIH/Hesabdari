@@ -12,6 +12,8 @@ export class VendorService {
       isActive: query.isActive,
       page: query.page ?? 1,
       pageSize: query.pageSize ?? 25,
+      sortBy: query.sortBy ?? 'code',
+      sortOrder: query.sortOrder ?? 'asc',
     });
   }
 

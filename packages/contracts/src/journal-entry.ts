@@ -19,10 +19,20 @@ export const createJournalEntrySchema = z.object({
   lines: z.array(createJournalLineSchema).min(2),
 });
 
+const JOURNAL_ENTRY_SORTABLE_FIELDS = [
+  'entryNumber',
+  'date',
+  'status',
+  'createdAt',
+  'updatedAt',
+] as const;
+
 export const journalEntryQuerySchema = paginationSchema.extend({
   status: journalEntryStatusEnum.optional(),
   fromDate: z.coerce.date().optional(),
   toDate: z.coerce.date().optional(),
+  sortBy: z.enum(JOURNAL_ENTRY_SORTABLE_FIELDS).default('createdAt'),
+  sortOrder: z.enum(['asc', 'desc']).default('desc'),
 });
 
 export const updateJournalEntrySchema = z.object({

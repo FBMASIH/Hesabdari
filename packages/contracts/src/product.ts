@@ -19,9 +19,20 @@ export const updateProductSchema = createProductSchema.partial().extend({
   id: z.string().uuid(),
 });
 
+const PRODUCT_SORTABLE_FIELDS = [
+  'code',
+  'name',
+  'createdAt',
+  'updatedAt',
+  'salePrice1',
+  'isActive',
+] as const;
+
 export const productQuerySchema = paginationSchema.extend({
   isActive: z.coerce.boolean().optional(),
   search: z.string().optional(),
+  sortBy: z.enum(PRODUCT_SORTABLE_FIELDS).default('code'),
+  sortOrder: z.enum(['asc', 'desc']).default('asc'),
 });
 
 export const productSearchSchema = z.object({

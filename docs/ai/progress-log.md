@@ -60,6 +60,15 @@ Removed all `any` from backend. Aligned Product (3 sale prices), Warehouse (cost
 - **JournalEntryService.post:** Now returns the updated entry instead of void.
 - Build 8/8, typecheck 14/14, tests 45/45 all pass.
 
+### Phase 6: Server-side sorting (2026-03-20)
+
+- Added `sortBy` + `sortOrder` query params to all 11 list endpoints
+- Zod-validated whitelists per entity (only schema-valid fields accepted)
+- Sort params flow through controller → service → repository → Prisma `orderBy`
+- Journal entry endpoint upgraded from unpaginated to paginated with filters and sorting
+- New `accountQuerySchema` contract added for chart of accounts endpoint
+- Build 8/8, typecheck 14/14
+
 ## Remaining
 
 1. **Database migrations** (requires PostgreSQL)

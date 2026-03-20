@@ -17,6 +17,8 @@ export class PaidChequeRepository {
       toDueDate?: Date;
       page: number;
       pageSize: number;
+      sortBy?: string;
+      sortOrder?: 'asc' | 'desc';
     },
   ) {
     const where: Prisma.PaidChequeWhereInput = { organizationId };
@@ -30,11 +32,12 @@ export class PaidChequeRepository {
       };
     }
 
+    const orderBy = { [opts.sortBy ?? 'dueDate']: opts.sortOrder ?? 'asc' };
     const [data, total] = await Promise.all([
       this.prisma.paidCheque.findMany({
         where,
         include: { bankAccount: true, vendor: true, currency: true },
-        orderBy: { dueDate: 'asc' },
+        orderBy,
         skip: (opts.page - 1) * opts.pageSize,
         take: opts.pageSize,
       }),

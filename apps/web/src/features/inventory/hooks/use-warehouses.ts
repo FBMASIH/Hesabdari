@@ -27,6 +27,8 @@ export interface WarehouseListParams {
   pageSize?: number;
   search?: string;
   isActive?: boolean;
+  sortBy?: string;
+  sortOrder?: 'asc' | 'desc';
 }
 
 export function useWarehouses(

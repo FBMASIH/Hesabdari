@@ -29,9 +29,20 @@ export const updateCustomerSchema = createCustomerSchema.partial().extend({
   id: z.string().uuid(),
 });
 
+const CUSTOMER_SORTABLE_FIELDS = [
+  'code',
+  'name',
+  'createdAt',
+  'updatedAt',
+  'creditLimit',
+  'isActive',
+] as const;
+
 export const customerQuerySchema = paginationSchema.extend({
   isActive: z.coerce.boolean().optional(),
   search: z.string().optional(),
+  sortBy: z.enum(CUSTOMER_SORTABLE_FIELDS).default('code'),
+  sortOrder: z.enum(['asc', 'desc']).default('asc'),
 });
 
 export const customerSearchSchema = z.object({

@@ -1,7 +1,11 @@
-import { Controller, Get, Post, Put, Body, Param } from '@nestjs/common';
+import { Controller, Get, Post, Put, Body, Param, Query } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
 import { type JournalEntryService } from '../../../application/services/journal-entry.service';
-import { createJournalEntrySchema, updateJournalEntrySchema } from '@hesabdari/contracts';
+import {
+  createJournalEntrySchema,
+  updateJournalEntrySchema,
+  journalEntryQuerySchema,
+} from '@hesabdari/contracts';
 import { CurrentUser, type RequestUser } from '@/platform/decorators';
 
 @ApiTags('Journal Entries')
@@ -12,8 +16,9 @@ export class JournalEntriesController {
 
   @Get()
   @ApiOperation({ summary: 'List journal entries' })
-  async list(@Param('orgId') orgId: string) {
-    return this.journalEntryService.findByOrganization(orgId);
+  async list(@Param('orgId') orgId: string, @Query() query: unknown) {
+    const parsed = journalEntryQuerySchema.parse(query);
+    return this.journalEntryService.findByOrganization(orgId, parsed);
   }
 
   @Get(':id')

@@ -1,7 +1,7 @@
-import { Controller, Get, Post, Body, Param } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Query } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
-import { AccountService } from '../../../application/services/account.service';
-import { createAccountSchema } from '@hesabdari/contracts';
+import { type AccountService } from '../../../application/services/account.service';
+import { createAccountSchema, accountQuerySchema } from '@hesabdari/contracts';
 
 @ApiTags('Accounts')
 @ApiBearerAuth()
@@ -11,8 +11,9 @@ export class AccountsController {
 
   @Get()
   @ApiOperation({ summary: 'List chart of accounts' })
-  async list(@Param('orgId') orgId: string) {
-    return this.accountService.findByOrganization(orgId);
+  async list(@Param('orgId') orgId: string, @Query() query: unknown) {
+    const parsed = accountQuerySchema.parse(query);
+    return this.accountService.findByOrganization(orgId, parsed);
   }
 
   @Get(':id')

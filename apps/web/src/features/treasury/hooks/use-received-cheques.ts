@@ -49,6 +49,8 @@ export interface ReceivedChequeListParams {
   pageSize?: number;
   search?: string;
   status?: ReceivedChequeStatus;
+  sortBy?: string;
+  sortOrder?: 'asc' | 'desc';
 }
 
 export function useReceivedCheques(

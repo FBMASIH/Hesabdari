@@ -33,9 +33,9 @@ import {
 import { useAppToast } from '@/providers/toast-provider';
 import type { PaginatedResponse } from '@/shared/lib/query-helpers';
 import { useDebounce } from '@/shared/hooks/use-debounce';
-import { useTableSort } from '@/shared/hooks/use-table-sort';
 import { useInvoices, useCancelInvoice, type InvoiceDto } from '../hooks/use-invoices';
 import { ApiError } from '@hesabdari/api-client';
+import type { SortState } from '@hesabdari/ui';
 
 const inv = t('invoice');
 const common = t('common');
@@ -75,8 +75,19 @@ export function InvoiceListPage({ initialData }: InvoiceListPageProps) {
   const [statusFilter, setStatusFilter] = useState<string>('');
   const [page, setPage] = useState(1);
   const [cancelTarget, setCancelTarget] = useState<InvoiceDto | null>(null);
+  const [sort, setSort] = useState<SortState | null>(null);
+
+  function toggleSort(key: string) {
+    setSort((prev) => {
+      if (!prev || prev.key !== key) return { key, direction: 'asc' };
+      if (prev.direction === 'asc') return { key, direction: 'desc' };
+      return null;
+    });
+    setPage(1);
+  }
+
   const debouncedSearch = useDebounce(search);
-  const isDefaultQuery = page === 1 && !debouncedSearch && !statusFilter;
+  const isDefaultQuery = page === 1 && !debouncedSearch && !statusFilter && !sort;
 
   const { data, isLoading, isError, error, refetch } = useInvoices(
     {
@@ -84,6 +95,8 @@ export function InvoiceListPage({ initialData }: InvoiceListPageProps) {
       pageSize: 10,
       status: statusFilter || undefined,
       search: debouncedSearch || undefined,
+      sortBy: sort?.key,
+      sortOrder: sort?.direction,
     },
     isDefaultQuery ? initialData : undefined,
   );
@@ -121,7 +134,6 @@ export function InvoiceListPage({ initialData }: InvoiceListPageProps) {
   }
 
   const invoices = data?.data ?? [];
-  const { sort, toggleSort, sorted } = useTableSort(invoices);
   const totalPages = data ? Math.ceil(data.total / data.pageSize) : 0;
 
   return (
@@ -195,7 +207,7 @@ export function InvoiceListPage({ initialData }: InvoiceListPageProps) {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {sorted.map((row) => (
+                {invoices.map((row) => (
                   <TableRow key={row.id}>
                     <TableCell className="font-medium">
                       {toPersianDigits(row.invoiceNumber)}

@@ -42,6 +42,11 @@ packages/config/       TS/ESLint/Prettier configs
 - Server prefetch: list page 1 + edit entity only. No dropdown/secondary data.
 - Forms: Client Components only. Do not attempt server-rendered forms.
 
+## Recent Changes
+
+- Server-side sorting on all 11 list endpoints with Zod-validated field whitelists
+- Journal entries endpoint now paginated with status/date filters
+
 ## Current Priorities
 
 1. Database migrations (requires PostgreSQL)

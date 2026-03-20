@@ -18,6 +18,8 @@ export class InvoiceRepository {
       toDate?: Date;
       page: number;
       pageSize: number;
+      sortBy?: string;
+      sortOrder?: 'asc' | 'desc';
     },
   ) {
     const where: Prisma.InvoiceWhereInput = { organizationId };
@@ -32,11 +34,12 @@ export class InvoiceRepository {
       };
     }
 
+    const orderBy = { [opts.sortBy ?? 'invoiceDate']: opts.sortOrder ?? 'desc' };
     const [data, total] = await Promise.all([
       this.prisma.invoice.findMany({
         where,
         include: { customer: true, vendor: true, currency: true },
-        orderBy: { invoiceDate: 'desc' },
+        orderBy,
         skip: (opts.page - 1) * opts.pageSize,
         take: opts.pageSize,
       }),

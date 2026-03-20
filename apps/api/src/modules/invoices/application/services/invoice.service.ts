@@ -51,6 +51,8 @@ export class InvoiceService {
       toDate: query.toDate ? new Date(query.toDate) : undefined,
       page: query.page ?? 1,
       pageSize: query.pageSize ?? 25,
+      sortBy: query.sortBy ?? 'invoiceDate',
+      sortOrder: query.sortOrder ?? 'desc',
     });
   }
 

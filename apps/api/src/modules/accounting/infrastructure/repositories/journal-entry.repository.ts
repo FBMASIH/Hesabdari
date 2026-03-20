@@ -34,12 +34,42 @@ export class JournalEntryRepository {
     });
   }
 
-  async findByOrganizationId(organizationId: string) {
-    return this.prisma.journalEntry.findMany({
-      where: { organizationId },
-      orderBy: { createdAt: 'desc' },
-      include: { lines: true },
-    });
+  async findByOrganizationId(
+    organizationId: string,
+    opts?: {
+      status?: string;
+      fromDate?: Date;
+      toDate?: Date;
+      page?: number;
+      pageSize?: number;
+      sortBy?: string;
+      sortOrder?: 'asc' | 'desc';
+    },
+  ) {
+    const where: Record<string, unknown> = { organizationId };
+    if (opts?.status) where.status = opts.status;
+    if (opts?.fromDate || opts?.toDate) {
+      where.date = {
+        ...(opts?.fromDate ? { gte: opts.fromDate } : {}),
+        ...(opts?.toDate ? { lte: opts.toDate } : {}),
+      };
+    }
+
+    const page = opts?.page ?? 1;
+    const pageSize = opts?.pageSize ?? 25;
+    const orderBy = { [opts?.sortBy ?? 'createdAt']: opts?.sortOrder ?? 'desc' };
+
+    const [data, total] = await Promise.all([
+      this.prisma.journalEntry.findMany({
+        where,
+        orderBy,
+        include: { lines: true },
+        skip: (page - 1) * pageSize,
+        take: pageSize,
+      }),
+      this.prisma.journalEntry.count({ where }),
+    ]);
+    return { data, total, page, pageSize };
   }
 
   async createWithLines(data: CreateJournalEntryData) {

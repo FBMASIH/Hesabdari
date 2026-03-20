@@ -44,6 +44,8 @@ export interface JournalListParams {
   pageSize?: number;
   status?: string;
   search?: string;
+  sortBy?: string;
+  sortOrder?: 'asc' | 'desc';
 }
 
 // ── Hooks ───────────────────────────────────────────

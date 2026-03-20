@@ -30,7 +30,7 @@ import {
 import type { PaginatedResponse } from '@/shared/lib/query-helpers';
 import { useJournalEntries, type JournalEntryDto } from '../hooks/use-journal-entries';
 import { useDebounce } from '@/shared/hooks/use-debounce';
-import { useTableSort } from '@/shared/hooks/use-table-sort';
+import type { SortState } from '@hesabdari/ui';
 
 const j = t('journal');
 const acct = t('accounting');
@@ -59,9 +59,19 @@ export function JournalEntryListPage({ initialData }: JournalEntryListPageProps)
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState<string>('');
   const [page, setPage] = useState(1);
+  const [sort, setSort] = useState<SortState | null>(null);
+
+  function toggleSort(key: string) {
+    setSort((prev) => {
+      if (!prev || prev.key !== key) return { key, direction: 'asc' };
+      if (prev.direction === 'asc') return { key, direction: 'desc' };
+      return null;
+    });
+    setPage(1);
+  }
 
   const debouncedSearch = useDebounce(search);
-  const isDefaultQuery = page === 1 && !debouncedSearch && !statusFilter;
+  const isDefaultQuery = page === 1 && !debouncedSearch && !statusFilter && !sort;
 
   const { data, isLoading, isError, error, refetch } = useJournalEntries(
     {
@@ -69,6 +79,8 @@ export function JournalEntryListPage({ initialData }: JournalEntryListPageProps)
       pageSize: 10,
       status: statusFilter || undefined,
       search: debouncedSearch || undefined,
+      sortBy: sort?.key,
+      sortOrder: sort?.direction,
     },
     isDefaultQuery ? initialData : undefined,
   );
@@ -86,7 +98,6 @@ export function JournalEntryListPage({ initialData }: JournalEntryListPageProps)
   }
 
   const entries = data?.data ?? [];
-  const { sort, toggleSort, sorted } = useTableSort(entries);
   const totalPages = data ? Math.ceil(data.total / data.pageSize) : 0;
 
   function entryTotals(entry: JournalEntryDto) {
@@ -168,7 +179,7 @@ export function JournalEntryListPage({ initialData }: JournalEntryListPageProps)
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {sorted.map((entry) => {
+                {entries.map((entry) => {
                   const totals = entryTotals(entry);
                   return (
                     <TableRow key={entry.id}>

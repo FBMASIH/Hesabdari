@@ -10,10 +10,14 @@ export class AccountRepository {
     return this.prisma.account.findFirst({ where: { id, organizationId } });
   }
 
-  async findByOrganizationId(organizationId: string) {
+  async findByOrganizationId(
+    organizationId: string,
+    opts?: { sortBy?: string; sortOrder?: 'asc' | 'desc' },
+  ) {
+    const orderBy = { [opts?.sortBy ?? 'code']: opts?.sortOrder ?? 'asc' };
     return this.prisma.account.findMany({
       where: { organizationId },
-      orderBy: { code: 'asc' },
+      orderBy,
     });
   }
 

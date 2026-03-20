@@ -52,6 +52,8 @@ export interface InvoiceListParams {
   type?: string;
   status?: string;
   search?: string;
+  sortBy?: string;
+  sortOrder?: 'asc' | 'desc';
 }
 
 // ── Hooks ───────────────────────────────────────────

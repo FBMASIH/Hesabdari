@@ -15,10 +15,21 @@ export const updateBankAccountSchema = createBankAccountSchema.partial().extend(
   id: z.string().uuid(),
 });
 
+const BANK_ACCOUNT_SORTABLE_FIELDS = [
+  'code',
+  'name',
+  'accountNumber',
+  'createdAt',
+  'updatedAt',
+  'isActive',
+] as const;
+
 export const bankAccountQuerySchema = paginationSchema.extend({
   isActive: z.coerce.boolean().optional(),
   bankId: z.string().uuid().optional(),
   search: z.string().optional(),
+  sortBy: z.enum(BANK_ACCOUNT_SORTABLE_FIELDS).default('code'),
+  sortOrder: z.enum(['asc', 'desc']).default('asc'),
 });
 
 export type CreateBankAccountDto = z.infer<typeof createBankAccountSchema>;

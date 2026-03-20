@@ -39,6 +39,8 @@ export interface CashboxListParams {
   pageSize?: number;
   search?: string;
   isActive?: boolean;
+  sortBy?: string;
+  sortOrder?: 'asc' | 'desc';
 }
 
 export function useCashboxes(

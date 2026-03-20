@@ -12,9 +12,13 @@ export const updateCashboxSchema = createCashboxSchema.partial().extend({
   id: z.string().uuid(),
 });
 
+const CASHBOX_SORTABLE_FIELDS = ['code', 'name', 'createdAt', 'updatedAt', 'isActive'] as const;
+
 export const cashboxQuerySchema = paginationSchema.extend({
   isActive: z.coerce.boolean().optional(),
   search: z.string().optional(),
+  sortBy: z.enum(CASHBOX_SORTABLE_FIELDS).default('code'),
+  sortOrder: z.enum(['asc', 'desc']).default('asc'),
 });
 
 export type CreateCashboxDto = z.infer<typeof createCashboxSchema>;

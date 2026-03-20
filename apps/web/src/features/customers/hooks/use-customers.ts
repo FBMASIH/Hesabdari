@@ -31,6 +31,8 @@ export interface CustomerListParams {
   pageSize?: number;
   search?: string;
   isActive?: boolean;
+  sortBy?: string;
+  sortOrder?: 'asc' | 'desc';
 }
 
 export function useCustomers(

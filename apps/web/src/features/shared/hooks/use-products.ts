@@ -19,6 +19,8 @@ export interface ProductListParams {
   pageSize?: number;
   search?: string;
   isActive?: boolean;
+  sortBy?: string;
+  sortOrder?: 'asc' | 'desc';
 }
 
 export const productKeys = {
