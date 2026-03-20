@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { AccountRepository } from '../../infrastructure/repositories/account.repository';
+import { type AccountRepository } from '../../infrastructure/repositories/account.repository';
 import { NotFoundError, ConflictError } from '@/platform/errors';
 import type { AccountType } from '@hesabdari/db';
 

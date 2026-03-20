@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { BankRepository } from '../../infrastructure/repositories/bank.repository';
+import { type BankRepository } from '../../infrastructure/repositories/bank.repository';
 import { NotFoundError, ConflictError } from '@/platform/errors';
 import type { CreateBankDto, UpdateBankDto } from '@hesabdari/contracts';
 

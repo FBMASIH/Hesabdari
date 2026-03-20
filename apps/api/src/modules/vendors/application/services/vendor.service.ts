@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { VendorRepository } from '../../infrastructure/repositories/vendor.repository';
+import { type VendorRepository } from '../../infrastructure/repositories/vendor.repository';
 import { NotFoundError, ConflictError } from '@/platform/errors';
 import type { CreateVendorDto, UpdateVendorDto, VendorQueryDto } from '@hesabdari/contracts';
 

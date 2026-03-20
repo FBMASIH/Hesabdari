@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { OrganizationRepository } from '../../infrastructure/repositories/organization.repository';
+import { type OrganizationRepository } from '../../infrastructure/repositories/organization.repository';
 import { NotFoundError } from '@/platform/errors';
 
 @Injectable()

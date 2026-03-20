@@ -23,7 +23,10 @@ export const baseConfig = [
       ],
       '@typescript-eslint/no-explicit-any': 'warn',
       '@typescript-eslint/explicit-function-return-type': 'off',
-      '@typescript-eslint/consistent-type-imports': ['error', { prefer: 'type-imports' }],
+      '@typescript-eslint/consistent-type-imports': [
+        'error',
+        { prefer: 'type-imports', fixStyle: 'inline-type-imports' },
+      ],
       'no-console': ['warn', { allow: ['warn', 'error'] }],
     },
   },
@@ -37,6 +40,10 @@ export const nestConfig = [
     rules: {
       '@typescript-eslint/explicit-function-return-type': 'off',
       '@typescript-eslint/no-explicit-any': 'off',
+      // NestJS uses emitDecoratorMetadata which makes constructor param types
+      // runtime values. consistent-type-imports wrongly converts them to
+      // `import type`, breaking dependency injection.
+      '@typescript-eslint/consistent-type-imports': 'off',
     },
   },
 ];

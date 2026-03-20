@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { AuditRepository } from '../../infrastructure/repositories/audit.repository';
+import { type AuditRepository } from '../../infrastructure/repositories/audit.repository';
 import type { AuditLog } from '@hesabdari/db';
 
 @Injectable()

@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import type { PrismaService } from '@/platform/database/prisma.service';
+import { type PrismaService } from '@/platform/database/prisma.service';
 import type { CostingMethod } from '@hesabdari/db';
 
 @Injectable()

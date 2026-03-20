@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
-import { PaidChequeRepository } from '../../infrastructure/repositories/paid-cheque.repository';
-import { BankAccountRepository } from '../../infrastructure/repositories/bank-account.repository';
+import { type PaidChequeRepository } from '../../infrastructure/repositories/paid-cheque.repository';
+import { type BankAccountRepository } from '../../infrastructure/repositories/bank-account.repository';
 import { NotFoundError, ConflictError, ApplicationError } from '@/platform/errors';
 import type { Prisma } from '@hesabdari/db';
 import type {

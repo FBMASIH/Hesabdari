@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import type { CreateJournalEntryDto, UpdateJournalEntryDto } from '@hesabdari/contracts';
-import type { JournalEntryRepository } from '../../infrastructure/repositories/journal-entry.repository';
-import type { PeriodRepository } from '../../infrastructure/repositories/period.repository';
+import { type JournalEntryRepository } from '../../infrastructure/repositories/journal-entry.repository';
+import { type PeriodRepository } from '../../infrastructure/repositories/period.repository';
 import {
   assertJournalBalances,
   assertMinimumLines,
