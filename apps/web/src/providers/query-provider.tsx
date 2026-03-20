@@ -9,7 +9,7 @@ export function QueryProvider({ children }: { children: ReactNode }) {
       new QueryClient({
         defaultOptions: {
           queries: {
-            staleTime: 60 * 1000,
+            staleTime: 0, // safe default for financial data — individual hooks override with STALE_TIME config
             retry: 1,
             refetchOnWindowFocus: false,
           },

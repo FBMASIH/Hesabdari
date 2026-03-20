@@ -47,8 +47,8 @@ export class AuthController {
     return this.authService.refreshToken(dto.refreshToken);
   }
 
-  @Public()
   @Post('logout')
+  @ApiBearerAuth()
   @HttpCode(HttpStatus.NO_CONTENT)
   @ApiOperation({ summary: 'Logout and invalidate refresh token' })
   @ApiResponse({ status: 204, description: 'Logged out successfully' })

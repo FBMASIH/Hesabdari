@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { type PrismaService } from '@/platform/database/prisma.service';
-import type { Prisma } from '@hesabdari/db';
-import type { PaidChequeStatus } from '@hesabdari/db';
+import { NotFoundError } from '@/platform/errors';
+import type { Prisma, PaidChequeStatus, PaidCheque } from '@hesabdari/db';
 
 @Injectable()
 export class PaidChequeRepository {
@@ -73,14 +73,24 @@ export class PaidChequeRepository {
     });
   }
 
-  async update(id: string, data: Prisma.PaidChequeUpdateInput) {
-    return this.prisma.paidCheque.update({ where: { id }, data });
+  async update(
+    id: string,
+    organizationId: string,
+    data: Prisma.PaidChequeUncheckedUpdateInput,
+  ): Promise<PaidCheque> {
+    await this.prisma.paidCheque.updateMany({ where: { id, organizationId }, data });
+    const updated = await this.findById(id, organizationId);
+    if (!updated) throw new NotFoundError('PaidCheque', id);
+    return updated;
   }
 
-  async updateStatus(id: string, status: string) {
-    return this.prisma.paidCheque.update({
-      where: { id },
+  async updateStatus(id: string, organizationId: string, status: string): Promise<PaidCheque> {
+    await this.prisma.paidCheque.updateMany({
+      where: { id, organizationId },
       data: { status: status as PaidChequeStatus },
     });
+    const updated = await this.findById(id, organizationId);
+    if (!updated) throw new NotFoundError('PaidCheque', id);
+    return updated;
   }
 }

@@ -31,7 +31,7 @@ export class BankOpeningBalanceRepository {
     return this.prisma.bankOpeningBalance.create({ data });
   }
 
-  async delete(id: string) {
-    return this.prisma.bankOpeningBalance.delete({ where: { id } });
+  async delete(id: string, organizationId: string): Promise<void> {
+    await this.prisma.bankOpeningBalance.deleteMany({ where: { id, organizationId } });
   }
 }

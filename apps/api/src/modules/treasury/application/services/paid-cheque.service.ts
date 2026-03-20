@@ -102,7 +102,11 @@ export class PaidChequeService {
     const { amount, ...rest } = data;
     const updateData: Record<string, unknown> = { ...rest };
     if (amount !== undefined) updateData.amount = BigInt(amount);
-    return this.chequeRepository.update(id, updateData as Prisma.PaidChequeUpdateInput);
+    return this.chequeRepository.update(
+      id,
+      organizationId,
+      updateData as Prisma.PaidChequeUncheckedUpdateInput,
+    );
   }
 
   async changeStatus(id: string, organizationId: string, data: PaidChequeStatusDto) {
@@ -114,6 +118,6 @@ export class PaidChequeService {
         `Cannot transition from ${cheque.status} to ${data.status}`,
       );
     }
-    return this.chequeRepository.updateStatus(id, data.status);
+    return this.chequeRepository.updateStatus(id, organizationId, data.status);
   }
 }

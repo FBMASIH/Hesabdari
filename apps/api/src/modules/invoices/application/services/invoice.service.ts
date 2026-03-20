@@ -72,17 +72,24 @@ export class InvoiceService {
       );
     }
 
-    // Compute line totals and invoice total
-    const lines = data.lines.map((line) => ({
-      productId: line.productId,
-      warehouseId: line.warehouseId ?? null,
-      description: line.description ?? null,
-      quantity: line.quantity,
-      unitPrice: BigInt(line.unitPrice),
-      discount: BigInt(line.discount ?? 0),
-      tax: BigInt(line.tax ?? 0),
-      totalPrice: BigInt(line.totalPrice),
-    }));
+    // Compute line totals server-side and invoice total
+    const lines = data.lines.map((line) => {
+      const unitPrice = BigInt(line.unitPrice);
+      const discount = BigInt(line.discount ?? 0);
+      const tax = BigInt(line.tax ?? 0);
+      const quantity = BigInt(line.quantity);
+      const totalPrice = (unitPrice - discount) * quantity + tax;
+      return {
+        productId: line.productId,
+        warehouseId: line.warehouseId ?? null,
+        description: line.description ?? null,
+        quantity: line.quantity,
+        unitPrice,
+        discount,
+        tax,
+        totalPrice,
+      };
+    });
 
     const totalAmount = lines.reduce((sum, l) => sum + l.totalPrice, 0n);
 

@@ -27,12 +27,21 @@ export class JournalEntryService {
   }
 
   async create(organizationId: string, data: CreateJournalEntryDto) {
+    // Idempotency check: return existing entry if idempotency key matches
+    if (data.idempotencyKey) {
+      const existing = await this.journalEntryRepository.findByIdempotencyKey(
+        organizationId,
+        data.idempotencyKey,
+      );
+      if (existing) return existing;
+    }
+
     // Check entry number uniqueness per org
-    const existing = await this.journalEntryRepository.findByNumber(
+    const existingByNumber = await this.journalEntryRepository.findByNumber(
       organizationId,
       data.entryNumber,
     );
-    if (existing) {
+    if (existingByNumber) {
       throw new ConflictError(`Journal entry number ${data.entryNumber} already exists`);
     }
 

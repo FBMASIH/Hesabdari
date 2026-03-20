@@ -77,28 +77,3 @@ export function useCreateReceivedCheque() {
     },
   });
 }
-
-export function useDeleteReceivedCheque() {
-  const queryClient = useQueryClient();
-  return useMutation({
-    mutationFn: (id: string) => apiClient.delete(orgPath(`/received-cheques/${id}`)),
-    onMutate: async (id) => {
-      await queryClient.cancelQueries({ queryKey: receivedChequeKeys.lists() });
-      const snapshots = queryClient.getQueriesData<PaginatedResponse<ReceivedChequeDto>>({
-        queryKey: receivedChequeKeys.lists(),
-      });
-      queryClient.setQueriesData<PaginatedResponse<ReceivedChequeDto>>(
-        { queryKey: receivedChequeKeys.lists() },
-        (old) =>
-          old ? { ...old, data: old.data.filter((c) => c.id !== id), total: old.total - 1 } : old,
-      );
-      return { snapshots };
-    },
-    onError: (_err, _id, ctx) => {
-      ctx?.snapshots.forEach(([key, data]) => queryClient.setQueryData(key, data));
-    },
-    onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: receivedChequeKeys.lists() });
-    },
-  });
-}

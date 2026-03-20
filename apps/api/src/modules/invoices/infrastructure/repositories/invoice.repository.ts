@@ -101,7 +101,15 @@ export class InvoiceRepository {
           lineNumber: index + 1,
         })),
       });
-      return this.findById(invoice.id, data.organizationId);
+      return tx.invoice.findFirst({
+        where: { id: invoice.id, organizationId: data.organizationId },
+        include: {
+          lines: { include: { product: true, warehouse: true }, orderBy: { createdAt: 'asc' } },
+          customer: true,
+          vendor: true,
+          currency: true,
+        },
+      });
     });
   }
 
@@ -141,7 +149,15 @@ export class InvoiceRepository {
           })),
         });
       }
-      return this.findById(id, organizationId);
+      return tx.invoice.findFirst({
+        where: { id, organizationId },
+        include: {
+          lines: { include: { product: true, warehouse: true }, orderBy: { createdAt: 'asc' } },
+          customer: true,
+          vendor: true,
+          currency: true,
+        },
+      });
     });
   }
 

@@ -24,10 +24,8 @@ export function AuthGuard({ children }: { children: React.ReactNode }) {
     }
   }, [router]);
 
-  // Before mount: render children to match server HTML (middleware protects server-side)
-  // After mount: check auth and show spinner only if redirecting
   if (!mounted) {
-    return <>{children}</>;
+    return null;
   }
 
   const isAuthenticated = useAuthStore.getState().isAuthenticated;

@@ -42,25 +42,30 @@ export class UserRepository implements IUserRepository {
     return this.prisma.$transaction(async (tx) => {
       const user = await tx.user.create({ data });
 
-      const defaultOrg = await tx.organization.findFirst({
-        where: { slug: 'hesabdari-dev' },
+      // Create a personal organization for the new user
+      const org = await tx.organization.create({
+        data: {
+          name: `سازمان ${data.firstName} ${data.lastName}`,
+          slug: `org-${Date.now()}`,
+        },
       });
 
-      if (defaultOrg) {
-        const ownerRole = await tx.role.findFirst({
-          where: { organizationId: defaultOrg.id, isSystem: true },
-        });
+      // Create a system owner role for the new organization
+      const ownerRole = await tx.role.create({
+        data: {
+          organizationId: org.id,
+          name: 'Owner',
+          isSystem: true,
+        },
+      });
 
-        if (ownerRole) {
-          await tx.organizationMember.create({
-            data: {
-              userId: user.id,
-              organizationId: defaultOrg.id,
-              roleId: ownerRole.id,
-            },
-          });
-        }
-      }
+      await tx.organizationMember.create({
+        data: {
+          userId: user.id,
+          organizationId: org.id,
+          roleId: ownerRole.id,
+        },
+      });
 
       return user;
     });

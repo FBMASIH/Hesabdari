@@ -60,7 +60,7 @@ export class VendorService {
       }
     }
     const { creditLimit, birthDate, ...rest } = data;
-    return this.vendorRepository.update(id, {
+    return this.vendorRepository.update(id, organizationId, {
       ...rest,
       ...(creditLimit !== undefined ? { creditLimit: BigInt(creditLimit) } : {}),
       ...(birthDate !== undefined ? { birthDate: new Date(birthDate) } : {}),
@@ -69,6 +69,6 @@ export class VendorService {
 
   async softDelete(id: string, organizationId: string) {
     await this.findById(id, organizationId);
-    return this.vendorRepository.update(id, { isActive: false });
+    return this.vendorRepository.update(id, organizationId, { isActive: false });
   }
 }

@@ -48,7 +48,7 @@ export class ProductWarehouseStockRepository {
     return this.prisma.productWarehouseStock.create({ data });
   }
 
-  async delete(id: string) {
-    return this.prisma.productWarehouseStock.delete({ where: { id } });
+  async delete(id: string, organizationId: string): Promise<void> {
+    await this.prisma.productWarehouseStock.deleteMany({ where: { id, organizationId } });
   }
 }

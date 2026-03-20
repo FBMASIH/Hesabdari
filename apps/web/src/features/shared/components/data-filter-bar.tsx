@@ -48,6 +48,7 @@ export function DataFilterBar({
         <button
           key={f.key}
           type="button"
+          aria-pressed={f.active}
           onClick={() => onFilterToggle?.(f.key)}
           className={cn(
             'flex h-9 items-center rounded-xl border px-3 text-xs font-medium transition-all duration-200',

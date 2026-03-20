@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { type PrismaService } from '@/platform/database/prisma.service';
-import type { Prisma } from '@hesabdari/db';
+import { NotFoundError } from '@/platform/errors';
+import type { Prisma, Product } from '@hesabdari/db';
 
 @Injectable()
 export class ProductRepository {
@@ -67,7 +68,14 @@ export class ProductRepository {
     return this.prisma.product.create({ data });
   }
 
-  async update(id: string, data: Prisma.ProductUpdateInput) {
-    return this.prisma.product.update({ where: { id }, data });
+  async update(
+    id: string,
+    organizationId: string,
+    data: Prisma.ProductUncheckedUpdateInput,
+  ): Promise<Product> {
+    await this.prisma.product.updateMany({ where: { id, organizationId }, data });
+    const updated = await this.findById(id, organizationId);
+    if (!updated) throw new NotFoundError('Product', id);
+    return updated;
   }
 }

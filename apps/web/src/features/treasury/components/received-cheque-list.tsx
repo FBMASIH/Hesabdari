@@ -6,7 +6,6 @@ import {
   Badge,
   Button,
   EmptyState,
-  ConfirmDialog,
   Table,
   TableHeader,
   TableBody,
@@ -29,21 +28,17 @@ import {
   TablePaginationFooter,
   type FilterPill,
 } from '@/features/shared';
-import { useAppToast } from '@/providers/toast-provider';
 import {
   useReceivedCheques,
-  useDeleteReceivedCheque,
   type ReceivedChequeDto,
   type ReceivedChequeStatus,
 } from '../hooks/use-received-cheques';
 import type { PaginatedResponse } from '@/shared/lib/query-helpers';
 import { useDebounce } from '@/shared/hooks/use-debounce';
 import { useTableSort } from '@/shared/hooks/use-table-sort';
-import { ApiError } from '@hesabdari/api-client';
 
 const tr = t('treasury');
 const common = t('common');
-const msgs = t('messages');
 
 const statusBadgeVariant: Record<
   ReceivedChequeStatus,
@@ -67,11 +62,9 @@ interface ReceivedChequeListPageProps {
 
 export function ReceivedChequeListPage({ initialData }: ReceivedChequeListPageProps) {
   const router = useRouter();
-  const { showToast } = useAppToast();
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState<string>('');
   const [page, setPage] = useState(1);
-  const [deleteTarget, setDeleteTarget] = useState<ReceivedChequeDto | null>(null);
 
   const debouncedSearch = useDebounce(search);
   const isDefaultQuery = page === 1 && !debouncedSearch && !statusFilter;
@@ -86,8 +79,6 @@ export function ReceivedChequeListPage({ initialData }: ReceivedChequeListPagePr
     isDefaultQuery ? initialData : undefined,
   );
 
-  const deleteMutation = useDeleteReceivedCheque();
-
   const filters: FilterPill[] = [
     { key: '', label: common.all, active: statusFilter === '' },
     { key: 'OPEN', label: tr.chequeStatuses.open, active: statusFilter === 'OPEN' },
@@ -95,22 +86,6 @@ export function ReceivedChequeListPage({ initialData }: ReceivedChequeListPagePr
     { key: 'CASHED', label: tr.chequeStatuses.cashed, active: statusFilter === 'CASHED' },
     { key: 'BOUNCED', label: tr.chequeStatuses.bounced, active: statusFilter === 'BOUNCED' },
   ];
-
-  function handleDelete() {
-    if (!deleteTarget) return;
-    deleteMutation.mutate(deleteTarget.id, {
-      onSuccess: () => {
-        showToast({ title: msgs.deleteSuccess, variant: 'success' });
-        setDeleteTarget(null);
-      },
-      onError: (err) => {
-        showToast({
-          title: err instanceof ApiError ? err.message : msgs.unexpectedError,
-          variant: 'error',
-        });
-      },
-    });
-  }
 
   const items = data?.data ?? [];
   const { sort, toggleSort, sorted } = useTableSort(items);
@@ -213,8 +188,6 @@ export function ReceivedChequeListPage({ initialData }: ReceivedChequeListPagePr
                     <TableCell>
                       <TableRowActions
                         onEdit={() => router.push(`/received-cheques/${row.id}/edit` as never)}
-                        onDelete={() => setDeleteTarget(row)}
-                        deleteDisabled={deleteMutation.isPending}
                       />
                     </TableCell>
                   </TableRow>
@@ -234,22 +207,6 @@ export function ReceivedChequeListPage({ initialData }: ReceivedChequeListPagePr
           )}
         </>
       )}
-
-      <ConfirmDialog
-        open={deleteTarget !== null}
-        onOpenChange={(open) => {
-          if (!open) setDeleteTarget(null);
-        }}
-        title={msgs.deleteConfirm}
-        description={
-          deleteTarget
-            ? `${tr.chequeNumber} ${deleteTarget.chequeNumber} ${msgs.deleteWarning}`
-            : ''
-        }
-        confirmLabel={common.delete}
-        variant="danger"
-        onConfirm={handleDelete}
-      />
     </div>
   );
 }

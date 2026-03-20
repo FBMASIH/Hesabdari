@@ -67,12 +67,16 @@ export class ProductService {
     if (salePrice1 !== undefined) updateData.salePrice1 = BigInt(salePrice1);
     if (salePrice2 !== undefined) updateData.salePrice2 = BigInt(salePrice2);
     if (salePrice3 !== undefined) updateData.salePrice3 = BigInt(salePrice3);
-    return this.productRepository.update(id, updateData as Prisma.ProductUpdateInput);
+    return this.productRepository.update(
+      id,
+      organizationId,
+      updateData as Prisma.ProductUncheckedUpdateInput,
+    );
   }
 
   async softDelete(id: string, organizationId: string) {
     await this.findById(id, organizationId);
-    return this.productRepository.update(id, { isActive: false });
+    return this.productRepository.update(id, organizationId, { isActive: false });
   }
 
   // Warehouse stock methods
@@ -100,6 +104,6 @@ export class ProductService {
   async deleteWarehouseStock(stockId: string, organizationId: string) {
     const stock = await this.stockRepository.findById(stockId, organizationId);
     if (!stock) throw new NotFoundError('ProductWarehouseStock', stockId);
-    return this.stockRepository.delete(stockId);
+    return this.stockRepository.delete(stockId, organizationId);
   }
 }

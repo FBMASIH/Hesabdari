@@ -40,7 +40,7 @@ export class CustomerOpeningBalanceRepository {
     });
   }
 
-  async delete(id: string) {
-    return this.prisma.customerOpeningBalance.delete({ where: { id } });
+  async delete(id: string, organizationId: string): Promise<void> {
+    await this.prisma.customerOpeningBalance.deleteMany({ where: { id, organizationId } });
   }
 }

@@ -75,7 +75,7 @@ export class CustomerService {
       }
     }
     const { creditLimit, birthDate, ...rest } = data;
-    return this.customerRepository.update(id, {
+    return this.customerRepository.update(id, organizationId, {
       ...rest,
       ...(creditLimit !== undefined ? { creditLimit: BigInt(creditLimit) } : {}),
       ...(birthDate !== undefined ? { birthDate: new Date(birthDate) } : {}),
@@ -84,6 +84,6 @@ export class CustomerService {
 
   async softDelete(id: string, organizationId: string): Promise<Customer> {
     await this.findById(id, organizationId);
-    return this.customerRepository.update(id, { isActive: false });
+    return this.customerRepository.update(id, organizationId, { isActive: false });
   }
 }

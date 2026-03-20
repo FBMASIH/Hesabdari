@@ -149,9 +149,40 @@ body {
 }
 
 /* ── App shell — page canvas + floating navbar ── */
-.app-shell-bg,
-.app-shell-header {
+.app-shell-bg {
   background: color-mix(in srgb, var(--color-bg-primary) 60%, var(--color-bg-tertiary));
+}
+
+/* Floating header — frosted glass gradient that fades to transparent */
+.app-shell-header {
+  position: relative;
+  background: transparent;
+  pointer-events: none;
+}
+
+/* Allow interactive children to receive clicks */
+.app-shell-header > * {
+  pointer-events: auto;
+}
+
+/* Frosted gradient backdrop — extends below header for smooth fade */
+.app-shell-header::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  bottom: -24px;
+  backdrop-filter: blur(20px) saturate(1.4);
+  -webkit-backdrop-filter: blur(20px) saturate(1.4);
+  background: linear-gradient(
+    to bottom,
+    color-mix(in srgb, var(--color-bg-primary) 85%, var(--color-bg-tertiary)) 0%,
+    color-mix(in srgb, var(--color-bg-primary) 60%, var(--color-bg-tertiary)) 50%,
+    transparent 100%
+  );
+  mask-image: linear-gradient(to bottom, black 40%, transparent 100%);
+  -webkit-mask-image: linear-gradient(to bottom, black 40%, transparent 100%);
+  z-index: -1;
+  pointer-events: none;
 }
 
 /* Each floating capsule in the navbar */

@@ -57,7 +57,7 @@ export function AppShell({ children }: { children: ReactNode }) {
   return (
     <div className="app-shell-bg flex min-h-screen flex-col">
       {/* ── Three separated capsules — grid keeps nav centered ── */}
-      <header className="app-shell-header sticky top-0 z-sticky w-full px-6 pt-5 pb-3">
+      <header className="app-shell-header sticky top-0 z-50 w-full px-6 pt-5 pb-3">
         <div className="mx-auto grid max-w-[var(--content-max-width)] grid-cols-[auto_1fr_auto] items-center gap-4 mb-2">
           {/* ━━ Capsule 1: Brand ━━ */}
           <Link

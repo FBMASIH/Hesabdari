@@ -31,7 +31,7 @@ export class CashboxOpeningBalanceRepository {
     return this.prisma.cashboxOpeningBalance.create({ data });
   }
 
-  async delete(id: string) {
-    return this.prisma.cashboxOpeningBalance.delete({ where: { id } });
+  async delete(id: string, organizationId: string): Promise<void> {
+    await this.prisma.cashboxOpeningBalance.deleteMany({ where: { id, organizationId } });
   }
 }

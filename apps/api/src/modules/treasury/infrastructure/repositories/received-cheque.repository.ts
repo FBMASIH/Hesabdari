@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { type PrismaService } from '@/platform/database/prisma.service';
-import type { Prisma } from '@hesabdari/db';
-import type { ChequeStatus } from '@hesabdari/db';
+import { NotFoundError } from '@/platform/errors';
+import type { Prisma, ChequeStatus, ReceivedCheque } from '@hesabdari/db';
 
 @Injectable()
 export class ReceivedChequeRepository {
@@ -70,17 +70,30 @@ export class ReceivedChequeRepository {
     });
   }
 
-  async update(id: string, data: Prisma.ReceivedChequeUpdateInput) {
-    return this.prisma.receivedCheque.update({ where: { id }, data });
+  async update(
+    id: string,
+    organizationId: string,
+    data: Prisma.ReceivedChequeUncheckedUpdateInput,
+  ): Promise<ReceivedCheque> {
+    await this.prisma.receivedCheque.updateMany({ where: { id, organizationId }, data });
+    const updated = await this.findById(id, organizationId);
+    if (!updated) throw new NotFoundError('ReceivedCheque', id);
+    return updated;
   }
 
-  async updateStatus(id: string, status: string, depositBankAccountId?: string | null) {
-    const updateData: Prisma.ReceivedChequeUpdateInput = { status: status as ChequeStatus };
+  async updateStatus(
+    id: string,
+    organizationId: string,
+    status: string,
+    depositBankAccountId?: string | null,
+  ): Promise<ReceivedCheque> {
+    const data: Prisma.ReceivedChequeUncheckedUpdateInput = { status: status as ChequeStatus };
     if (depositBankAccountId !== undefined) {
-      updateData.depositBankAccount = depositBankAccountId
-        ? { connect: { id: depositBankAccountId } }
-        : { disconnect: true };
+      data.depositBankAccountId = depositBankAccountId ?? null;
     }
-    return this.prisma.receivedCheque.update({ where: { id }, data: updateData });
+    await this.prisma.receivedCheque.updateMany({ where: { id, organizationId }, data });
+    const updated = await this.findById(id, organizationId);
+    if (!updated) throw new NotFoundError('ReceivedCheque', id);
+    return updated;
   }
 }

@@ -20,4 +20,8 @@ export interface IJournalEntryRepository {
     postedAt?: Date,
     postedBy?: string,
   ): Promise<void>;
+  findByIdempotencyKey(
+    organizationId: string,
+    idempotencyKey: string,
+  ): Promise<(JournalEntryEntity & { lines: JournalLineEntity[] }) | null>;
 }

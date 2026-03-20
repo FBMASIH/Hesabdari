@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { type PeriodRepository } from '../../infrastructure/repositories/period.repository';
-import { NotFoundError } from '@/platform/errors';
+import { NotFoundError, ApplicationError } from '@/platform/errors';
 
 @Injectable()
 export class PeriodService {
@@ -17,7 +17,10 @@ export class PeriodService {
   }
 
   async close(id: string, organizationId: string, closedBy: string) {
-    await this.findById(id, organizationId);
+    const period = await this.findById(id, organizationId);
+    if (period.status === 'CLOSED') {
+      throw new ApplicationError('ALREADY_CLOSED', 'This period is already closed');
+    }
     return this.periodRepository.close(id, organizationId, closedBy);
   }
 }

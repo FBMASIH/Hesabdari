@@ -97,14 +97,26 @@ export class JournalEntryRepository {
           })),
         });
       }
-      return tx.journalEntry.update({
-        where: { id },
+      // Use updateMany with status guard to prevent race conditions
+      const result = await tx.journalEntry.updateMany({
+        where: { id, organizationId, status: 'DRAFT' },
         data: {
           ...(data.date !== undefined && { date: data.date }),
           ...(data.description !== undefined && { description: data.description }),
         },
+      });
+      if (result.count === 0) return null;
+      return tx.journalEntry.findFirst({
+        where: { id, organizationId },
         include: { lines: true },
       });
+    });
+  }
+
+  async findByIdempotencyKey(organizationId: string, idempotencyKey: string) {
+    return this.prisma.journalEntry.findFirst({
+      where: { organizationId, idempotencyKey },
+      include: { lines: true },
     });
   }
 

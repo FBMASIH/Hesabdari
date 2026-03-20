@@ -90,7 +90,11 @@ export class ReceivedChequeService {
     const { amount, ...rest } = data;
     const updateData: Record<string, unknown> = { ...rest };
     if (amount !== undefined) updateData.amount = BigInt(amount);
-    return this.chequeRepository.update(id, updateData as Prisma.ReceivedChequeUpdateInput);
+    return this.chequeRepository.update(
+      id,
+      organizationId,
+      updateData as Prisma.ReceivedChequeUncheckedUpdateInput,
+    );
   }
 
   async changeStatus(id: string, organizationId: string, data: ReceivedChequeStatusDto) {
@@ -121,6 +125,7 @@ export class ReceivedChequeService {
 
     return this.chequeRepository.updateStatus(
       id,
+      organizationId,
       data.status,
       data.status === 'DEPOSITED' ? data.depositBankAccountId : undefined,
     );

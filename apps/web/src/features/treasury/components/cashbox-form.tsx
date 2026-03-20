@@ -71,7 +71,7 @@ export function CashboxForm() {
             <FormField error={errors.code?.message}>
               <FormLabel>{tr.cashboxCode}</FormLabel>
               <Input
-                {...register('code', { required: true })}
+                {...register('code', { required: 'این فیلد الزامی است' })}
                 placeholder="CB-001"
                 className="rounded-xl ltr-text"
                 dir="ltr"
@@ -80,7 +80,7 @@ export function CashboxForm() {
             <FormField error={errors.name?.message}>
               <FormLabel>{tr.cashboxName}</FormLabel>
               <Input
-                {...register('name', { required: true })}
+                {...register('name', { required: 'این فیلد الزامی است' })}
                 placeholder={tr.cashboxName}
                 className="rounded-xl"
               />

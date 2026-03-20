@@ -34,6 +34,6 @@ export class VendorOpeningBalanceService {
   async delete(id: string, organizationId: string) {
     const balance = await this.repository.findById(id, organizationId);
     if (!balance) throw new NotFoundError('VendorOpeningBalance', id);
-    return this.repository.delete(id);
+    return this.repository.delete(id, organizationId);
   }
 }

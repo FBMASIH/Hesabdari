@@ -97,7 +97,7 @@ export function BankAccountForm() {
             <FormField error={errors.code?.message}>
               <FormLabel>{tr.bankAccountCode}</FormLabel>
               <Input
-                {...register('code', { required: true })}
+                {...register('code', { required: 'این فیلد الزامی است' })}
                 placeholder="BA-001"
                 className="rounded-xl ltr-text"
                 dir="ltr"
@@ -106,7 +106,7 @@ export function BankAccountForm() {
             <FormField error={errors.name?.message}>
               <FormLabel>{tr.bankAccountName}</FormLabel>
               <Input
-                {...register('name', { required: true })}
+                {...register('name', { required: 'این فیلد الزامی است' })}
                 placeholder={tr.bankAccountName}
                 className="rounded-xl"
               />
@@ -116,7 +116,7 @@ export function BankAccountForm() {
               <Controller
                 name="bankId"
                 control={control}
-                rules={{ required: true }}
+                rules={{ required: 'این فیلد الزامی است' }}
                 render={({ field }) => (
                   <Select value={field.value} onValueChange={field.onChange}>
                     <SelectTrigger className="rounded-xl">
@@ -147,7 +147,7 @@ export function BankAccountForm() {
             <FormField error={errors.accountNumber?.message}>
               <FormLabel>{tr.accountNumber}</FormLabel>
               <Input
-                {...register('accountNumber', { required: true })}
+                {...register('accountNumber', { required: 'این فیلد الزامی است' })}
                 placeholder="0123456789"
                 className="rounded-xl ltr-text"
                 dir="ltr"
