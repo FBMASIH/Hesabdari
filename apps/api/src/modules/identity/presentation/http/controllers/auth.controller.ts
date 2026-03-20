@@ -1,11 +1,11 @@
 import { Controller, Get, Post, Body, HttpCode, HttpStatus } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth } from '@nestjs/swagger';
 import { Public, CurrentUser, type RequestUser } from '@/platform/decorators';
-import { AuthService } from '../../../application/services/auth.service';
+import { type AuthService } from '../../../application/services/auth.service';
 import {
-  LoginRequestDto,
-  RegisterRequestDto,
-  RefreshTokenRequestDto,
+  type LoginRequestDto,
+  type RegisterRequestDto,
+  type RefreshTokenRequestDto,
   AuthResponseDto,
 } from '../../../application/dto/auth.dto';
 

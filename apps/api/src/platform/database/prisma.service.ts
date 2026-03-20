@@ -1,5 +1,5 @@
-import { Injectable, OnModuleInit, OnModuleDestroy, Logger } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
+import { Injectable, type OnModuleInit, type OnModuleDestroy, Logger } from '@nestjs/common';
+import { type ConfigService } from '@nestjs/config';
 import { PrismaClient, PrismaPg } from '@hesabdari/db';
 
 @Injectable()
