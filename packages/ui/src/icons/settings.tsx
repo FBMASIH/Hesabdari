@@ -1,11 +1,13 @@
 import { IconBase, type IconProps } from './icon-base';
 
-/** Solar: Settings Linear */
+/** Solar: Tuning 2 Linear — clean settings/preferences icon */
 export function IconSettings(props: IconProps) {
   return (
     <IconBase {...props}>
-      <path d="M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z" />
-      <path d="M13.765 2.152a1.79 1.79 0 0 0-3.53 0l-.113.607a1.29 1.29 0 0 1-1.835.876l-.542-.3a1.79 1.79 0 0 0-2.497 2.497l.3.542a1.29 1.29 0 0 1-.876 1.835l-.607.113a1.79 1.79 0 0 0 0 3.53l.607.113a1.29 1.29 0 0 1 .876 1.835l-.3.542a1.79 1.79 0 0 0 2.497 2.497l.542-.3a1.29 1.29 0 0 1 1.835.876l.113.607a1.79 1.79 0 0 0 3.53 0l.113-.607a1.29 1.29 0 0 1 1.835-.876l.542.3a1.79 1.79 0 0 0 2.497-2.497l-.3-.542a1.29 1.29 0 0 1 .876-1.835l.607-.113a1.79 1.79 0 0 0 0-3.53l-.607-.113a1.29 1.29 0 0 1-.876-1.835l.3-.542a1.79 1.79 0 0 0-2.497-2.497l-.542.3a1.29 1.29 0 0 1-1.835-.876l-.113-.607Z" />
+      <path d="M3 8h4m14 0h-8" />
+      <path d="M3 16h8m8 0h-4" />
+      <circle cx="10" cy="8" r="2.5" fill="currentColor" stroke="none" />
+      <circle cx="16" cy="16" r="2.5" fill="currentColor" stroke="none" />
     </IconBase>
   );
 }

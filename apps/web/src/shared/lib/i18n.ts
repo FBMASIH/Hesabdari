@@ -10,7 +10,7 @@ const fa = {
   // ── Common ──────────────────────────────────────
   common: {
     appName: 'حسابداری',
-    brandName: 'Tsoft Accounting',
+    brandName: 'حسابداری',
     loading: 'در حال بارگذاری...',
     save: 'ذخیره',
     cancel: 'انصراف',

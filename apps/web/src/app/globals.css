@@ -148,6 +148,53 @@ body {
   background: var(--color-bg-primary);
 }
 
+/* ── App shell — page canvas + floating navbar ── */
+.app-shell-bg,
+.app-shell-header {
+  background: color-mix(in srgb, var(--color-bg-primary) 60%, var(--color-bg-tertiary));
+}
+
+/* Each floating capsule in the navbar */
+.nav-capsule {
+  background: var(--color-bg-secondary);
+  border: 1px solid color-mix(in srgb, var(--color-fg-primary) 6%, transparent);
+  box-shadow:
+    0 1px 2px color-mix(in srgb, var(--color-bg-inverse) 4%, transparent),
+    0 4px 12px color-mix(in srgb, var(--color-bg-inverse) 5%, transparent);
+}
+
+/* Each individual tab item gets its own pill background */
+.nav-tab-item {
+  background: color-mix(in srgb, var(--color-fg-primary) 3%, transparent);
+}
+
+.nav-tab-item:hover {
+  background: color-mix(in srgb, var(--color-fg-primary) 6%, transparent);
+}
+
+/* Active tab overrides the subtle bg */
+.nav-tab-item[aria-current='page'] {
+  background: var(--color-primary-default);
+}
+
+/* Theme-aware subtle hover — adapts to light and dark */
+.nav-hover-subtle {
+  background: color-mix(in srgb, var(--color-fg-primary) 4%, transparent);
+}
+
+.nav-hover-subtle:hover {
+  background: color-mix(in srgb, var(--color-fg-primary) 7%, transparent);
+}
+
+/* Hide scrollbar without mask */
+.scrollbar-none {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.scrollbar-none::-webkit-scrollbar {
+  display: none;
+}
+
 /* ── Tabular numbers for financial data ────────── */
 .tabular-nums {
   font-variant-numeric: tabular-nums;

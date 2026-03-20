@@ -11,7 +11,6 @@ import {
   IconCalendar,
   IconCheck,
   IconDangerTriangle,
-  IconSettings,
 } from '@hesabdari/ui';
 import { t } from '@/shared/lib/i18n';
 import { jalaliMonthYear, jalaliCurrentFiscalYear } from '@/shared/lib/date';
@@ -20,7 +19,6 @@ import { useAuthStore } from '@/shared/hooks/use-auth';
 import { useDismiss } from '@/shared/hooks/use-dismiss';
 import { useTheme } from '@/providers/theme-provider';
 import { apiClient } from '@/shared/lib/api';
-import { ApiError } from '@hesabdari/api-client';
 import { DROPDOWN_PANEL } from '@/shared/styles';
 
 const nav = t('nav');
@@ -74,17 +72,14 @@ export function UserMenu() {
           if (firstOrg) setOrganizationId(firstOrg.id);
         }
       })
-      .catch((err: unknown) => {
+      .catch(() => {
         if (cancelled) return;
         setOrgError(true);
-        if (err instanceof ApiError) {
-          console.warn(`[UserMenu] Profile fetch failed: ${String(err.status)} ${err.code}`);
-        }
       });
     return () => {
       cancelled = true;
     };
-  }, [isAuthenticated, organizationId, setOrganizationId, retryCount]);
+  }, [isAuthenticated, retryCount]);
 
   const selectOrg = useCallback(
     (orgId: string) => {
@@ -115,7 +110,7 @@ export function UserMenu() {
         aria-controls="user-menu-popup"
         aria-label={nav.profile}
         className={cn(
-          'flex h-8 w-8 items-center justify-center rounded-full transition-all duration-200',
+          'flex h-[38px] w-[38px] items-center justify-center rounded-full transition-all duration-200',
           'bg-brand-deep/10 text-brand-deep hover:bg-brand-deep/20',
           open && 'ring-2 ring-brand-deep/25',
         )}
@@ -243,20 +238,8 @@ export function UserMenu() {
 
           <MenuDivider />
 
-          {/* Settings & Logout */}
+          {/* Logout */}
           <div className="px-1 py-1">
-            <button
-              type="button"
-              role="menuitem"
-              onClick={() => {
-                setOpen(false);
-                router.push('/settings');
-              }}
-              className="flex w-full items-center gap-2 rounded-lg px-2 py-1.5 text-sm text-fg-secondary transition-colors hover:bg-bg-tertiary/50 hover:text-fg-primary"
-            >
-              <IconSettings size={14} />
-              {nav.settings}
-            </button>
             <button
               type="button"
               role="menuitem"
