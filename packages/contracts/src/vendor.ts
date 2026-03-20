@@ -10,7 +10,7 @@ export const createVendorSchema = z.object({
   phone2: z.string().max(20).optional(),
   phone3: z.string().max(20).optional(),
   address: z.string().max(500).optional(),
-  creditLimit: z.string().regex(/^\d+$/).optional(),
+  creditLimit: z.string().regex(/^\d+$/, 'must be a non-negative integer string').optional(),
   nationalId: z.string().max(20).optional(),
   economicCode: z.string().max(20).optional(),
   postalCode: z.string().max(20).optional(),

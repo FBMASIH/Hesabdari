@@ -25,8 +25,11 @@ const createInvoiceLineSchema = z.object({
 const baseInvoiceSchema = z.object({
   documentType: documentTypeEnum,
   invoiceNumber: z.string().min(1).max(50),
-  invoiceDate: z.coerce.date(),
-  dueDate: z.coerce.date().optional(),
+  invoiceDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, 'ISO 8601 date required (YYYY-MM-DD)'),
+  dueDate: z
+    .string()
+    .regex(/^\d{4}-\d{2}-\d{2}$/, 'ISO 8601 date required (YYYY-MM-DD)')
+    .optional(),
   description: z.string().max(1000).optional(),
   currencyId: z.string().uuid(),
   lines: z.array(createInvoiceLineSchema).min(1),
@@ -71,8 +74,14 @@ export const createInvoiceSchema = z
 
 export const updateInvoiceSchema = z.object({
   id: z.string().uuid(),
-  invoiceDate: z.coerce.date().optional(),
-  dueDate: z.coerce.date().optional(),
+  invoiceDate: z
+    .string()
+    .regex(/^\d{4}-\d{2}-\d{2}$/, 'ISO 8601 date required (YYYY-MM-DD)')
+    .optional(),
+  dueDate: z
+    .string()
+    .regex(/^\d{4}-\d{2}-\d{2}$/, 'ISO 8601 date required (YYYY-MM-DD)')
+    .optional(),
   description: z.string().max(1000).optional(),
   lines: z.array(createInvoiceLineSchema).min(1).optional(),
 });
@@ -82,8 +91,14 @@ export const invoiceQuerySchema = paginationSchema.extend({
   status: invoiceStatusEnum.optional(),
   customerId: z.string().uuid().optional(),
   vendorId: z.string().uuid().optional(),
-  fromDate: z.coerce.date().optional(),
-  toDate: z.coerce.date().optional(),
+  fromDate: z
+    .string()
+    .regex(/^\d{4}-\d{2}-\d{2}$/, 'ISO 8601 date required (YYYY-MM-DD)')
+    .optional(),
+  toDate: z
+    .string()
+    .regex(/^\d{4}-\d{2}-\d{2}$/, 'ISO 8601 date required (YYYY-MM-DD)')
+    .optional(),
 });
 
 export type CreateInvoiceDto = z.infer<typeof createInvoiceSchema>;
