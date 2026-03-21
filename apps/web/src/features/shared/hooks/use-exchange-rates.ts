@@ -32,7 +32,10 @@ export const exchangeRateKeys = {
   list: (params?: ExchangeRateQueryParams) => [...exchangeRateKeys.lists(), params] as const,
 };
 
-export function useExchangeRates(query?: ExchangeRateQueryParams) {
+export function useExchangeRates(
+  query?: ExchangeRateQueryParams,
+  initialData?: { data: ExchangeRateDto[]; total: number },
+) {
   return useQuery({
     queryKey: exchangeRateKeys.list(query),
     queryFn: () =>
@@ -41,6 +44,7 @@ export function useExchangeRates(query?: ExchangeRateQueryParams) {
         query ? toQueryParams(query) : undefined,
       ),
     staleTime: STALE_TIME.TRANSACTIONAL,
+    initialData,
   });
 }
 

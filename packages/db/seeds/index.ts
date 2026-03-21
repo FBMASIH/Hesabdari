@@ -113,10 +113,10 @@ async function main() {
 
   // ── Accounting Period ──────────────────────────────
   const period = await prisma.accountingPeriod.upsert({
-    where: { id: '00000000-0000-0000-0000-000000000001' },
+    where: { id: '00000000-0000-0000-0000-000000000010' },
     update: {},
     create: {
-      id: '00000000-0000-0000-0000-000000000001',
+      id: '00000000-0000-0000-0000-000000000010',
       organizationId: org.id,
       name: 'سال مالی ۱۴۰۵',
       startDate: new Date('2026-03-21'),

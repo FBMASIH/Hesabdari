@@ -78,33 +78,31 @@ export class JournalEntryRepository {
   }
 
   async createWithLines(data: CreateJournalEntryData): Promise<unknown> {
-    return this.prisma.$transaction(async (tx) => {
-      const entry = await tx.journalEntry.create({
-        data: {
-          organizationId: data.organizationId,
-          periodId: data.periodId,
-          baseCurrencyId: data.baseCurrencyId,
-          entryNumber: data.entryNumber,
-          date: data.date,
-          description: data.description,
-          status: 'DRAFT',
-          idempotencyKey: data.idempotencyKey ?? null,
-          lines: {
-            create: data.lines.map((line) => ({
-              accountId: line.accountId,
-              currencyId: line.currencyId,
-              description: line.description,
-              debitAmount: line.debitAmount,
-              creditAmount: line.creditAmount,
-              exchangeRate: line.exchangeRate,
-              baseCurrencyDebitAmount: line.baseCurrencyDebitAmount,
-              baseCurrencyCreditAmount: line.baseCurrencyCreditAmount,
-            })),
-          },
+    // Single nested create is already atomic in Prisma — no explicit transaction needed
+    return this.prisma.journalEntry.create({
+      data: {
+        organizationId: data.organizationId,
+        periodId: data.periodId,
+        baseCurrencyId: data.baseCurrencyId,
+        entryNumber: data.entryNumber,
+        date: data.date,
+        description: data.description,
+        status: 'DRAFT',
+        idempotencyKey: data.idempotencyKey ?? null,
+        lines: {
+          create: data.lines.map((line) => ({
+            accountId: line.accountId,
+            currencyId: line.currencyId,
+            description: line.description,
+            debitAmount: line.debitAmount,
+            creditAmount: line.creditAmount,
+            exchangeRate: line.exchangeRate,
+            baseCurrencyDebitAmount: line.baseCurrencyDebitAmount,
+            baseCurrencyCreditAmount: line.baseCurrencyCreditAmount,
+          })),
         },
-        include: { lines: { include: { currency: true } }, baseCurrency: true },
-      });
-      return entry;
+      },
+      include: { lines: { include: { currency: true } }, baseCurrency: true },
     });
   }
 
