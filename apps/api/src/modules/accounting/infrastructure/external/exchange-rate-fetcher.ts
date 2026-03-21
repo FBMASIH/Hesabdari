@@ -7,27 +7,113 @@ interface FetchedRates {
 }
 
 /**
- * Fetches exchange rates from the fawazahmed0/exchange-api (free, unlimited, daily).
+ * TGJU key → ISO currency code mapping.
+ * TGJU (tgju.org) provides real Iranian free market exchange rates.
+ * Values are in IRR (Rial).
+ */
+const TGJU_CURRENCY_MAP: Record<string, string> = {
+  price_dollar_rl: 'USD',
+  price_eur: 'EUR',
+  price_gbp: 'GBP',
+  price_aed: 'AED',
+  price_try: 'TRY',
+  price_afn: 'AFN',
+  price_cny: 'CNY',
+  price_inr: 'INR',
+  price_pkr: 'PKR',
+  price_rub: 'RUB',
+  price_iqd: 'IQD',
+};
+
+/**
+ * Fetches exchange rates from multiple sources:
  *
- * API format:
+ * **Primary (for IRR):** TGJU (tgju.org) — Iranian free market rates.
+ *   GET https://call4.tgju.org/ajax.json
+ *   Returns real bazaar rates, not official/government rates.
+ *
+ * **Fallback:** fawazahmed0/exchange-api — free, unlimited, 150+ currencies.
  *   GET https://cdn.jsdelivr.net/npm/@fawazahmed0/currency-api@latest/v1/currencies/{code}.json
- *   Response: { "date": "2026-03-20", "{code}": { "{target}": number, ... } }
- *
- * Currency codes are LOWERCASE in the API.
+ *   Good for non-IRR base currencies or when TGJU is down.
  */
 @Injectable()
 export class ExchangeRateFetcher {
   private readonly logger = new Logger(ExchangeRateFetcher.name);
 
-  private readonly PRIMARY_URL =
+  private readonly TGJU_URL = 'https://call4.tgju.org/ajax.json';
+  private readonly FAWAZ_PRIMARY =
     'https://cdn.jsdelivr.net/npm/@fawazahmed0/currency-api@latest/v1/currencies';
-  private readonly FALLBACK_URL =
+  private readonly FAWAZ_FALLBACK =
     'https://latest.currency-api.pages.dev/v1/currencies';
 
+  /**
+   * Fetch exchange rates. For IRR base, uses TGJU (real market rates).
+   * For other bases, uses fawazahmed0.
+   */
   async fetchRates(baseCurrencyCode: string): Promise<FetchedRates> {
+    const code = baseCurrencyCode.toUpperCase();
+
+    // For IRR base: use TGJU (Iranian free market rates)
+    if (code === 'IRR') {
+      try {
+        return await this.fetchFromTgju();
+      } catch (error) {
+        this.logger.warn(`TGJU failed, falling back to fawazahmed0: ${error}`);
+        return this.fetchFromFawazahmed(baseCurrencyCode);
+      }
+    }
+
+    // For other currencies: use fawazahmed0
+    return this.fetchFromFawazahmed(baseCurrencyCode);
+  }
+
+  /**
+   * Fetch from TGJU — Iranian free market rates.
+   * Returns rates as: 1 unit of foreign currency = X IRR.
+   * Values are in Rial (not Toman).
+   */
+  private async fetchFromTgju(): Promise<FetchedRates> {
+    const response = await fetch(this.TGJU_URL);
+    if (!response.ok) {
+      throw new Error(`TGJU responded with ${response.status}`);
+    }
+
+    const data = (await response.json()) as Record<string, Record<string, { p: string }>>;
+    const current = data.current;
+    if (!current || typeof current !== 'object') {
+      throw new Error('TGJU response missing "current" field');
+    }
+
+    const rates = new Map<string, Decimal>();
+    const today = new Date().toISOString().split('T')[0]!;
+
+    for (const [tgjuKey, isoCode] of Object.entries(TGJU_CURRENCY_MAP)) {
+      const entry = current[tgjuKey];
+      if (!entry || typeof entry !== 'object' || !('p' in entry)) continue;
+
+      const rawValue = entry.p;
+
+      // Remove thousand separators and parse
+      const cleaned = rawValue.replace(/,/g, '');
+      const parsed = Number(cleaned);
+      if (!Number.isFinite(parsed) || parsed <= 0) continue;
+
+      // TGJU rates are already "1 foreign = X IRR" — exactly what we need
+      rates.set(isoCode.toLowerCase(), new Decimal(parsed));
+    }
+
+    this.logger.log(`TGJU: fetched ${rates.size} free market rates (date: ${today})`);
+    return { date: today, rates };
+  }
+
+  /**
+   * Fetch from fawazahmed0/exchange-api — free, unlimited, daily.
+   * Returns rates as: 1 unit of base = X units of target.
+   */
+  private async fetchFromFawazahmed(baseCurrencyCode: string): Promise<FetchedRates> {
     const code = baseCurrencyCode.toLowerCase();
 
-    for (const baseUrl of [this.PRIMARY_URL, this.FALLBACK_URL]) {
+    for (const baseUrl of [this.FAWAZ_PRIMARY, this.FAWAZ_FALLBACK]) {
       try {
         const url = `${baseUrl}/${code}.json`;
         const response = await fetch(url);
@@ -52,7 +138,7 @@ export class ExchangeRateFetcher {
           }
         }
 
-        this.logger.log(`Fetched ${rates.size} rates for ${code} (date: ${date})`);
+        this.logger.log(`fawazahmed0: fetched ${rates.size} rates for ${code} (date: ${date})`);
         return { date, rates };
       } catch (error) {
         this.logger.warn(`Error fetching from ${baseUrl}: ${error}`);

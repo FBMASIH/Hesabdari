@@ -153,14 +153,18 @@ export class ExchangeRateService {
         }
 
         try {
-          // API gives base→target rate. We need foreign→base (inverted).
-          const invertedRate = new Decimal(1).div(apiRate).toDecimalPlaces(8, Decimal.ROUND_HALF_UP);
+          // For IRR base: TGJU gives "1 foreign = X IRR" directly (no inversion).
+          // For other bases: fawazahmed0 gives "1 base = X target" (need inversion).
+          const isIrrBase = baseCurrencyCode.toUpperCase() === 'IRR';
+          const foreignToBaseRate = isIrrBase
+            ? apiRate  // TGJU: already "1 foreign = X IRR"
+            : new Decimal(1).div(apiRate).toDecimalPlaces(8, Decimal.ROUND_HALF_UP);  // fawazahmed0: invert
 
           await this.exchangeRateRepository.upsert({
             organizationId,
             fromCurrencyId: currency.id,
             toCurrencyId: baseCurrencyId,
-            rate: invertedRate.toString(),
+            rate: foreignToBaseRate.toString(),
             date: rateDate,
             source: 'API',
           });

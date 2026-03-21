@@ -35,29 +35,41 @@ async function main() {
     });
   }
 
-  // ── Currency (IRR) ───────────────────────────────
-  const irr = await prisma.currency.upsert({
-    where: { id: '00000000-0000-0000-0000-000000000001' },
-    update: {},
-    create: {
-      id: '00000000-0000-0000-0000-000000000001',
-      code: 'IRR',
-      name: 'ریال ایران',
-      symbol: '﷼',
-      decimalPlaces: 0,
-      isActive: true,
-    },
-  });
-  console.log(`Currency: ${irr.code}`);
+  // ── Currencies (12) ───────────────────────────────
+  const currencies = [
+    { id: '00000000-0000-0000-0000-000000000001', code: 'IRR', name: 'ریال ایران', symbol: '﷼', decimalPlaces: 0 },
+    { id: '00000000-0000-0000-0000-000000000c02', code: 'AFN', name: 'افغانی', symbol: '؋', decimalPlaces: 2 },
+    { id: '00000000-0000-0000-0000-000000000c03', code: 'USD', name: 'دلار آمریکا', symbol: '$', decimalPlaces: 2 },
+    { id: '00000000-0000-0000-0000-000000000c04', code: 'EUR', name: 'یورو', symbol: '€', decimalPlaces: 2 },
+    { id: '00000000-0000-0000-0000-000000000c05', code: 'GBP', name: 'پوند بریتانیا', symbol: '£', decimalPlaces: 2 },
+    { id: '00000000-0000-0000-0000-000000000c06', code: 'AED', name: 'درهم امارات', symbol: 'د.إ', decimalPlaces: 2 },
+    { id: '00000000-0000-0000-0000-000000000c07', code: 'TRY', name: 'لیر ترکیه', symbol: '₺', decimalPlaces: 2 },
+    { id: '00000000-0000-0000-0000-000000000c08', code: 'CNY', name: 'یوان چین', symbol: '¥', decimalPlaces: 2 },
+    { id: '00000000-0000-0000-0000-000000000c09', code: 'IQD', name: 'دینار عراق', symbol: 'ع.د', decimalPlaces: 3 },
+    { id: '00000000-0000-0000-0000-000000000c10', code: 'INR', name: 'روپیه هند', symbol: '₹', decimalPlaces: 2 },
+    { id: '00000000-0000-0000-0000-000000000c11', code: 'RUB', name: 'روبل روسیه', symbol: '₽', decimalPlaces: 2 },
+    { id: '00000000-0000-0000-0000-000000000c12', code: 'PKR', name: 'روپیه پاکستان', symbol: '₨', decimalPlaces: 2 },
+  ];
+
+  for (const curr of currencies) {
+    await prisma.currency.upsert({
+      where: { id: curr.id },
+      update: {},
+      create: { ...curr, isActive: true },
+    });
+  }
+  const irr = currencies[0]!;
+  console.log(`Currencies: ${currencies.length} seeded`);
 
   // ── Organization + Admin User ──────────────────────
   const org = await prisma.organization.upsert({
     where: { slug: 'hesabdari-dev' },
-    update: {},
+    update: { defaultCurrencyId: irr.id },
     create: {
       id: '00000000-0000-0000-0000-000000000001',
       name: 'شرکت نمونه حسابداری',
       slug: 'hesabdari-dev',
+      defaultCurrencyId: irr.id,
     },
   });
   console.log(`Organization: ${org.name}`);
@@ -140,6 +152,8 @@ async function main() {
     { code: '6101', name: 'هزینه حقوق و دستمزد', type: 'EXPENSE' as const, parentId: '6100' },
     { code: '6102', name: 'هزینه اجاره', type: 'EXPENSE' as const, parentId: '6100' },
     { code: '6103', name: 'هزینه استهلاک', type: 'EXPENSE' as const, parentId: '6100' },
+    { code: '7100', name: 'سود تسعیر ارز', type: 'REVENUE' as const, parentId: null },
+    { code: '7200', name: 'زیان تسعیر ارز', type: 'EXPENSE' as const, parentId: null },
   ];
 
   // First pass: create accounts without parentId
