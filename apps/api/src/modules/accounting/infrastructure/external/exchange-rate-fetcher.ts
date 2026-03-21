@@ -93,13 +93,16 @@ export class ExchangeRateFetcher {
 
       const rawValue = entry.p;
 
-      // Remove thousand separators and parse
+      // Remove thousand separators and parse directly to Decimal (no Number intermediary)
       const cleaned = rawValue.replace(/,/g, '');
-      const parsed = Number(cleaned);
-      if (!Number.isFinite(parsed) || parsed <= 0) continue;
-
-      // TGJU rates are already "1 foreign = X IRR" — exactly what we need
-      rates.set(isoCode.toLowerCase(), new Decimal(parsed));
+      try {
+        const parsed = new Decimal(cleaned);
+        if (parsed.lte(0)) continue;
+        // TGJU rates are already "1 foreign = X IRR" — exactly what we need
+        rates.set(isoCode.toLowerCase(), parsed);
+      } catch {
+        continue;
+      }
     }
 
     this.logger.log(`TGJU: fetched ${rates.size} free market rates (date: ${today})`);
@@ -148,18 +151,4 @@ export class ExchangeRateFetcher {
     throw new Error(`Failed to fetch exchange rates for ${baseCurrencyCode} from all sources`);
   }
 
-  async getRate(
-    fromCurrencyCode: string,
-    toCurrencyCode: string,
-  ): Promise<{ rate: Decimal; date: string }> {
-    const { date, rates } = await this.fetchRates(fromCurrencyCode);
-    const targetCode = toCurrencyCode.toLowerCase();
-    const rate = rates.get(targetCode);
-
-    if (!rate) {
-      throw new Error(`Rate not found for ${fromCurrencyCode} → ${toCurrencyCode}`);
-    }
-
-    return { rate, date };
-  }
 }

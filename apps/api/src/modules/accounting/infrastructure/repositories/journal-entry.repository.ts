@@ -124,7 +124,10 @@ export class JournalEntryRepository {
     }[],
   ): Promise<unknown> {
     return this.prisma.$transaction(async (tx) => {
-      const existing = await tx.journalEntry.findFirst({ where: { id, organizationId } });
+      // Check status BEFORE touching lines to prevent TOCTOU corruption
+      const existing = await tx.journalEntry.findFirst({
+        where: { id, organizationId, status: 'DRAFT' },
+      });
       if (!existing) return null;
 
       if (lines) {
@@ -177,6 +180,10 @@ export class JournalEntryRepository {
       where: { id, organizationId },
       data: { status, postedAt, postedBy },
     });
-    return result;
+    if (result.count === 0) return null;
+    return this.prisma.journalEntry.findFirst({
+      where: { id, organizationId },
+      include: { lines: { include: { currency: true } }, baseCurrency: true },
+    });
   }
 }

@@ -13,6 +13,8 @@ export interface JournalEntryDto {
   date: string;
   description: string;
   status: 'DRAFT' | 'POSTED' | 'REVERSED';
+  baseCurrencyId: string;
+  baseCurrency?: { id: string; code: string; name: string; symbol: string; decimalPlaces: number };
   postedAt: string | null;
   lines: JournalLineDto[];
   createdAt: string;
@@ -22,9 +24,14 @@ export interface JournalLineDto {
   id: string;
   accountId: string;
   account?: { id: string; code: string; name: string };
+  currencyId: string;
+  currency?: { id: string; code: string; name: string; symbol: string; decimalPlaces: number };
   description: string | null;
   debitAmount: string;
   creditAmount: string;
+  exchangeRate?: string;
+  baseCurrencyDebitAmount?: string;
+  baseCurrencyCreditAmount?: string;
 }
 
 // ── Query keys ──────────────────────────────────────

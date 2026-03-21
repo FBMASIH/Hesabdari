@@ -41,39 +41,50 @@ export function applyRoundingAdjustment(
     creditAmount: bigint;
   }[],
 ): void {
+  if (lines.length === 0) return;
+
   const totalBaseDebits = lines.reduce((s, l) => s + l.baseCurrencyDebitAmount, 0n);
   const totalBaseCredits = lines.reduce((s, l) => s + l.baseCurrencyCreditAmount, 0n);
   const diff = totalBaseDebits - totalBaseCredits;
 
   if (diff === 0n) return;
-  if (lines.length === 0) return;
 
-  // Find the line with the largest base amount to absorb the rounding difference
-  let maxIdx = 0;
-  let maxAmt = 0n;
+  // Only adjust small rounding differences (max ±lines.length to be safe).
+  // Large imbalances indicate a real bug, not a rounding artifact.
+  const absDiff = diff > 0n ? diff : -diff;
+  const maxAllowedDiff = BigInt(lines.length);
+  if (absDiff > maxAllowedDiff) {
+    throw new DomainError(
+      'ROUNDING_IMBALANCE_TOO_LARGE',
+      `Base currency imbalance ${diff} exceeds maximum rounding adjustment (±${maxAllowedDiff})`,
+    );
+  }
+
+  // Find the largest debit or credit line to absorb the rounding difference
+  let debitIdx = -1;
+  let maxDebit = 0n;
+  let creditIdx = -1;
+  let maxCredit = 0n;
   for (const [i, line] of lines.entries()) {
-    const amt = line.baseCurrencyDebitAmount > line.baseCurrencyCreditAmount
-      ? line.baseCurrencyDebitAmount
-      : line.baseCurrencyCreditAmount;
-    if (amt > maxAmt) {
-      maxAmt = amt;
-      maxIdx = i;
+    if (line.baseCurrencyDebitAmount > maxDebit) {
+      maxDebit = line.baseCurrencyDebitAmount;
+      debitIdx = i;
+    }
+    if (line.baseCurrencyCreditAmount > maxCredit) {
+      maxCredit = line.baseCurrencyCreditAmount;
+      creditIdx = i;
     }
   }
 
-  const target = lines[maxIdx]!;
-
   if (diff > 0n) {
-    if (target.baseCurrencyDebitAmount > 0n) {
-      target.baseCurrencyDebitAmount -= diff;
-    } else {
-      target.baseCurrencyCreditAmount += diff;
+    // Debits exceed credits — increase the largest credit line
+    if (creditIdx >= 0) {
+      lines[creditIdx]!.baseCurrencyCreditAmount += diff;
     }
   } else {
-    if (target.baseCurrencyCreditAmount > 0n) {
-      target.baseCurrencyCreditAmount += diff;
-    } else {
-      target.baseCurrencyDebitAmount -= diff;
+    // Credits exceed debits — increase the largest debit line
+    if (debitIdx >= 0) {
+      lines[debitIdx]!.baseCurrencyDebitAmount += (-diff);
     }
   }
 }

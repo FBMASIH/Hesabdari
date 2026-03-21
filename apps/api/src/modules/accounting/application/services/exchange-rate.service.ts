@@ -41,6 +41,12 @@ export class ExchangeRateService {
       throw new ApplicationError('SAME_CURRENCY', 'Cannot create exchange rate for same currency', 422);
     }
 
+    // H4: Reject zero or negative rates at service level
+    const rateValue = new Decimal(data.rate);
+    if (rateValue.lte(0)) {
+      throw new ApplicationError('INVALID_RATE', 'Exchange rate must be positive', 422);
+    }
+
     const [fromCurrency, toCurrency] = await Promise.all([
       this.currencyRepository.findById(data.fromCurrencyId),
       this.currencyRepository.findById(data.toCurrencyId),
@@ -48,19 +54,26 @@ export class ExchangeRateService {
     if (!fromCurrency) throw new NotFoundError('Currency', data.fromCurrencyId);
     if (!toCurrency) throw new NotFoundError('Currency', data.toCurrencyId);
 
+    // C3: Use explicit UTC date to prevent timezone shift on @db.Date columns
+    const rateDate = new Date(data.date + 'T00:00:00.000Z');
+
     try {
       return await this.exchangeRateRepository.create({
         organizationId,
         fromCurrencyId: data.fromCurrencyId,
         toCurrencyId: data.toCurrencyId,
         rate: data.rate,
-        date: new Date(data.date),
+        date: rateDate,
         source: 'MANUAL',
       });
-    } catch {
-      throw new ConflictError(
-        `Exchange rate for ${fromCurrency.code}→${toCurrency.code} on ${data.date} already exists`,
-      );
+    } catch (error) {
+      // M3: Only treat unique constraint violations as conflicts
+      if (error instanceof Error && error.message.includes('Unique constraint')) {
+        throw new ConflictError(
+          `Exchange rate for ${fromCurrency.code} to ${toCurrency.code} on ${data.date} already exists`,
+        );
+      }
+      throw error;
     }
   }
 
@@ -139,7 +152,7 @@ export class ExchangeRateService {
 
     try {
       const { date, rates } = await this.exchangeRateFetcher.fetchRates(baseCurrencyCode);
-      const rateDate = new Date(date);
+      const rateDate = new Date(date + 'T00:00:00.000Z');
 
       for (const currency of activeCurrencies) {
         if (currency.id === baseCurrencyId) continue;

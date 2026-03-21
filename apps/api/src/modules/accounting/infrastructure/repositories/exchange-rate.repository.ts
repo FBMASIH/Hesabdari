@@ -63,7 +63,8 @@ export class ExchangeRateRepository {
   ): Promise<unknown> {
     return this.prisma.exchangeRate.findFirst({
       where: { organizationId, fromCurrencyId, toCurrencyId, date },
-      orderBy: { source: 'asc' },
+      // M2: 'MANUAL' > 'API' alphabetically, so desc gives MANUAL priority
+      orderBy: { source: 'desc' },
     });
   }
 
@@ -80,7 +81,7 @@ export class ExchangeRateRepository {
         toCurrencyId,
         date: { lte: beforeDate },
       },
-      orderBy: [{ date: 'desc' }, { source: 'asc' }],
+      orderBy: [{ date: 'desc' }, { source: 'desc' }],
     });
   }
 

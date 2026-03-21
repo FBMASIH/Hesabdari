@@ -25,7 +25,7 @@ export interface JournalLineEntity {
   description: string | null;
   debitAmount: bigint;
   creditAmount: bigint;
-  exchangeRate: unknown; // Prisma Decimal
+  exchangeRate: { toString(): string }; // Prisma Decimal — use .toString() for operations
   baseCurrencyDebitAmount: bigint;
   baseCurrencyCreditAmount: bigint;
   createdAt: Date;

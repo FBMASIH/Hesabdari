@@ -1,7 +1,12 @@
 import { Controller, Get, Post, Put, Body, Param } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
 import { OrganizationService } from '../../../application/services/organization.service';
-import { createOrganizationSchema, updateOrganizationSchema } from '@hesabdari/contracts';
+import { z } from 'zod';
+import { createOrganizationSchema } from '@hesabdari/contracts';
+
+const updateDefaultCurrencySchema = z.object({
+  defaultCurrencyId: z.string().uuid(),
+});
 
 @ApiTags('Organizations')
 @ApiBearerAuth()
@@ -25,10 +30,7 @@ export class OrganizationsController {
   @Put(':id/default-currency')
   @ApiOperation({ summary: 'Update organization default currency' })
   async updateDefaultCurrency(@Param('id') id: string, @Body() body: unknown) {
-    const data = updateOrganizationSchema.parse({ ...(body as object), id });
-    if (data.defaultCurrencyId) {
-      return this.organizationService.updateDefaultCurrency(id, data.defaultCurrencyId);
-    }
-    return this.organizationService.findById(id);
+    const data = updateDefaultCurrencySchema.parse(body);
+    return this.organizationService.updateDefaultCurrency(id, data.defaultCurrencyId);
   }
 }

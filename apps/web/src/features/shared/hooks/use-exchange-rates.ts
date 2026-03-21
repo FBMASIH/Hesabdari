@@ -40,7 +40,7 @@ export function useExchangeRates(query?: ExchangeRateQueryParams) {
         orgPath('/exchange-rates'),
         query ? toQueryParams(query) : undefined,
       ),
-    staleTime: STALE_TIME.MASTER_DATA,
+    staleTime: STALE_TIME.TRANSACTIONAL,
   });
 }
 
