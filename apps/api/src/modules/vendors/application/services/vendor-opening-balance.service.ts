@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { type VendorOpeningBalanceRepository } from '../../infrastructure/repositories/vendor-opening-balance.repository';
+import { VendorOpeningBalanceRepository } from '../../infrastructure/repositories/vendor-opening-balance.repository';
 import { NotFoundError, ConflictError } from '@/platform/errors';
 import type { CreateVendorOpeningBalanceDto } from '@hesabdari/contracts';
 

@@ -249,6 +249,12 @@ export type CurrencyWhereInput = {
   vendorOpeningBalances?: Prisma.VendorOpeningBalanceListRelationFilter
   bankOpeningBalances?: Prisma.BankOpeningBalanceListRelationFilter
   cashboxOpeningBalances?: Prisma.CashboxOpeningBalanceListRelationFilter
+  organizationDefaults?: Prisma.OrganizationListRelationFilter
+  exchangeRatesFrom?: Prisma.ExchangeRateListRelationFilter
+  exchangeRatesTo?: Prisma.ExchangeRateListRelationFilter
+  journalEntryBases?: Prisma.JournalEntryListRelationFilter
+  journalLines?: Prisma.JournalLineListRelationFilter
+  revaluationBases?: Prisma.CurrencyRevaluationListRelationFilter
 }
 
 export type CurrencyOrderByWithRelationInput = {
@@ -269,6 +275,12 @@ export type CurrencyOrderByWithRelationInput = {
   vendorOpeningBalances?: Prisma.VendorOpeningBalanceOrderByRelationAggregateInput
   bankOpeningBalances?: Prisma.BankOpeningBalanceOrderByRelationAggregateInput
   cashboxOpeningBalances?: Prisma.CashboxOpeningBalanceOrderByRelationAggregateInput
+  organizationDefaults?: Prisma.OrganizationOrderByRelationAggregateInput
+  exchangeRatesFrom?: Prisma.ExchangeRateOrderByRelationAggregateInput
+  exchangeRatesTo?: Prisma.ExchangeRateOrderByRelationAggregateInput
+  journalEntryBases?: Prisma.JournalEntryOrderByRelationAggregateInput
+  journalLines?: Prisma.JournalLineOrderByRelationAggregateInput
+  revaluationBases?: Prisma.CurrencyRevaluationOrderByRelationAggregateInput
 }
 
 export type CurrencyWhereUniqueInput = Prisma.AtLeast<{
@@ -292,6 +304,12 @@ export type CurrencyWhereUniqueInput = Prisma.AtLeast<{
   vendorOpeningBalances?: Prisma.VendorOpeningBalanceListRelationFilter
   bankOpeningBalances?: Prisma.BankOpeningBalanceListRelationFilter
   cashboxOpeningBalances?: Prisma.CashboxOpeningBalanceListRelationFilter
+  organizationDefaults?: Prisma.OrganizationListRelationFilter
+  exchangeRatesFrom?: Prisma.ExchangeRateListRelationFilter
+  exchangeRatesTo?: Prisma.ExchangeRateListRelationFilter
+  journalEntryBases?: Prisma.JournalEntryListRelationFilter
+  journalLines?: Prisma.JournalLineListRelationFilter
+  revaluationBases?: Prisma.CurrencyRevaluationListRelationFilter
 }, "id" | "code">
 
 export type CurrencyOrderByWithAggregationInput = {
@@ -342,6 +360,12 @@ export type CurrencyCreateInput = {
   vendorOpeningBalances?: Prisma.VendorOpeningBalanceCreateNestedManyWithoutCurrencyInput
   bankOpeningBalances?: Prisma.BankOpeningBalanceCreateNestedManyWithoutCurrencyInput
   cashboxOpeningBalances?: Prisma.CashboxOpeningBalanceCreateNestedManyWithoutCurrencyInput
+  organizationDefaults?: Prisma.OrganizationCreateNestedManyWithoutDefaultCurrencyInput
+  exchangeRatesFrom?: Prisma.ExchangeRateCreateNestedManyWithoutFromCurrencyInput
+  exchangeRatesTo?: Prisma.ExchangeRateCreateNestedManyWithoutToCurrencyInput
+  journalEntryBases?: Prisma.JournalEntryCreateNestedManyWithoutBaseCurrencyInput
+  journalLines?: Prisma.JournalLineCreateNestedManyWithoutCurrencyInput
+  revaluationBases?: Prisma.CurrencyRevaluationCreateNestedManyWithoutBaseCurrencyInput
 }
 
 export type CurrencyUncheckedCreateInput = {
@@ -362,6 +386,12 @@ export type CurrencyUncheckedCreateInput = {
   vendorOpeningBalances?: Prisma.VendorOpeningBalanceUncheckedCreateNestedManyWithoutCurrencyInput
   bankOpeningBalances?: Prisma.BankOpeningBalanceUncheckedCreateNestedManyWithoutCurrencyInput
   cashboxOpeningBalances?: Prisma.CashboxOpeningBalanceUncheckedCreateNestedManyWithoutCurrencyInput
+  organizationDefaults?: Prisma.OrganizationUncheckedCreateNestedManyWithoutDefaultCurrencyInput
+  exchangeRatesFrom?: Prisma.ExchangeRateUncheckedCreateNestedManyWithoutFromCurrencyInput
+  exchangeRatesTo?: Prisma.ExchangeRateUncheckedCreateNestedManyWithoutToCurrencyInput
+  journalEntryBases?: Prisma.JournalEntryUncheckedCreateNestedManyWithoutBaseCurrencyInput
+  journalLines?: Prisma.JournalLineUncheckedCreateNestedManyWithoutCurrencyInput
+  revaluationBases?: Prisma.CurrencyRevaluationUncheckedCreateNestedManyWithoutBaseCurrencyInput
 }
 
 export type CurrencyUpdateInput = {
@@ -382,6 +412,12 @@ export type CurrencyUpdateInput = {
   vendorOpeningBalances?: Prisma.VendorOpeningBalanceUpdateManyWithoutCurrencyNestedInput
   bankOpeningBalances?: Prisma.BankOpeningBalanceUpdateManyWithoutCurrencyNestedInput
   cashboxOpeningBalances?: Prisma.CashboxOpeningBalanceUpdateManyWithoutCurrencyNestedInput
+  organizationDefaults?: Prisma.OrganizationUpdateManyWithoutDefaultCurrencyNestedInput
+  exchangeRatesFrom?: Prisma.ExchangeRateUpdateManyWithoutFromCurrencyNestedInput
+  exchangeRatesTo?: Prisma.ExchangeRateUpdateManyWithoutToCurrencyNestedInput
+  journalEntryBases?: Prisma.JournalEntryUpdateManyWithoutBaseCurrencyNestedInput
+  journalLines?: Prisma.JournalLineUpdateManyWithoutCurrencyNestedInput
+  revaluationBases?: Prisma.CurrencyRevaluationUpdateManyWithoutBaseCurrencyNestedInput
 }
 
 export type CurrencyUncheckedUpdateInput = {
@@ -402,6 +438,12 @@ export type CurrencyUncheckedUpdateInput = {
   vendorOpeningBalances?: Prisma.VendorOpeningBalanceUncheckedUpdateManyWithoutCurrencyNestedInput
   bankOpeningBalances?: Prisma.BankOpeningBalanceUncheckedUpdateManyWithoutCurrencyNestedInput
   cashboxOpeningBalances?: Prisma.CashboxOpeningBalanceUncheckedUpdateManyWithoutCurrencyNestedInput
+  organizationDefaults?: Prisma.OrganizationUncheckedUpdateManyWithoutDefaultCurrencyNestedInput
+  exchangeRatesFrom?: Prisma.ExchangeRateUncheckedUpdateManyWithoutFromCurrencyNestedInput
+  exchangeRatesTo?: Prisma.ExchangeRateUncheckedUpdateManyWithoutToCurrencyNestedInput
+  journalEntryBases?: Prisma.JournalEntryUncheckedUpdateManyWithoutBaseCurrencyNestedInput
+  journalLines?: Prisma.JournalLineUncheckedUpdateManyWithoutCurrencyNestedInput
+  revaluationBases?: Prisma.CurrencyRevaluationUncheckedUpdateManyWithoutBaseCurrencyNestedInput
 }
 
 export type CurrencyCreateManyInput = {
@@ -435,6 +477,11 @@ export type CurrencyUncheckedUpdateManyInput = {
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
+export type CurrencyScalarRelationFilter = {
+  is?: Prisma.CurrencyWhereInput
+  isNot?: Prisma.CurrencyWhereInput
 }
 
 export type CurrencyCountOrderByAggregateInput = {
@@ -478,9 +525,18 @@ export type CurrencySumOrderByAggregateInput = {
   decimalPlaces?: Prisma.SortOrder
 }
 
-export type CurrencyScalarRelationFilter = {
-  is?: Prisma.CurrencyWhereInput
-  isNot?: Prisma.CurrencyWhereInput
+export type CurrencyCreateNestedOneWithoutOrganizationDefaultsInput = {
+  create?: Prisma.XOR<Prisma.CurrencyCreateWithoutOrganizationDefaultsInput, Prisma.CurrencyUncheckedCreateWithoutOrganizationDefaultsInput>
+  connectOrCreate?: Prisma.CurrencyCreateOrConnectWithoutOrganizationDefaultsInput
+  connect?: Prisma.CurrencyWhereUniqueInput
+}
+
+export type CurrencyUpdateOneRequiredWithoutOrganizationDefaultsNestedInput = {
+  create?: Prisma.XOR<Prisma.CurrencyCreateWithoutOrganizationDefaultsInput, Prisma.CurrencyUncheckedCreateWithoutOrganizationDefaultsInput>
+  connectOrCreate?: Prisma.CurrencyCreateOrConnectWithoutOrganizationDefaultsInput
+  upsert?: Prisma.CurrencyUpsertWithoutOrganizationDefaultsInput
+  connect?: Prisma.CurrencyWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.CurrencyUpdateToOneWithWhereWithoutOrganizationDefaultsInput, Prisma.CurrencyUpdateWithoutOrganizationDefaultsInput>, Prisma.CurrencyUncheckedUpdateWithoutOrganizationDefaultsInput>
 }
 
 export type IntFieldUpdateOperationsInput = {
@@ -489,6 +545,34 @@ export type IntFieldUpdateOperationsInput = {
   decrement?: number
   multiply?: number
   divide?: number
+}
+
+export type CurrencyCreateNestedOneWithoutJournalEntryBasesInput = {
+  create?: Prisma.XOR<Prisma.CurrencyCreateWithoutJournalEntryBasesInput, Prisma.CurrencyUncheckedCreateWithoutJournalEntryBasesInput>
+  connectOrCreate?: Prisma.CurrencyCreateOrConnectWithoutJournalEntryBasesInput
+  connect?: Prisma.CurrencyWhereUniqueInput
+}
+
+export type CurrencyUpdateOneRequiredWithoutJournalEntryBasesNestedInput = {
+  create?: Prisma.XOR<Prisma.CurrencyCreateWithoutJournalEntryBasesInput, Prisma.CurrencyUncheckedCreateWithoutJournalEntryBasesInput>
+  connectOrCreate?: Prisma.CurrencyCreateOrConnectWithoutJournalEntryBasesInput
+  upsert?: Prisma.CurrencyUpsertWithoutJournalEntryBasesInput
+  connect?: Prisma.CurrencyWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.CurrencyUpdateToOneWithWhereWithoutJournalEntryBasesInput, Prisma.CurrencyUpdateWithoutJournalEntryBasesInput>, Prisma.CurrencyUncheckedUpdateWithoutJournalEntryBasesInput>
+}
+
+export type CurrencyCreateNestedOneWithoutJournalLinesInput = {
+  create?: Prisma.XOR<Prisma.CurrencyCreateWithoutJournalLinesInput, Prisma.CurrencyUncheckedCreateWithoutJournalLinesInput>
+  connectOrCreate?: Prisma.CurrencyCreateOrConnectWithoutJournalLinesInput
+  connect?: Prisma.CurrencyWhereUniqueInput
+}
+
+export type CurrencyUpdateOneRequiredWithoutJournalLinesNestedInput = {
+  create?: Prisma.XOR<Prisma.CurrencyCreateWithoutJournalLinesInput, Prisma.CurrencyUncheckedCreateWithoutJournalLinesInput>
+  connectOrCreate?: Prisma.CurrencyCreateOrConnectWithoutJournalLinesInput
+  upsert?: Prisma.CurrencyUpsertWithoutJournalLinesInput
+  connect?: Prisma.CurrencyWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.CurrencyUpdateToOneWithWhereWithoutJournalLinesInput, Prisma.CurrencyUpdateWithoutJournalLinesInput>, Prisma.CurrencyUncheckedUpdateWithoutJournalLinesInput>
 }
 
 export type CurrencyCreateNestedOneWithoutBankAccountsInput = {
@@ -617,6 +701,396 @@ export type CurrencyUpdateOneRequiredWithoutCashboxOpeningBalancesNestedInput = 
   update?: Prisma.XOR<Prisma.XOR<Prisma.CurrencyUpdateToOneWithWhereWithoutCashboxOpeningBalancesInput, Prisma.CurrencyUpdateWithoutCashboxOpeningBalancesInput>, Prisma.CurrencyUncheckedUpdateWithoutCashboxOpeningBalancesInput>
 }
 
+export type CurrencyCreateNestedOneWithoutExchangeRatesFromInput = {
+  create?: Prisma.XOR<Prisma.CurrencyCreateWithoutExchangeRatesFromInput, Prisma.CurrencyUncheckedCreateWithoutExchangeRatesFromInput>
+  connectOrCreate?: Prisma.CurrencyCreateOrConnectWithoutExchangeRatesFromInput
+  connect?: Prisma.CurrencyWhereUniqueInput
+}
+
+export type CurrencyCreateNestedOneWithoutExchangeRatesToInput = {
+  create?: Prisma.XOR<Prisma.CurrencyCreateWithoutExchangeRatesToInput, Prisma.CurrencyUncheckedCreateWithoutExchangeRatesToInput>
+  connectOrCreate?: Prisma.CurrencyCreateOrConnectWithoutExchangeRatesToInput
+  connect?: Prisma.CurrencyWhereUniqueInput
+}
+
+export type CurrencyUpdateOneRequiredWithoutExchangeRatesFromNestedInput = {
+  create?: Prisma.XOR<Prisma.CurrencyCreateWithoutExchangeRatesFromInput, Prisma.CurrencyUncheckedCreateWithoutExchangeRatesFromInput>
+  connectOrCreate?: Prisma.CurrencyCreateOrConnectWithoutExchangeRatesFromInput
+  upsert?: Prisma.CurrencyUpsertWithoutExchangeRatesFromInput
+  connect?: Prisma.CurrencyWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.CurrencyUpdateToOneWithWhereWithoutExchangeRatesFromInput, Prisma.CurrencyUpdateWithoutExchangeRatesFromInput>, Prisma.CurrencyUncheckedUpdateWithoutExchangeRatesFromInput>
+}
+
+export type CurrencyUpdateOneRequiredWithoutExchangeRatesToNestedInput = {
+  create?: Prisma.XOR<Prisma.CurrencyCreateWithoutExchangeRatesToInput, Prisma.CurrencyUncheckedCreateWithoutExchangeRatesToInput>
+  connectOrCreate?: Prisma.CurrencyCreateOrConnectWithoutExchangeRatesToInput
+  upsert?: Prisma.CurrencyUpsertWithoutExchangeRatesToInput
+  connect?: Prisma.CurrencyWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.CurrencyUpdateToOneWithWhereWithoutExchangeRatesToInput, Prisma.CurrencyUpdateWithoutExchangeRatesToInput>, Prisma.CurrencyUncheckedUpdateWithoutExchangeRatesToInput>
+}
+
+export type CurrencyCreateNestedOneWithoutRevaluationBasesInput = {
+  create?: Prisma.XOR<Prisma.CurrencyCreateWithoutRevaluationBasesInput, Prisma.CurrencyUncheckedCreateWithoutRevaluationBasesInput>
+  connectOrCreate?: Prisma.CurrencyCreateOrConnectWithoutRevaluationBasesInput
+  connect?: Prisma.CurrencyWhereUniqueInput
+}
+
+export type CurrencyUpdateOneRequiredWithoutRevaluationBasesNestedInput = {
+  create?: Prisma.XOR<Prisma.CurrencyCreateWithoutRevaluationBasesInput, Prisma.CurrencyUncheckedCreateWithoutRevaluationBasesInput>
+  connectOrCreate?: Prisma.CurrencyCreateOrConnectWithoutRevaluationBasesInput
+  upsert?: Prisma.CurrencyUpsertWithoutRevaluationBasesInput
+  connect?: Prisma.CurrencyWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.CurrencyUpdateToOneWithWhereWithoutRevaluationBasesInput, Prisma.CurrencyUpdateWithoutRevaluationBasesInput>, Prisma.CurrencyUncheckedUpdateWithoutRevaluationBasesInput>
+}
+
+export type CurrencyCreateWithoutOrganizationDefaultsInput = {
+  id?: string
+  code: string
+  name: string
+  symbol: string
+  decimalPlaces?: number
+  isActive?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  bankAccounts?: Prisma.BankAccountCreateNestedManyWithoutCurrencyInput
+  cashboxes?: Prisma.CashboxCreateNestedManyWithoutCurrencyInput
+  invoices?: Prisma.InvoiceCreateNestedManyWithoutCurrencyInput
+  receivedCheques?: Prisma.ReceivedChequeCreateNestedManyWithoutCurrencyInput
+  paidCheques?: Prisma.PaidChequeCreateNestedManyWithoutCurrencyInput
+  customerOpeningBalances?: Prisma.CustomerOpeningBalanceCreateNestedManyWithoutCurrencyInput
+  vendorOpeningBalances?: Prisma.VendorOpeningBalanceCreateNestedManyWithoutCurrencyInput
+  bankOpeningBalances?: Prisma.BankOpeningBalanceCreateNestedManyWithoutCurrencyInput
+  cashboxOpeningBalances?: Prisma.CashboxOpeningBalanceCreateNestedManyWithoutCurrencyInput
+  exchangeRatesFrom?: Prisma.ExchangeRateCreateNestedManyWithoutFromCurrencyInput
+  exchangeRatesTo?: Prisma.ExchangeRateCreateNestedManyWithoutToCurrencyInput
+  journalEntryBases?: Prisma.JournalEntryCreateNestedManyWithoutBaseCurrencyInput
+  journalLines?: Prisma.JournalLineCreateNestedManyWithoutCurrencyInput
+  revaluationBases?: Prisma.CurrencyRevaluationCreateNestedManyWithoutBaseCurrencyInput
+}
+
+export type CurrencyUncheckedCreateWithoutOrganizationDefaultsInput = {
+  id?: string
+  code: string
+  name: string
+  symbol: string
+  decimalPlaces?: number
+  isActive?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  bankAccounts?: Prisma.BankAccountUncheckedCreateNestedManyWithoutCurrencyInput
+  cashboxes?: Prisma.CashboxUncheckedCreateNestedManyWithoutCurrencyInput
+  invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutCurrencyInput
+  receivedCheques?: Prisma.ReceivedChequeUncheckedCreateNestedManyWithoutCurrencyInput
+  paidCheques?: Prisma.PaidChequeUncheckedCreateNestedManyWithoutCurrencyInput
+  customerOpeningBalances?: Prisma.CustomerOpeningBalanceUncheckedCreateNestedManyWithoutCurrencyInput
+  vendorOpeningBalances?: Prisma.VendorOpeningBalanceUncheckedCreateNestedManyWithoutCurrencyInput
+  bankOpeningBalances?: Prisma.BankOpeningBalanceUncheckedCreateNestedManyWithoutCurrencyInput
+  cashboxOpeningBalances?: Prisma.CashboxOpeningBalanceUncheckedCreateNestedManyWithoutCurrencyInput
+  exchangeRatesFrom?: Prisma.ExchangeRateUncheckedCreateNestedManyWithoutFromCurrencyInput
+  exchangeRatesTo?: Prisma.ExchangeRateUncheckedCreateNestedManyWithoutToCurrencyInput
+  journalEntryBases?: Prisma.JournalEntryUncheckedCreateNestedManyWithoutBaseCurrencyInput
+  journalLines?: Prisma.JournalLineUncheckedCreateNestedManyWithoutCurrencyInput
+  revaluationBases?: Prisma.CurrencyRevaluationUncheckedCreateNestedManyWithoutBaseCurrencyInput
+}
+
+export type CurrencyCreateOrConnectWithoutOrganizationDefaultsInput = {
+  where: Prisma.CurrencyWhereUniqueInput
+  create: Prisma.XOR<Prisma.CurrencyCreateWithoutOrganizationDefaultsInput, Prisma.CurrencyUncheckedCreateWithoutOrganizationDefaultsInput>
+}
+
+export type CurrencyUpsertWithoutOrganizationDefaultsInput = {
+  update: Prisma.XOR<Prisma.CurrencyUpdateWithoutOrganizationDefaultsInput, Prisma.CurrencyUncheckedUpdateWithoutOrganizationDefaultsInput>
+  create: Prisma.XOR<Prisma.CurrencyCreateWithoutOrganizationDefaultsInput, Prisma.CurrencyUncheckedCreateWithoutOrganizationDefaultsInput>
+  where?: Prisma.CurrencyWhereInput
+}
+
+export type CurrencyUpdateToOneWithWhereWithoutOrganizationDefaultsInput = {
+  where?: Prisma.CurrencyWhereInput
+  data: Prisma.XOR<Prisma.CurrencyUpdateWithoutOrganizationDefaultsInput, Prisma.CurrencyUncheckedUpdateWithoutOrganizationDefaultsInput>
+}
+
+export type CurrencyUpdateWithoutOrganizationDefaultsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  code?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  symbol?: Prisma.StringFieldUpdateOperationsInput | string
+  decimalPlaces?: Prisma.IntFieldUpdateOperationsInput | number
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  bankAccounts?: Prisma.BankAccountUpdateManyWithoutCurrencyNestedInput
+  cashboxes?: Prisma.CashboxUpdateManyWithoutCurrencyNestedInput
+  invoices?: Prisma.InvoiceUpdateManyWithoutCurrencyNestedInput
+  receivedCheques?: Prisma.ReceivedChequeUpdateManyWithoutCurrencyNestedInput
+  paidCheques?: Prisma.PaidChequeUpdateManyWithoutCurrencyNestedInput
+  customerOpeningBalances?: Prisma.CustomerOpeningBalanceUpdateManyWithoutCurrencyNestedInput
+  vendorOpeningBalances?: Prisma.VendorOpeningBalanceUpdateManyWithoutCurrencyNestedInput
+  bankOpeningBalances?: Prisma.BankOpeningBalanceUpdateManyWithoutCurrencyNestedInput
+  cashboxOpeningBalances?: Prisma.CashboxOpeningBalanceUpdateManyWithoutCurrencyNestedInput
+  exchangeRatesFrom?: Prisma.ExchangeRateUpdateManyWithoutFromCurrencyNestedInput
+  exchangeRatesTo?: Prisma.ExchangeRateUpdateManyWithoutToCurrencyNestedInput
+  journalEntryBases?: Prisma.JournalEntryUpdateManyWithoutBaseCurrencyNestedInput
+  journalLines?: Prisma.JournalLineUpdateManyWithoutCurrencyNestedInput
+  revaluationBases?: Prisma.CurrencyRevaluationUpdateManyWithoutBaseCurrencyNestedInput
+}
+
+export type CurrencyUncheckedUpdateWithoutOrganizationDefaultsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  code?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  symbol?: Prisma.StringFieldUpdateOperationsInput | string
+  decimalPlaces?: Prisma.IntFieldUpdateOperationsInput | number
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  bankAccounts?: Prisma.BankAccountUncheckedUpdateManyWithoutCurrencyNestedInput
+  cashboxes?: Prisma.CashboxUncheckedUpdateManyWithoutCurrencyNestedInput
+  invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutCurrencyNestedInput
+  receivedCheques?: Prisma.ReceivedChequeUncheckedUpdateManyWithoutCurrencyNestedInput
+  paidCheques?: Prisma.PaidChequeUncheckedUpdateManyWithoutCurrencyNestedInput
+  customerOpeningBalances?: Prisma.CustomerOpeningBalanceUncheckedUpdateManyWithoutCurrencyNestedInput
+  vendorOpeningBalances?: Prisma.VendorOpeningBalanceUncheckedUpdateManyWithoutCurrencyNestedInput
+  bankOpeningBalances?: Prisma.BankOpeningBalanceUncheckedUpdateManyWithoutCurrencyNestedInput
+  cashboxOpeningBalances?: Prisma.CashboxOpeningBalanceUncheckedUpdateManyWithoutCurrencyNestedInput
+  exchangeRatesFrom?: Prisma.ExchangeRateUncheckedUpdateManyWithoutFromCurrencyNestedInput
+  exchangeRatesTo?: Prisma.ExchangeRateUncheckedUpdateManyWithoutToCurrencyNestedInput
+  journalEntryBases?: Prisma.JournalEntryUncheckedUpdateManyWithoutBaseCurrencyNestedInput
+  journalLines?: Prisma.JournalLineUncheckedUpdateManyWithoutCurrencyNestedInput
+  revaluationBases?: Prisma.CurrencyRevaluationUncheckedUpdateManyWithoutBaseCurrencyNestedInput
+}
+
+export type CurrencyCreateWithoutJournalEntryBasesInput = {
+  id?: string
+  code: string
+  name: string
+  symbol: string
+  decimalPlaces?: number
+  isActive?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  bankAccounts?: Prisma.BankAccountCreateNestedManyWithoutCurrencyInput
+  cashboxes?: Prisma.CashboxCreateNestedManyWithoutCurrencyInput
+  invoices?: Prisma.InvoiceCreateNestedManyWithoutCurrencyInput
+  receivedCheques?: Prisma.ReceivedChequeCreateNestedManyWithoutCurrencyInput
+  paidCheques?: Prisma.PaidChequeCreateNestedManyWithoutCurrencyInput
+  customerOpeningBalances?: Prisma.CustomerOpeningBalanceCreateNestedManyWithoutCurrencyInput
+  vendorOpeningBalances?: Prisma.VendorOpeningBalanceCreateNestedManyWithoutCurrencyInput
+  bankOpeningBalances?: Prisma.BankOpeningBalanceCreateNestedManyWithoutCurrencyInput
+  cashboxOpeningBalances?: Prisma.CashboxOpeningBalanceCreateNestedManyWithoutCurrencyInput
+  organizationDefaults?: Prisma.OrganizationCreateNestedManyWithoutDefaultCurrencyInput
+  exchangeRatesFrom?: Prisma.ExchangeRateCreateNestedManyWithoutFromCurrencyInput
+  exchangeRatesTo?: Prisma.ExchangeRateCreateNestedManyWithoutToCurrencyInput
+  journalLines?: Prisma.JournalLineCreateNestedManyWithoutCurrencyInput
+  revaluationBases?: Prisma.CurrencyRevaluationCreateNestedManyWithoutBaseCurrencyInput
+}
+
+export type CurrencyUncheckedCreateWithoutJournalEntryBasesInput = {
+  id?: string
+  code: string
+  name: string
+  symbol: string
+  decimalPlaces?: number
+  isActive?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  bankAccounts?: Prisma.BankAccountUncheckedCreateNestedManyWithoutCurrencyInput
+  cashboxes?: Prisma.CashboxUncheckedCreateNestedManyWithoutCurrencyInput
+  invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutCurrencyInput
+  receivedCheques?: Prisma.ReceivedChequeUncheckedCreateNestedManyWithoutCurrencyInput
+  paidCheques?: Prisma.PaidChequeUncheckedCreateNestedManyWithoutCurrencyInput
+  customerOpeningBalances?: Prisma.CustomerOpeningBalanceUncheckedCreateNestedManyWithoutCurrencyInput
+  vendorOpeningBalances?: Prisma.VendorOpeningBalanceUncheckedCreateNestedManyWithoutCurrencyInput
+  bankOpeningBalances?: Prisma.BankOpeningBalanceUncheckedCreateNestedManyWithoutCurrencyInput
+  cashboxOpeningBalances?: Prisma.CashboxOpeningBalanceUncheckedCreateNestedManyWithoutCurrencyInput
+  organizationDefaults?: Prisma.OrganizationUncheckedCreateNestedManyWithoutDefaultCurrencyInput
+  exchangeRatesFrom?: Prisma.ExchangeRateUncheckedCreateNestedManyWithoutFromCurrencyInput
+  exchangeRatesTo?: Prisma.ExchangeRateUncheckedCreateNestedManyWithoutToCurrencyInput
+  journalLines?: Prisma.JournalLineUncheckedCreateNestedManyWithoutCurrencyInput
+  revaluationBases?: Prisma.CurrencyRevaluationUncheckedCreateNestedManyWithoutBaseCurrencyInput
+}
+
+export type CurrencyCreateOrConnectWithoutJournalEntryBasesInput = {
+  where: Prisma.CurrencyWhereUniqueInput
+  create: Prisma.XOR<Prisma.CurrencyCreateWithoutJournalEntryBasesInput, Prisma.CurrencyUncheckedCreateWithoutJournalEntryBasesInput>
+}
+
+export type CurrencyUpsertWithoutJournalEntryBasesInput = {
+  update: Prisma.XOR<Prisma.CurrencyUpdateWithoutJournalEntryBasesInput, Prisma.CurrencyUncheckedUpdateWithoutJournalEntryBasesInput>
+  create: Prisma.XOR<Prisma.CurrencyCreateWithoutJournalEntryBasesInput, Prisma.CurrencyUncheckedCreateWithoutJournalEntryBasesInput>
+  where?: Prisma.CurrencyWhereInput
+}
+
+export type CurrencyUpdateToOneWithWhereWithoutJournalEntryBasesInput = {
+  where?: Prisma.CurrencyWhereInput
+  data: Prisma.XOR<Prisma.CurrencyUpdateWithoutJournalEntryBasesInput, Prisma.CurrencyUncheckedUpdateWithoutJournalEntryBasesInput>
+}
+
+export type CurrencyUpdateWithoutJournalEntryBasesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  code?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  symbol?: Prisma.StringFieldUpdateOperationsInput | string
+  decimalPlaces?: Prisma.IntFieldUpdateOperationsInput | number
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  bankAccounts?: Prisma.BankAccountUpdateManyWithoutCurrencyNestedInput
+  cashboxes?: Prisma.CashboxUpdateManyWithoutCurrencyNestedInput
+  invoices?: Prisma.InvoiceUpdateManyWithoutCurrencyNestedInput
+  receivedCheques?: Prisma.ReceivedChequeUpdateManyWithoutCurrencyNestedInput
+  paidCheques?: Prisma.PaidChequeUpdateManyWithoutCurrencyNestedInput
+  customerOpeningBalances?: Prisma.CustomerOpeningBalanceUpdateManyWithoutCurrencyNestedInput
+  vendorOpeningBalances?: Prisma.VendorOpeningBalanceUpdateManyWithoutCurrencyNestedInput
+  bankOpeningBalances?: Prisma.BankOpeningBalanceUpdateManyWithoutCurrencyNestedInput
+  cashboxOpeningBalances?: Prisma.CashboxOpeningBalanceUpdateManyWithoutCurrencyNestedInput
+  organizationDefaults?: Prisma.OrganizationUpdateManyWithoutDefaultCurrencyNestedInput
+  exchangeRatesFrom?: Prisma.ExchangeRateUpdateManyWithoutFromCurrencyNestedInput
+  exchangeRatesTo?: Prisma.ExchangeRateUpdateManyWithoutToCurrencyNestedInput
+  journalLines?: Prisma.JournalLineUpdateManyWithoutCurrencyNestedInput
+  revaluationBases?: Prisma.CurrencyRevaluationUpdateManyWithoutBaseCurrencyNestedInput
+}
+
+export type CurrencyUncheckedUpdateWithoutJournalEntryBasesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  code?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  symbol?: Prisma.StringFieldUpdateOperationsInput | string
+  decimalPlaces?: Prisma.IntFieldUpdateOperationsInput | number
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  bankAccounts?: Prisma.BankAccountUncheckedUpdateManyWithoutCurrencyNestedInput
+  cashboxes?: Prisma.CashboxUncheckedUpdateManyWithoutCurrencyNestedInput
+  invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutCurrencyNestedInput
+  receivedCheques?: Prisma.ReceivedChequeUncheckedUpdateManyWithoutCurrencyNestedInput
+  paidCheques?: Prisma.PaidChequeUncheckedUpdateManyWithoutCurrencyNestedInput
+  customerOpeningBalances?: Prisma.CustomerOpeningBalanceUncheckedUpdateManyWithoutCurrencyNestedInput
+  vendorOpeningBalances?: Prisma.VendorOpeningBalanceUncheckedUpdateManyWithoutCurrencyNestedInput
+  bankOpeningBalances?: Prisma.BankOpeningBalanceUncheckedUpdateManyWithoutCurrencyNestedInput
+  cashboxOpeningBalances?: Prisma.CashboxOpeningBalanceUncheckedUpdateManyWithoutCurrencyNestedInput
+  organizationDefaults?: Prisma.OrganizationUncheckedUpdateManyWithoutDefaultCurrencyNestedInput
+  exchangeRatesFrom?: Prisma.ExchangeRateUncheckedUpdateManyWithoutFromCurrencyNestedInput
+  exchangeRatesTo?: Prisma.ExchangeRateUncheckedUpdateManyWithoutToCurrencyNestedInput
+  journalLines?: Prisma.JournalLineUncheckedUpdateManyWithoutCurrencyNestedInput
+  revaluationBases?: Prisma.CurrencyRevaluationUncheckedUpdateManyWithoutBaseCurrencyNestedInput
+}
+
+export type CurrencyCreateWithoutJournalLinesInput = {
+  id?: string
+  code: string
+  name: string
+  symbol: string
+  decimalPlaces?: number
+  isActive?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  bankAccounts?: Prisma.BankAccountCreateNestedManyWithoutCurrencyInput
+  cashboxes?: Prisma.CashboxCreateNestedManyWithoutCurrencyInput
+  invoices?: Prisma.InvoiceCreateNestedManyWithoutCurrencyInput
+  receivedCheques?: Prisma.ReceivedChequeCreateNestedManyWithoutCurrencyInput
+  paidCheques?: Prisma.PaidChequeCreateNestedManyWithoutCurrencyInput
+  customerOpeningBalances?: Prisma.CustomerOpeningBalanceCreateNestedManyWithoutCurrencyInput
+  vendorOpeningBalances?: Prisma.VendorOpeningBalanceCreateNestedManyWithoutCurrencyInput
+  bankOpeningBalances?: Prisma.BankOpeningBalanceCreateNestedManyWithoutCurrencyInput
+  cashboxOpeningBalances?: Prisma.CashboxOpeningBalanceCreateNestedManyWithoutCurrencyInput
+  organizationDefaults?: Prisma.OrganizationCreateNestedManyWithoutDefaultCurrencyInput
+  exchangeRatesFrom?: Prisma.ExchangeRateCreateNestedManyWithoutFromCurrencyInput
+  exchangeRatesTo?: Prisma.ExchangeRateCreateNestedManyWithoutToCurrencyInput
+  journalEntryBases?: Prisma.JournalEntryCreateNestedManyWithoutBaseCurrencyInput
+  revaluationBases?: Prisma.CurrencyRevaluationCreateNestedManyWithoutBaseCurrencyInput
+}
+
+export type CurrencyUncheckedCreateWithoutJournalLinesInput = {
+  id?: string
+  code: string
+  name: string
+  symbol: string
+  decimalPlaces?: number
+  isActive?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  bankAccounts?: Prisma.BankAccountUncheckedCreateNestedManyWithoutCurrencyInput
+  cashboxes?: Prisma.CashboxUncheckedCreateNestedManyWithoutCurrencyInput
+  invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutCurrencyInput
+  receivedCheques?: Prisma.ReceivedChequeUncheckedCreateNestedManyWithoutCurrencyInput
+  paidCheques?: Prisma.PaidChequeUncheckedCreateNestedManyWithoutCurrencyInput
+  customerOpeningBalances?: Prisma.CustomerOpeningBalanceUncheckedCreateNestedManyWithoutCurrencyInput
+  vendorOpeningBalances?: Prisma.VendorOpeningBalanceUncheckedCreateNestedManyWithoutCurrencyInput
+  bankOpeningBalances?: Prisma.BankOpeningBalanceUncheckedCreateNestedManyWithoutCurrencyInput
+  cashboxOpeningBalances?: Prisma.CashboxOpeningBalanceUncheckedCreateNestedManyWithoutCurrencyInput
+  organizationDefaults?: Prisma.OrganizationUncheckedCreateNestedManyWithoutDefaultCurrencyInput
+  exchangeRatesFrom?: Prisma.ExchangeRateUncheckedCreateNestedManyWithoutFromCurrencyInput
+  exchangeRatesTo?: Prisma.ExchangeRateUncheckedCreateNestedManyWithoutToCurrencyInput
+  journalEntryBases?: Prisma.JournalEntryUncheckedCreateNestedManyWithoutBaseCurrencyInput
+  revaluationBases?: Prisma.CurrencyRevaluationUncheckedCreateNestedManyWithoutBaseCurrencyInput
+}
+
+export type CurrencyCreateOrConnectWithoutJournalLinesInput = {
+  where: Prisma.CurrencyWhereUniqueInput
+  create: Prisma.XOR<Prisma.CurrencyCreateWithoutJournalLinesInput, Prisma.CurrencyUncheckedCreateWithoutJournalLinesInput>
+}
+
+export type CurrencyUpsertWithoutJournalLinesInput = {
+  update: Prisma.XOR<Prisma.CurrencyUpdateWithoutJournalLinesInput, Prisma.CurrencyUncheckedUpdateWithoutJournalLinesInput>
+  create: Prisma.XOR<Prisma.CurrencyCreateWithoutJournalLinesInput, Prisma.CurrencyUncheckedCreateWithoutJournalLinesInput>
+  where?: Prisma.CurrencyWhereInput
+}
+
+export type CurrencyUpdateToOneWithWhereWithoutJournalLinesInput = {
+  where?: Prisma.CurrencyWhereInput
+  data: Prisma.XOR<Prisma.CurrencyUpdateWithoutJournalLinesInput, Prisma.CurrencyUncheckedUpdateWithoutJournalLinesInput>
+}
+
+export type CurrencyUpdateWithoutJournalLinesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  code?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  symbol?: Prisma.StringFieldUpdateOperationsInput | string
+  decimalPlaces?: Prisma.IntFieldUpdateOperationsInput | number
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  bankAccounts?: Prisma.BankAccountUpdateManyWithoutCurrencyNestedInput
+  cashboxes?: Prisma.CashboxUpdateManyWithoutCurrencyNestedInput
+  invoices?: Prisma.InvoiceUpdateManyWithoutCurrencyNestedInput
+  receivedCheques?: Prisma.ReceivedChequeUpdateManyWithoutCurrencyNestedInput
+  paidCheques?: Prisma.PaidChequeUpdateManyWithoutCurrencyNestedInput
+  customerOpeningBalances?: Prisma.CustomerOpeningBalanceUpdateManyWithoutCurrencyNestedInput
+  vendorOpeningBalances?: Prisma.VendorOpeningBalanceUpdateManyWithoutCurrencyNestedInput
+  bankOpeningBalances?: Prisma.BankOpeningBalanceUpdateManyWithoutCurrencyNestedInput
+  cashboxOpeningBalances?: Prisma.CashboxOpeningBalanceUpdateManyWithoutCurrencyNestedInput
+  organizationDefaults?: Prisma.OrganizationUpdateManyWithoutDefaultCurrencyNestedInput
+  exchangeRatesFrom?: Prisma.ExchangeRateUpdateManyWithoutFromCurrencyNestedInput
+  exchangeRatesTo?: Prisma.ExchangeRateUpdateManyWithoutToCurrencyNestedInput
+  journalEntryBases?: Prisma.JournalEntryUpdateManyWithoutBaseCurrencyNestedInput
+  revaluationBases?: Prisma.CurrencyRevaluationUpdateManyWithoutBaseCurrencyNestedInput
+}
+
+export type CurrencyUncheckedUpdateWithoutJournalLinesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  code?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  symbol?: Prisma.StringFieldUpdateOperationsInput | string
+  decimalPlaces?: Prisma.IntFieldUpdateOperationsInput | number
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  bankAccounts?: Prisma.BankAccountUncheckedUpdateManyWithoutCurrencyNestedInput
+  cashboxes?: Prisma.CashboxUncheckedUpdateManyWithoutCurrencyNestedInput
+  invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutCurrencyNestedInput
+  receivedCheques?: Prisma.ReceivedChequeUncheckedUpdateManyWithoutCurrencyNestedInput
+  paidCheques?: Prisma.PaidChequeUncheckedUpdateManyWithoutCurrencyNestedInput
+  customerOpeningBalances?: Prisma.CustomerOpeningBalanceUncheckedUpdateManyWithoutCurrencyNestedInput
+  vendorOpeningBalances?: Prisma.VendorOpeningBalanceUncheckedUpdateManyWithoutCurrencyNestedInput
+  bankOpeningBalances?: Prisma.BankOpeningBalanceUncheckedUpdateManyWithoutCurrencyNestedInput
+  cashboxOpeningBalances?: Prisma.CashboxOpeningBalanceUncheckedUpdateManyWithoutCurrencyNestedInput
+  organizationDefaults?: Prisma.OrganizationUncheckedUpdateManyWithoutDefaultCurrencyNestedInput
+  exchangeRatesFrom?: Prisma.ExchangeRateUncheckedUpdateManyWithoutFromCurrencyNestedInput
+  exchangeRatesTo?: Prisma.ExchangeRateUncheckedUpdateManyWithoutToCurrencyNestedInput
+  journalEntryBases?: Prisma.JournalEntryUncheckedUpdateManyWithoutBaseCurrencyNestedInput
+  revaluationBases?: Prisma.CurrencyRevaluationUncheckedUpdateManyWithoutBaseCurrencyNestedInput
+}
+
 export type CurrencyCreateWithoutBankAccountsInput = {
   id?: string
   code: string
@@ -634,6 +1108,12 @@ export type CurrencyCreateWithoutBankAccountsInput = {
   vendorOpeningBalances?: Prisma.VendorOpeningBalanceCreateNestedManyWithoutCurrencyInput
   bankOpeningBalances?: Prisma.BankOpeningBalanceCreateNestedManyWithoutCurrencyInput
   cashboxOpeningBalances?: Prisma.CashboxOpeningBalanceCreateNestedManyWithoutCurrencyInput
+  organizationDefaults?: Prisma.OrganizationCreateNestedManyWithoutDefaultCurrencyInput
+  exchangeRatesFrom?: Prisma.ExchangeRateCreateNestedManyWithoutFromCurrencyInput
+  exchangeRatesTo?: Prisma.ExchangeRateCreateNestedManyWithoutToCurrencyInput
+  journalEntryBases?: Prisma.JournalEntryCreateNestedManyWithoutBaseCurrencyInput
+  journalLines?: Prisma.JournalLineCreateNestedManyWithoutCurrencyInput
+  revaluationBases?: Prisma.CurrencyRevaluationCreateNestedManyWithoutBaseCurrencyInput
 }
 
 export type CurrencyUncheckedCreateWithoutBankAccountsInput = {
@@ -653,6 +1133,12 @@ export type CurrencyUncheckedCreateWithoutBankAccountsInput = {
   vendorOpeningBalances?: Prisma.VendorOpeningBalanceUncheckedCreateNestedManyWithoutCurrencyInput
   bankOpeningBalances?: Prisma.BankOpeningBalanceUncheckedCreateNestedManyWithoutCurrencyInput
   cashboxOpeningBalances?: Prisma.CashboxOpeningBalanceUncheckedCreateNestedManyWithoutCurrencyInput
+  organizationDefaults?: Prisma.OrganizationUncheckedCreateNestedManyWithoutDefaultCurrencyInput
+  exchangeRatesFrom?: Prisma.ExchangeRateUncheckedCreateNestedManyWithoutFromCurrencyInput
+  exchangeRatesTo?: Prisma.ExchangeRateUncheckedCreateNestedManyWithoutToCurrencyInput
+  journalEntryBases?: Prisma.JournalEntryUncheckedCreateNestedManyWithoutBaseCurrencyInput
+  journalLines?: Prisma.JournalLineUncheckedCreateNestedManyWithoutCurrencyInput
+  revaluationBases?: Prisma.CurrencyRevaluationUncheckedCreateNestedManyWithoutBaseCurrencyInput
 }
 
 export type CurrencyCreateOrConnectWithoutBankAccountsInput = {
@@ -688,6 +1174,12 @@ export type CurrencyUpdateWithoutBankAccountsInput = {
   vendorOpeningBalances?: Prisma.VendorOpeningBalanceUpdateManyWithoutCurrencyNestedInput
   bankOpeningBalances?: Prisma.BankOpeningBalanceUpdateManyWithoutCurrencyNestedInput
   cashboxOpeningBalances?: Prisma.CashboxOpeningBalanceUpdateManyWithoutCurrencyNestedInput
+  organizationDefaults?: Prisma.OrganizationUpdateManyWithoutDefaultCurrencyNestedInput
+  exchangeRatesFrom?: Prisma.ExchangeRateUpdateManyWithoutFromCurrencyNestedInput
+  exchangeRatesTo?: Prisma.ExchangeRateUpdateManyWithoutToCurrencyNestedInput
+  journalEntryBases?: Prisma.JournalEntryUpdateManyWithoutBaseCurrencyNestedInput
+  journalLines?: Prisma.JournalLineUpdateManyWithoutCurrencyNestedInput
+  revaluationBases?: Prisma.CurrencyRevaluationUpdateManyWithoutBaseCurrencyNestedInput
 }
 
 export type CurrencyUncheckedUpdateWithoutBankAccountsInput = {
@@ -707,6 +1199,12 @@ export type CurrencyUncheckedUpdateWithoutBankAccountsInput = {
   vendorOpeningBalances?: Prisma.VendorOpeningBalanceUncheckedUpdateManyWithoutCurrencyNestedInput
   bankOpeningBalances?: Prisma.BankOpeningBalanceUncheckedUpdateManyWithoutCurrencyNestedInput
   cashboxOpeningBalances?: Prisma.CashboxOpeningBalanceUncheckedUpdateManyWithoutCurrencyNestedInput
+  organizationDefaults?: Prisma.OrganizationUncheckedUpdateManyWithoutDefaultCurrencyNestedInput
+  exchangeRatesFrom?: Prisma.ExchangeRateUncheckedUpdateManyWithoutFromCurrencyNestedInput
+  exchangeRatesTo?: Prisma.ExchangeRateUncheckedUpdateManyWithoutToCurrencyNestedInput
+  journalEntryBases?: Prisma.JournalEntryUncheckedUpdateManyWithoutBaseCurrencyNestedInput
+  journalLines?: Prisma.JournalLineUncheckedUpdateManyWithoutCurrencyNestedInput
+  revaluationBases?: Prisma.CurrencyRevaluationUncheckedUpdateManyWithoutBaseCurrencyNestedInput
 }
 
 export type CurrencyCreateWithoutCashboxesInput = {
@@ -726,6 +1224,12 @@ export type CurrencyCreateWithoutCashboxesInput = {
   vendorOpeningBalances?: Prisma.VendorOpeningBalanceCreateNestedManyWithoutCurrencyInput
   bankOpeningBalances?: Prisma.BankOpeningBalanceCreateNestedManyWithoutCurrencyInput
   cashboxOpeningBalances?: Prisma.CashboxOpeningBalanceCreateNestedManyWithoutCurrencyInput
+  organizationDefaults?: Prisma.OrganizationCreateNestedManyWithoutDefaultCurrencyInput
+  exchangeRatesFrom?: Prisma.ExchangeRateCreateNestedManyWithoutFromCurrencyInput
+  exchangeRatesTo?: Prisma.ExchangeRateCreateNestedManyWithoutToCurrencyInput
+  journalEntryBases?: Prisma.JournalEntryCreateNestedManyWithoutBaseCurrencyInput
+  journalLines?: Prisma.JournalLineCreateNestedManyWithoutCurrencyInput
+  revaluationBases?: Prisma.CurrencyRevaluationCreateNestedManyWithoutBaseCurrencyInput
 }
 
 export type CurrencyUncheckedCreateWithoutCashboxesInput = {
@@ -745,6 +1249,12 @@ export type CurrencyUncheckedCreateWithoutCashboxesInput = {
   vendorOpeningBalances?: Prisma.VendorOpeningBalanceUncheckedCreateNestedManyWithoutCurrencyInput
   bankOpeningBalances?: Prisma.BankOpeningBalanceUncheckedCreateNestedManyWithoutCurrencyInput
   cashboxOpeningBalances?: Prisma.CashboxOpeningBalanceUncheckedCreateNestedManyWithoutCurrencyInput
+  organizationDefaults?: Prisma.OrganizationUncheckedCreateNestedManyWithoutDefaultCurrencyInput
+  exchangeRatesFrom?: Prisma.ExchangeRateUncheckedCreateNestedManyWithoutFromCurrencyInput
+  exchangeRatesTo?: Prisma.ExchangeRateUncheckedCreateNestedManyWithoutToCurrencyInput
+  journalEntryBases?: Prisma.JournalEntryUncheckedCreateNestedManyWithoutBaseCurrencyInput
+  journalLines?: Prisma.JournalLineUncheckedCreateNestedManyWithoutCurrencyInput
+  revaluationBases?: Prisma.CurrencyRevaluationUncheckedCreateNestedManyWithoutBaseCurrencyInput
 }
 
 export type CurrencyCreateOrConnectWithoutCashboxesInput = {
@@ -780,6 +1290,12 @@ export type CurrencyUpdateWithoutCashboxesInput = {
   vendorOpeningBalances?: Prisma.VendorOpeningBalanceUpdateManyWithoutCurrencyNestedInput
   bankOpeningBalances?: Prisma.BankOpeningBalanceUpdateManyWithoutCurrencyNestedInput
   cashboxOpeningBalances?: Prisma.CashboxOpeningBalanceUpdateManyWithoutCurrencyNestedInput
+  organizationDefaults?: Prisma.OrganizationUpdateManyWithoutDefaultCurrencyNestedInput
+  exchangeRatesFrom?: Prisma.ExchangeRateUpdateManyWithoutFromCurrencyNestedInput
+  exchangeRatesTo?: Prisma.ExchangeRateUpdateManyWithoutToCurrencyNestedInput
+  journalEntryBases?: Prisma.JournalEntryUpdateManyWithoutBaseCurrencyNestedInput
+  journalLines?: Prisma.JournalLineUpdateManyWithoutCurrencyNestedInput
+  revaluationBases?: Prisma.CurrencyRevaluationUpdateManyWithoutBaseCurrencyNestedInput
 }
 
 export type CurrencyUncheckedUpdateWithoutCashboxesInput = {
@@ -799,6 +1315,12 @@ export type CurrencyUncheckedUpdateWithoutCashboxesInput = {
   vendorOpeningBalances?: Prisma.VendorOpeningBalanceUncheckedUpdateManyWithoutCurrencyNestedInput
   bankOpeningBalances?: Prisma.BankOpeningBalanceUncheckedUpdateManyWithoutCurrencyNestedInput
   cashboxOpeningBalances?: Prisma.CashboxOpeningBalanceUncheckedUpdateManyWithoutCurrencyNestedInput
+  organizationDefaults?: Prisma.OrganizationUncheckedUpdateManyWithoutDefaultCurrencyNestedInput
+  exchangeRatesFrom?: Prisma.ExchangeRateUncheckedUpdateManyWithoutFromCurrencyNestedInput
+  exchangeRatesTo?: Prisma.ExchangeRateUncheckedUpdateManyWithoutToCurrencyNestedInput
+  journalEntryBases?: Prisma.JournalEntryUncheckedUpdateManyWithoutBaseCurrencyNestedInput
+  journalLines?: Prisma.JournalLineUncheckedUpdateManyWithoutCurrencyNestedInput
+  revaluationBases?: Prisma.CurrencyRevaluationUncheckedUpdateManyWithoutBaseCurrencyNestedInput
 }
 
 export type CurrencyCreateWithoutInvoicesInput = {
@@ -818,6 +1340,12 @@ export type CurrencyCreateWithoutInvoicesInput = {
   vendorOpeningBalances?: Prisma.VendorOpeningBalanceCreateNestedManyWithoutCurrencyInput
   bankOpeningBalances?: Prisma.BankOpeningBalanceCreateNestedManyWithoutCurrencyInput
   cashboxOpeningBalances?: Prisma.CashboxOpeningBalanceCreateNestedManyWithoutCurrencyInput
+  organizationDefaults?: Prisma.OrganizationCreateNestedManyWithoutDefaultCurrencyInput
+  exchangeRatesFrom?: Prisma.ExchangeRateCreateNestedManyWithoutFromCurrencyInput
+  exchangeRatesTo?: Prisma.ExchangeRateCreateNestedManyWithoutToCurrencyInput
+  journalEntryBases?: Prisma.JournalEntryCreateNestedManyWithoutBaseCurrencyInput
+  journalLines?: Prisma.JournalLineCreateNestedManyWithoutCurrencyInput
+  revaluationBases?: Prisma.CurrencyRevaluationCreateNestedManyWithoutBaseCurrencyInput
 }
 
 export type CurrencyUncheckedCreateWithoutInvoicesInput = {
@@ -837,6 +1365,12 @@ export type CurrencyUncheckedCreateWithoutInvoicesInput = {
   vendorOpeningBalances?: Prisma.VendorOpeningBalanceUncheckedCreateNestedManyWithoutCurrencyInput
   bankOpeningBalances?: Prisma.BankOpeningBalanceUncheckedCreateNestedManyWithoutCurrencyInput
   cashboxOpeningBalances?: Prisma.CashboxOpeningBalanceUncheckedCreateNestedManyWithoutCurrencyInput
+  organizationDefaults?: Prisma.OrganizationUncheckedCreateNestedManyWithoutDefaultCurrencyInput
+  exchangeRatesFrom?: Prisma.ExchangeRateUncheckedCreateNestedManyWithoutFromCurrencyInput
+  exchangeRatesTo?: Prisma.ExchangeRateUncheckedCreateNestedManyWithoutToCurrencyInput
+  journalEntryBases?: Prisma.JournalEntryUncheckedCreateNestedManyWithoutBaseCurrencyInput
+  journalLines?: Prisma.JournalLineUncheckedCreateNestedManyWithoutCurrencyInput
+  revaluationBases?: Prisma.CurrencyRevaluationUncheckedCreateNestedManyWithoutBaseCurrencyInput
 }
 
 export type CurrencyCreateOrConnectWithoutInvoicesInput = {
@@ -872,6 +1406,12 @@ export type CurrencyUpdateWithoutInvoicesInput = {
   vendorOpeningBalances?: Prisma.VendorOpeningBalanceUpdateManyWithoutCurrencyNestedInput
   bankOpeningBalances?: Prisma.BankOpeningBalanceUpdateManyWithoutCurrencyNestedInput
   cashboxOpeningBalances?: Prisma.CashboxOpeningBalanceUpdateManyWithoutCurrencyNestedInput
+  organizationDefaults?: Prisma.OrganizationUpdateManyWithoutDefaultCurrencyNestedInput
+  exchangeRatesFrom?: Prisma.ExchangeRateUpdateManyWithoutFromCurrencyNestedInput
+  exchangeRatesTo?: Prisma.ExchangeRateUpdateManyWithoutToCurrencyNestedInput
+  journalEntryBases?: Prisma.JournalEntryUpdateManyWithoutBaseCurrencyNestedInput
+  journalLines?: Prisma.JournalLineUpdateManyWithoutCurrencyNestedInput
+  revaluationBases?: Prisma.CurrencyRevaluationUpdateManyWithoutBaseCurrencyNestedInput
 }
 
 export type CurrencyUncheckedUpdateWithoutInvoicesInput = {
@@ -891,6 +1431,12 @@ export type CurrencyUncheckedUpdateWithoutInvoicesInput = {
   vendorOpeningBalances?: Prisma.VendorOpeningBalanceUncheckedUpdateManyWithoutCurrencyNestedInput
   bankOpeningBalances?: Prisma.BankOpeningBalanceUncheckedUpdateManyWithoutCurrencyNestedInput
   cashboxOpeningBalances?: Prisma.CashboxOpeningBalanceUncheckedUpdateManyWithoutCurrencyNestedInput
+  organizationDefaults?: Prisma.OrganizationUncheckedUpdateManyWithoutDefaultCurrencyNestedInput
+  exchangeRatesFrom?: Prisma.ExchangeRateUncheckedUpdateManyWithoutFromCurrencyNestedInput
+  exchangeRatesTo?: Prisma.ExchangeRateUncheckedUpdateManyWithoutToCurrencyNestedInput
+  journalEntryBases?: Prisma.JournalEntryUncheckedUpdateManyWithoutBaseCurrencyNestedInput
+  journalLines?: Prisma.JournalLineUncheckedUpdateManyWithoutCurrencyNestedInput
+  revaluationBases?: Prisma.CurrencyRevaluationUncheckedUpdateManyWithoutBaseCurrencyNestedInput
 }
 
 export type CurrencyCreateWithoutReceivedChequesInput = {
@@ -910,6 +1456,12 @@ export type CurrencyCreateWithoutReceivedChequesInput = {
   vendorOpeningBalances?: Prisma.VendorOpeningBalanceCreateNestedManyWithoutCurrencyInput
   bankOpeningBalances?: Prisma.BankOpeningBalanceCreateNestedManyWithoutCurrencyInput
   cashboxOpeningBalances?: Prisma.CashboxOpeningBalanceCreateNestedManyWithoutCurrencyInput
+  organizationDefaults?: Prisma.OrganizationCreateNestedManyWithoutDefaultCurrencyInput
+  exchangeRatesFrom?: Prisma.ExchangeRateCreateNestedManyWithoutFromCurrencyInput
+  exchangeRatesTo?: Prisma.ExchangeRateCreateNestedManyWithoutToCurrencyInput
+  journalEntryBases?: Prisma.JournalEntryCreateNestedManyWithoutBaseCurrencyInput
+  journalLines?: Prisma.JournalLineCreateNestedManyWithoutCurrencyInput
+  revaluationBases?: Prisma.CurrencyRevaluationCreateNestedManyWithoutBaseCurrencyInput
 }
 
 export type CurrencyUncheckedCreateWithoutReceivedChequesInput = {
@@ -929,6 +1481,12 @@ export type CurrencyUncheckedCreateWithoutReceivedChequesInput = {
   vendorOpeningBalances?: Prisma.VendorOpeningBalanceUncheckedCreateNestedManyWithoutCurrencyInput
   bankOpeningBalances?: Prisma.BankOpeningBalanceUncheckedCreateNestedManyWithoutCurrencyInput
   cashboxOpeningBalances?: Prisma.CashboxOpeningBalanceUncheckedCreateNestedManyWithoutCurrencyInput
+  organizationDefaults?: Prisma.OrganizationUncheckedCreateNestedManyWithoutDefaultCurrencyInput
+  exchangeRatesFrom?: Prisma.ExchangeRateUncheckedCreateNestedManyWithoutFromCurrencyInput
+  exchangeRatesTo?: Prisma.ExchangeRateUncheckedCreateNestedManyWithoutToCurrencyInput
+  journalEntryBases?: Prisma.JournalEntryUncheckedCreateNestedManyWithoutBaseCurrencyInput
+  journalLines?: Prisma.JournalLineUncheckedCreateNestedManyWithoutCurrencyInput
+  revaluationBases?: Prisma.CurrencyRevaluationUncheckedCreateNestedManyWithoutBaseCurrencyInput
 }
 
 export type CurrencyCreateOrConnectWithoutReceivedChequesInput = {
@@ -964,6 +1522,12 @@ export type CurrencyUpdateWithoutReceivedChequesInput = {
   vendorOpeningBalances?: Prisma.VendorOpeningBalanceUpdateManyWithoutCurrencyNestedInput
   bankOpeningBalances?: Prisma.BankOpeningBalanceUpdateManyWithoutCurrencyNestedInput
   cashboxOpeningBalances?: Prisma.CashboxOpeningBalanceUpdateManyWithoutCurrencyNestedInput
+  organizationDefaults?: Prisma.OrganizationUpdateManyWithoutDefaultCurrencyNestedInput
+  exchangeRatesFrom?: Prisma.ExchangeRateUpdateManyWithoutFromCurrencyNestedInput
+  exchangeRatesTo?: Prisma.ExchangeRateUpdateManyWithoutToCurrencyNestedInput
+  journalEntryBases?: Prisma.JournalEntryUpdateManyWithoutBaseCurrencyNestedInput
+  journalLines?: Prisma.JournalLineUpdateManyWithoutCurrencyNestedInput
+  revaluationBases?: Prisma.CurrencyRevaluationUpdateManyWithoutBaseCurrencyNestedInput
 }
 
 export type CurrencyUncheckedUpdateWithoutReceivedChequesInput = {
@@ -983,6 +1547,12 @@ export type CurrencyUncheckedUpdateWithoutReceivedChequesInput = {
   vendorOpeningBalances?: Prisma.VendorOpeningBalanceUncheckedUpdateManyWithoutCurrencyNestedInput
   bankOpeningBalances?: Prisma.BankOpeningBalanceUncheckedUpdateManyWithoutCurrencyNestedInput
   cashboxOpeningBalances?: Prisma.CashboxOpeningBalanceUncheckedUpdateManyWithoutCurrencyNestedInput
+  organizationDefaults?: Prisma.OrganizationUncheckedUpdateManyWithoutDefaultCurrencyNestedInput
+  exchangeRatesFrom?: Prisma.ExchangeRateUncheckedUpdateManyWithoutFromCurrencyNestedInput
+  exchangeRatesTo?: Prisma.ExchangeRateUncheckedUpdateManyWithoutToCurrencyNestedInput
+  journalEntryBases?: Prisma.JournalEntryUncheckedUpdateManyWithoutBaseCurrencyNestedInput
+  journalLines?: Prisma.JournalLineUncheckedUpdateManyWithoutCurrencyNestedInput
+  revaluationBases?: Prisma.CurrencyRevaluationUncheckedUpdateManyWithoutBaseCurrencyNestedInput
 }
 
 export type CurrencyCreateWithoutPaidChequesInput = {
@@ -1002,6 +1572,12 @@ export type CurrencyCreateWithoutPaidChequesInput = {
   vendorOpeningBalances?: Prisma.VendorOpeningBalanceCreateNestedManyWithoutCurrencyInput
   bankOpeningBalances?: Prisma.BankOpeningBalanceCreateNestedManyWithoutCurrencyInput
   cashboxOpeningBalances?: Prisma.CashboxOpeningBalanceCreateNestedManyWithoutCurrencyInput
+  organizationDefaults?: Prisma.OrganizationCreateNestedManyWithoutDefaultCurrencyInput
+  exchangeRatesFrom?: Prisma.ExchangeRateCreateNestedManyWithoutFromCurrencyInput
+  exchangeRatesTo?: Prisma.ExchangeRateCreateNestedManyWithoutToCurrencyInput
+  journalEntryBases?: Prisma.JournalEntryCreateNestedManyWithoutBaseCurrencyInput
+  journalLines?: Prisma.JournalLineCreateNestedManyWithoutCurrencyInput
+  revaluationBases?: Prisma.CurrencyRevaluationCreateNestedManyWithoutBaseCurrencyInput
 }
 
 export type CurrencyUncheckedCreateWithoutPaidChequesInput = {
@@ -1021,6 +1597,12 @@ export type CurrencyUncheckedCreateWithoutPaidChequesInput = {
   vendorOpeningBalances?: Prisma.VendorOpeningBalanceUncheckedCreateNestedManyWithoutCurrencyInput
   bankOpeningBalances?: Prisma.BankOpeningBalanceUncheckedCreateNestedManyWithoutCurrencyInput
   cashboxOpeningBalances?: Prisma.CashboxOpeningBalanceUncheckedCreateNestedManyWithoutCurrencyInput
+  organizationDefaults?: Prisma.OrganizationUncheckedCreateNestedManyWithoutDefaultCurrencyInput
+  exchangeRatesFrom?: Prisma.ExchangeRateUncheckedCreateNestedManyWithoutFromCurrencyInput
+  exchangeRatesTo?: Prisma.ExchangeRateUncheckedCreateNestedManyWithoutToCurrencyInput
+  journalEntryBases?: Prisma.JournalEntryUncheckedCreateNestedManyWithoutBaseCurrencyInput
+  journalLines?: Prisma.JournalLineUncheckedCreateNestedManyWithoutCurrencyInput
+  revaluationBases?: Prisma.CurrencyRevaluationUncheckedCreateNestedManyWithoutBaseCurrencyInput
 }
 
 export type CurrencyCreateOrConnectWithoutPaidChequesInput = {
@@ -1056,6 +1638,12 @@ export type CurrencyUpdateWithoutPaidChequesInput = {
   vendorOpeningBalances?: Prisma.VendorOpeningBalanceUpdateManyWithoutCurrencyNestedInput
   bankOpeningBalances?: Prisma.BankOpeningBalanceUpdateManyWithoutCurrencyNestedInput
   cashboxOpeningBalances?: Prisma.CashboxOpeningBalanceUpdateManyWithoutCurrencyNestedInput
+  organizationDefaults?: Prisma.OrganizationUpdateManyWithoutDefaultCurrencyNestedInput
+  exchangeRatesFrom?: Prisma.ExchangeRateUpdateManyWithoutFromCurrencyNestedInput
+  exchangeRatesTo?: Prisma.ExchangeRateUpdateManyWithoutToCurrencyNestedInput
+  journalEntryBases?: Prisma.JournalEntryUpdateManyWithoutBaseCurrencyNestedInput
+  journalLines?: Prisma.JournalLineUpdateManyWithoutCurrencyNestedInput
+  revaluationBases?: Prisma.CurrencyRevaluationUpdateManyWithoutBaseCurrencyNestedInput
 }
 
 export type CurrencyUncheckedUpdateWithoutPaidChequesInput = {
@@ -1075,6 +1663,12 @@ export type CurrencyUncheckedUpdateWithoutPaidChequesInput = {
   vendorOpeningBalances?: Prisma.VendorOpeningBalanceUncheckedUpdateManyWithoutCurrencyNestedInput
   bankOpeningBalances?: Prisma.BankOpeningBalanceUncheckedUpdateManyWithoutCurrencyNestedInput
   cashboxOpeningBalances?: Prisma.CashboxOpeningBalanceUncheckedUpdateManyWithoutCurrencyNestedInput
+  organizationDefaults?: Prisma.OrganizationUncheckedUpdateManyWithoutDefaultCurrencyNestedInput
+  exchangeRatesFrom?: Prisma.ExchangeRateUncheckedUpdateManyWithoutFromCurrencyNestedInput
+  exchangeRatesTo?: Prisma.ExchangeRateUncheckedUpdateManyWithoutToCurrencyNestedInput
+  journalEntryBases?: Prisma.JournalEntryUncheckedUpdateManyWithoutBaseCurrencyNestedInput
+  journalLines?: Prisma.JournalLineUncheckedUpdateManyWithoutCurrencyNestedInput
+  revaluationBases?: Prisma.CurrencyRevaluationUncheckedUpdateManyWithoutBaseCurrencyNestedInput
 }
 
 export type CurrencyCreateWithoutCustomerOpeningBalancesInput = {
@@ -1094,6 +1688,12 @@ export type CurrencyCreateWithoutCustomerOpeningBalancesInput = {
   vendorOpeningBalances?: Prisma.VendorOpeningBalanceCreateNestedManyWithoutCurrencyInput
   bankOpeningBalances?: Prisma.BankOpeningBalanceCreateNestedManyWithoutCurrencyInput
   cashboxOpeningBalances?: Prisma.CashboxOpeningBalanceCreateNestedManyWithoutCurrencyInput
+  organizationDefaults?: Prisma.OrganizationCreateNestedManyWithoutDefaultCurrencyInput
+  exchangeRatesFrom?: Prisma.ExchangeRateCreateNestedManyWithoutFromCurrencyInput
+  exchangeRatesTo?: Prisma.ExchangeRateCreateNestedManyWithoutToCurrencyInput
+  journalEntryBases?: Prisma.JournalEntryCreateNestedManyWithoutBaseCurrencyInput
+  journalLines?: Prisma.JournalLineCreateNestedManyWithoutCurrencyInput
+  revaluationBases?: Prisma.CurrencyRevaluationCreateNestedManyWithoutBaseCurrencyInput
 }
 
 export type CurrencyUncheckedCreateWithoutCustomerOpeningBalancesInput = {
@@ -1113,6 +1713,12 @@ export type CurrencyUncheckedCreateWithoutCustomerOpeningBalancesInput = {
   vendorOpeningBalances?: Prisma.VendorOpeningBalanceUncheckedCreateNestedManyWithoutCurrencyInput
   bankOpeningBalances?: Prisma.BankOpeningBalanceUncheckedCreateNestedManyWithoutCurrencyInput
   cashboxOpeningBalances?: Prisma.CashboxOpeningBalanceUncheckedCreateNestedManyWithoutCurrencyInput
+  organizationDefaults?: Prisma.OrganizationUncheckedCreateNestedManyWithoutDefaultCurrencyInput
+  exchangeRatesFrom?: Prisma.ExchangeRateUncheckedCreateNestedManyWithoutFromCurrencyInput
+  exchangeRatesTo?: Prisma.ExchangeRateUncheckedCreateNestedManyWithoutToCurrencyInput
+  journalEntryBases?: Prisma.JournalEntryUncheckedCreateNestedManyWithoutBaseCurrencyInput
+  journalLines?: Prisma.JournalLineUncheckedCreateNestedManyWithoutCurrencyInput
+  revaluationBases?: Prisma.CurrencyRevaluationUncheckedCreateNestedManyWithoutBaseCurrencyInput
 }
 
 export type CurrencyCreateOrConnectWithoutCustomerOpeningBalancesInput = {
@@ -1148,6 +1754,12 @@ export type CurrencyUpdateWithoutCustomerOpeningBalancesInput = {
   vendorOpeningBalances?: Prisma.VendorOpeningBalanceUpdateManyWithoutCurrencyNestedInput
   bankOpeningBalances?: Prisma.BankOpeningBalanceUpdateManyWithoutCurrencyNestedInput
   cashboxOpeningBalances?: Prisma.CashboxOpeningBalanceUpdateManyWithoutCurrencyNestedInput
+  organizationDefaults?: Prisma.OrganizationUpdateManyWithoutDefaultCurrencyNestedInput
+  exchangeRatesFrom?: Prisma.ExchangeRateUpdateManyWithoutFromCurrencyNestedInput
+  exchangeRatesTo?: Prisma.ExchangeRateUpdateManyWithoutToCurrencyNestedInput
+  journalEntryBases?: Prisma.JournalEntryUpdateManyWithoutBaseCurrencyNestedInput
+  journalLines?: Prisma.JournalLineUpdateManyWithoutCurrencyNestedInput
+  revaluationBases?: Prisma.CurrencyRevaluationUpdateManyWithoutBaseCurrencyNestedInput
 }
 
 export type CurrencyUncheckedUpdateWithoutCustomerOpeningBalancesInput = {
@@ -1167,6 +1779,12 @@ export type CurrencyUncheckedUpdateWithoutCustomerOpeningBalancesInput = {
   vendorOpeningBalances?: Prisma.VendorOpeningBalanceUncheckedUpdateManyWithoutCurrencyNestedInput
   bankOpeningBalances?: Prisma.BankOpeningBalanceUncheckedUpdateManyWithoutCurrencyNestedInput
   cashboxOpeningBalances?: Prisma.CashboxOpeningBalanceUncheckedUpdateManyWithoutCurrencyNestedInput
+  organizationDefaults?: Prisma.OrganizationUncheckedUpdateManyWithoutDefaultCurrencyNestedInput
+  exchangeRatesFrom?: Prisma.ExchangeRateUncheckedUpdateManyWithoutFromCurrencyNestedInput
+  exchangeRatesTo?: Prisma.ExchangeRateUncheckedUpdateManyWithoutToCurrencyNestedInput
+  journalEntryBases?: Prisma.JournalEntryUncheckedUpdateManyWithoutBaseCurrencyNestedInput
+  journalLines?: Prisma.JournalLineUncheckedUpdateManyWithoutCurrencyNestedInput
+  revaluationBases?: Prisma.CurrencyRevaluationUncheckedUpdateManyWithoutBaseCurrencyNestedInput
 }
 
 export type CurrencyCreateWithoutVendorOpeningBalancesInput = {
@@ -1186,6 +1804,12 @@ export type CurrencyCreateWithoutVendorOpeningBalancesInput = {
   customerOpeningBalances?: Prisma.CustomerOpeningBalanceCreateNestedManyWithoutCurrencyInput
   bankOpeningBalances?: Prisma.BankOpeningBalanceCreateNestedManyWithoutCurrencyInput
   cashboxOpeningBalances?: Prisma.CashboxOpeningBalanceCreateNestedManyWithoutCurrencyInput
+  organizationDefaults?: Prisma.OrganizationCreateNestedManyWithoutDefaultCurrencyInput
+  exchangeRatesFrom?: Prisma.ExchangeRateCreateNestedManyWithoutFromCurrencyInput
+  exchangeRatesTo?: Prisma.ExchangeRateCreateNestedManyWithoutToCurrencyInput
+  journalEntryBases?: Prisma.JournalEntryCreateNestedManyWithoutBaseCurrencyInput
+  journalLines?: Prisma.JournalLineCreateNestedManyWithoutCurrencyInput
+  revaluationBases?: Prisma.CurrencyRevaluationCreateNestedManyWithoutBaseCurrencyInput
 }
 
 export type CurrencyUncheckedCreateWithoutVendorOpeningBalancesInput = {
@@ -1205,6 +1829,12 @@ export type CurrencyUncheckedCreateWithoutVendorOpeningBalancesInput = {
   customerOpeningBalances?: Prisma.CustomerOpeningBalanceUncheckedCreateNestedManyWithoutCurrencyInput
   bankOpeningBalances?: Prisma.BankOpeningBalanceUncheckedCreateNestedManyWithoutCurrencyInput
   cashboxOpeningBalances?: Prisma.CashboxOpeningBalanceUncheckedCreateNestedManyWithoutCurrencyInput
+  organizationDefaults?: Prisma.OrganizationUncheckedCreateNestedManyWithoutDefaultCurrencyInput
+  exchangeRatesFrom?: Prisma.ExchangeRateUncheckedCreateNestedManyWithoutFromCurrencyInput
+  exchangeRatesTo?: Prisma.ExchangeRateUncheckedCreateNestedManyWithoutToCurrencyInput
+  journalEntryBases?: Prisma.JournalEntryUncheckedCreateNestedManyWithoutBaseCurrencyInput
+  journalLines?: Prisma.JournalLineUncheckedCreateNestedManyWithoutCurrencyInput
+  revaluationBases?: Prisma.CurrencyRevaluationUncheckedCreateNestedManyWithoutBaseCurrencyInput
 }
 
 export type CurrencyCreateOrConnectWithoutVendorOpeningBalancesInput = {
@@ -1240,6 +1870,12 @@ export type CurrencyUpdateWithoutVendorOpeningBalancesInput = {
   customerOpeningBalances?: Prisma.CustomerOpeningBalanceUpdateManyWithoutCurrencyNestedInput
   bankOpeningBalances?: Prisma.BankOpeningBalanceUpdateManyWithoutCurrencyNestedInput
   cashboxOpeningBalances?: Prisma.CashboxOpeningBalanceUpdateManyWithoutCurrencyNestedInput
+  organizationDefaults?: Prisma.OrganizationUpdateManyWithoutDefaultCurrencyNestedInput
+  exchangeRatesFrom?: Prisma.ExchangeRateUpdateManyWithoutFromCurrencyNestedInput
+  exchangeRatesTo?: Prisma.ExchangeRateUpdateManyWithoutToCurrencyNestedInput
+  journalEntryBases?: Prisma.JournalEntryUpdateManyWithoutBaseCurrencyNestedInput
+  journalLines?: Prisma.JournalLineUpdateManyWithoutCurrencyNestedInput
+  revaluationBases?: Prisma.CurrencyRevaluationUpdateManyWithoutBaseCurrencyNestedInput
 }
 
 export type CurrencyUncheckedUpdateWithoutVendorOpeningBalancesInput = {
@@ -1259,6 +1895,12 @@ export type CurrencyUncheckedUpdateWithoutVendorOpeningBalancesInput = {
   customerOpeningBalances?: Prisma.CustomerOpeningBalanceUncheckedUpdateManyWithoutCurrencyNestedInput
   bankOpeningBalances?: Prisma.BankOpeningBalanceUncheckedUpdateManyWithoutCurrencyNestedInput
   cashboxOpeningBalances?: Prisma.CashboxOpeningBalanceUncheckedUpdateManyWithoutCurrencyNestedInput
+  organizationDefaults?: Prisma.OrganizationUncheckedUpdateManyWithoutDefaultCurrencyNestedInput
+  exchangeRatesFrom?: Prisma.ExchangeRateUncheckedUpdateManyWithoutFromCurrencyNestedInput
+  exchangeRatesTo?: Prisma.ExchangeRateUncheckedUpdateManyWithoutToCurrencyNestedInput
+  journalEntryBases?: Prisma.JournalEntryUncheckedUpdateManyWithoutBaseCurrencyNestedInput
+  journalLines?: Prisma.JournalLineUncheckedUpdateManyWithoutCurrencyNestedInput
+  revaluationBases?: Prisma.CurrencyRevaluationUncheckedUpdateManyWithoutBaseCurrencyNestedInput
 }
 
 export type CurrencyCreateWithoutBankOpeningBalancesInput = {
@@ -1278,6 +1920,12 @@ export type CurrencyCreateWithoutBankOpeningBalancesInput = {
   customerOpeningBalances?: Prisma.CustomerOpeningBalanceCreateNestedManyWithoutCurrencyInput
   vendorOpeningBalances?: Prisma.VendorOpeningBalanceCreateNestedManyWithoutCurrencyInput
   cashboxOpeningBalances?: Prisma.CashboxOpeningBalanceCreateNestedManyWithoutCurrencyInput
+  organizationDefaults?: Prisma.OrganizationCreateNestedManyWithoutDefaultCurrencyInput
+  exchangeRatesFrom?: Prisma.ExchangeRateCreateNestedManyWithoutFromCurrencyInput
+  exchangeRatesTo?: Prisma.ExchangeRateCreateNestedManyWithoutToCurrencyInput
+  journalEntryBases?: Prisma.JournalEntryCreateNestedManyWithoutBaseCurrencyInput
+  journalLines?: Prisma.JournalLineCreateNestedManyWithoutCurrencyInput
+  revaluationBases?: Prisma.CurrencyRevaluationCreateNestedManyWithoutBaseCurrencyInput
 }
 
 export type CurrencyUncheckedCreateWithoutBankOpeningBalancesInput = {
@@ -1297,6 +1945,12 @@ export type CurrencyUncheckedCreateWithoutBankOpeningBalancesInput = {
   customerOpeningBalances?: Prisma.CustomerOpeningBalanceUncheckedCreateNestedManyWithoutCurrencyInput
   vendorOpeningBalances?: Prisma.VendorOpeningBalanceUncheckedCreateNestedManyWithoutCurrencyInput
   cashboxOpeningBalances?: Prisma.CashboxOpeningBalanceUncheckedCreateNestedManyWithoutCurrencyInput
+  organizationDefaults?: Prisma.OrganizationUncheckedCreateNestedManyWithoutDefaultCurrencyInput
+  exchangeRatesFrom?: Prisma.ExchangeRateUncheckedCreateNestedManyWithoutFromCurrencyInput
+  exchangeRatesTo?: Prisma.ExchangeRateUncheckedCreateNestedManyWithoutToCurrencyInput
+  journalEntryBases?: Prisma.JournalEntryUncheckedCreateNestedManyWithoutBaseCurrencyInput
+  journalLines?: Prisma.JournalLineUncheckedCreateNestedManyWithoutCurrencyInput
+  revaluationBases?: Prisma.CurrencyRevaluationUncheckedCreateNestedManyWithoutBaseCurrencyInput
 }
 
 export type CurrencyCreateOrConnectWithoutBankOpeningBalancesInput = {
@@ -1332,6 +1986,12 @@ export type CurrencyUpdateWithoutBankOpeningBalancesInput = {
   customerOpeningBalances?: Prisma.CustomerOpeningBalanceUpdateManyWithoutCurrencyNestedInput
   vendorOpeningBalances?: Prisma.VendorOpeningBalanceUpdateManyWithoutCurrencyNestedInput
   cashboxOpeningBalances?: Prisma.CashboxOpeningBalanceUpdateManyWithoutCurrencyNestedInput
+  organizationDefaults?: Prisma.OrganizationUpdateManyWithoutDefaultCurrencyNestedInput
+  exchangeRatesFrom?: Prisma.ExchangeRateUpdateManyWithoutFromCurrencyNestedInput
+  exchangeRatesTo?: Prisma.ExchangeRateUpdateManyWithoutToCurrencyNestedInput
+  journalEntryBases?: Prisma.JournalEntryUpdateManyWithoutBaseCurrencyNestedInput
+  journalLines?: Prisma.JournalLineUpdateManyWithoutCurrencyNestedInput
+  revaluationBases?: Prisma.CurrencyRevaluationUpdateManyWithoutBaseCurrencyNestedInput
 }
 
 export type CurrencyUncheckedUpdateWithoutBankOpeningBalancesInput = {
@@ -1351,6 +2011,12 @@ export type CurrencyUncheckedUpdateWithoutBankOpeningBalancesInput = {
   customerOpeningBalances?: Prisma.CustomerOpeningBalanceUncheckedUpdateManyWithoutCurrencyNestedInput
   vendorOpeningBalances?: Prisma.VendorOpeningBalanceUncheckedUpdateManyWithoutCurrencyNestedInput
   cashboxOpeningBalances?: Prisma.CashboxOpeningBalanceUncheckedUpdateManyWithoutCurrencyNestedInput
+  organizationDefaults?: Prisma.OrganizationUncheckedUpdateManyWithoutDefaultCurrencyNestedInput
+  exchangeRatesFrom?: Prisma.ExchangeRateUncheckedUpdateManyWithoutFromCurrencyNestedInput
+  exchangeRatesTo?: Prisma.ExchangeRateUncheckedUpdateManyWithoutToCurrencyNestedInput
+  journalEntryBases?: Prisma.JournalEntryUncheckedUpdateManyWithoutBaseCurrencyNestedInput
+  journalLines?: Prisma.JournalLineUncheckedUpdateManyWithoutCurrencyNestedInput
+  revaluationBases?: Prisma.CurrencyRevaluationUncheckedUpdateManyWithoutBaseCurrencyNestedInput
 }
 
 export type CurrencyCreateWithoutCashboxOpeningBalancesInput = {
@@ -1370,6 +2036,12 @@ export type CurrencyCreateWithoutCashboxOpeningBalancesInput = {
   customerOpeningBalances?: Prisma.CustomerOpeningBalanceCreateNestedManyWithoutCurrencyInput
   vendorOpeningBalances?: Prisma.VendorOpeningBalanceCreateNestedManyWithoutCurrencyInput
   bankOpeningBalances?: Prisma.BankOpeningBalanceCreateNestedManyWithoutCurrencyInput
+  organizationDefaults?: Prisma.OrganizationCreateNestedManyWithoutDefaultCurrencyInput
+  exchangeRatesFrom?: Prisma.ExchangeRateCreateNestedManyWithoutFromCurrencyInput
+  exchangeRatesTo?: Prisma.ExchangeRateCreateNestedManyWithoutToCurrencyInput
+  journalEntryBases?: Prisma.JournalEntryCreateNestedManyWithoutBaseCurrencyInput
+  journalLines?: Prisma.JournalLineCreateNestedManyWithoutCurrencyInput
+  revaluationBases?: Prisma.CurrencyRevaluationCreateNestedManyWithoutBaseCurrencyInput
 }
 
 export type CurrencyUncheckedCreateWithoutCashboxOpeningBalancesInput = {
@@ -1389,6 +2061,12 @@ export type CurrencyUncheckedCreateWithoutCashboxOpeningBalancesInput = {
   customerOpeningBalances?: Prisma.CustomerOpeningBalanceUncheckedCreateNestedManyWithoutCurrencyInput
   vendorOpeningBalances?: Prisma.VendorOpeningBalanceUncheckedCreateNestedManyWithoutCurrencyInput
   bankOpeningBalances?: Prisma.BankOpeningBalanceUncheckedCreateNestedManyWithoutCurrencyInput
+  organizationDefaults?: Prisma.OrganizationUncheckedCreateNestedManyWithoutDefaultCurrencyInput
+  exchangeRatesFrom?: Prisma.ExchangeRateUncheckedCreateNestedManyWithoutFromCurrencyInput
+  exchangeRatesTo?: Prisma.ExchangeRateUncheckedCreateNestedManyWithoutToCurrencyInput
+  journalEntryBases?: Prisma.JournalEntryUncheckedCreateNestedManyWithoutBaseCurrencyInput
+  journalLines?: Prisma.JournalLineUncheckedCreateNestedManyWithoutCurrencyInput
+  revaluationBases?: Prisma.CurrencyRevaluationUncheckedCreateNestedManyWithoutBaseCurrencyInput
 }
 
 export type CurrencyCreateOrConnectWithoutCashboxOpeningBalancesInput = {
@@ -1424,6 +2102,12 @@ export type CurrencyUpdateWithoutCashboxOpeningBalancesInput = {
   customerOpeningBalances?: Prisma.CustomerOpeningBalanceUpdateManyWithoutCurrencyNestedInput
   vendorOpeningBalances?: Prisma.VendorOpeningBalanceUpdateManyWithoutCurrencyNestedInput
   bankOpeningBalances?: Prisma.BankOpeningBalanceUpdateManyWithoutCurrencyNestedInput
+  organizationDefaults?: Prisma.OrganizationUpdateManyWithoutDefaultCurrencyNestedInput
+  exchangeRatesFrom?: Prisma.ExchangeRateUpdateManyWithoutFromCurrencyNestedInput
+  exchangeRatesTo?: Prisma.ExchangeRateUpdateManyWithoutToCurrencyNestedInput
+  journalEntryBases?: Prisma.JournalEntryUpdateManyWithoutBaseCurrencyNestedInput
+  journalLines?: Prisma.JournalLineUpdateManyWithoutCurrencyNestedInput
+  revaluationBases?: Prisma.CurrencyRevaluationUpdateManyWithoutBaseCurrencyNestedInput
 }
 
 export type CurrencyUncheckedUpdateWithoutCashboxOpeningBalancesInput = {
@@ -1443,6 +2127,360 @@ export type CurrencyUncheckedUpdateWithoutCashboxOpeningBalancesInput = {
   customerOpeningBalances?: Prisma.CustomerOpeningBalanceUncheckedUpdateManyWithoutCurrencyNestedInput
   vendorOpeningBalances?: Prisma.VendorOpeningBalanceUncheckedUpdateManyWithoutCurrencyNestedInput
   bankOpeningBalances?: Prisma.BankOpeningBalanceUncheckedUpdateManyWithoutCurrencyNestedInput
+  organizationDefaults?: Prisma.OrganizationUncheckedUpdateManyWithoutDefaultCurrencyNestedInput
+  exchangeRatesFrom?: Prisma.ExchangeRateUncheckedUpdateManyWithoutFromCurrencyNestedInput
+  exchangeRatesTo?: Prisma.ExchangeRateUncheckedUpdateManyWithoutToCurrencyNestedInput
+  journalEntryBases?: Prisma.JournalEntryUncheckedUpdateManyWithoutBaseCurrencyNestedInput
+  journalLines?: Prisma.JournalLineUncheckedUpdateManyWithoutCurrencyNestedInput
+  revaluationBases?: Prisma.CurrencyRevaluationUncheckedUpdateManyWithoutBaseCurrencyNestedInput
+}
+
+export type CurrencyCreateWithoutExchangeRatesFromInput = {
+  id?: string
+  code: string
+  name: string
+  symbol: string
+  decimalPlaces?: number
+  isActive?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  bankAccounts?: Prisma.BankAccountCreateNestedManyWithoutCurrencyInput
+  cashboxes?: Prisma.CashboxCreateNestedManyWithoutCurrencyInput
+  invoices?: Prisma.InvoiceCreateNestedManyWithoutCurrencyInput
+  receivedCheques?: Prisma.ReceivedChequeCreateNestedManyWithoutCurrencyInput
+  paidCheques?: Prisma.PaidChequeCreateNestedManyWithoutCurrencyInput
+  customerOpeningBalances?: Prisma.CustomerOpeningBalanceCreateNestedManyWithoutCurrencyInput
+  vendorOpeningBalances?: Prisma.VendorOpeningBalanceCreateNestedManyWithoutCurrencyInput
+  bankOpeningBalances?: Prisma.BankOpeningBalanceCreateNestedManyWithoutCurrencyInput
+  cashboxOpeningBalances?: Prisma.CashboxOpeningBalanceCreateNestedManyWithoutCurrencyInput
+  organizationDefaults?: Prisma.OrganizationCreateNestedManyWithoutDefaultCurrencyInput
+  exchangeRatesTo?: Prisma.ExchangeRateCreateNestedManyWithoutToCurrencyInput
+  journalEntryBases?: Prisma.JournalEntryCreateNestedManyWithoutBaseCurrencyInput
+  journalLines?: Prisma.JournalLineCreateNestedManyWithoutCurrencyInput
+  revaluationBases?: Prisma.CurrencyRevaluationCreateNestedManyWithoutBaseCurrencyInput
+}
+
+export type CurrencyUncheckedCreateWithoutExchangeRatesFromInput = {
+  id?: string
+  code: string
+  name: string
+  symbol: string
+  decimalPlaces?: number
+  isActive?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  bankAccounts?: Prisma.BankAccountUncheckedCreateNestedManyWithoutCurrencyInput
+  cashboxes?: Prisma.CashboxUncheckedCreateNestedManyWithoutCurrencyInput
+  invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutCurrencyInput
+  receivedCheques?: Prisma.ReceivedChequeUncheckedCreateNestedManyWithoutCurrencyInput
+  paidCheques?: Prisma.PaidChequeUncheckedCreateNestedManyWithoutCurrencyInput
+  customerOpeningBalances?: Prisma.CustomerOpeningBalanceUncheckedCreateNestedManyWithoutCurrencyInput
+  vendorOpeningBalances?: Prisma.VendorOpeningBalanceUncheckedCreateNestedManyWithoutCurrencyInput
+  bankOpeningBalances?: Prisma.BankOpeningBalanceUncheckedCreateNestedManyWithoutCurrencyInput
+  cashboxOpeningBalances?: Prisma.CashboxOpeningBalanceUncheckedCreateNestedManyWithoutCurrencyInput
+  organizationDefaults?: Prisma.OrganizationUncheckedCreateNestedManyWithoutDefaultCurrencyInput
+  exchangeRatesTo?: Prisma.ExchangeRateUncheckedCreateNestedManyWithoutToCurrencyInput
+  journalEntryBases?: Prisma.JournalEntryUncheckedCreateNestedManyWithoutBaseCurrencyInput
+  journalLines?: Prisma.JournalLineUncheckedCreateNestedManyWithoutCurrencyInput
+  revaluationBases?: Prisma.CurrencyRevaluationUncheckedCreateNestedManyWithoutBaseCurrencyInput
+}
+
+export type CurrencyCreateOrConnectWithoutExchangeRatesFromInput = {
+  where: Prisma.CurrencyWhereUniqueInput
+  create: Prisma.XOR<Prisma.CurrencyCreateWithoutExchangeRatesFromInput, Prisma.CurrencyUncheckedCreateWithoutExchangeRatesFromInput>
+}
+
+export type CurrencyCreateWithoutExchangeRatesToInput = {
+  id?: string
+  code: string
+  name: string
+  symbol: string
+  decimalPlaces?: number
+  isActive?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  bankAccounts?: Prisma.BankAccountCreateNestedManyWithoutCurrencyInput
+  cashboxes?: Prisma.CashboxCreateNestedManyWithoutCurrencyInput
+  invoices?: Prisma.InvoiceCreateNestedManyWithoutCurrencyInput
+  receivedCheques?: Prisma.ReceivedChequeCreateNestedManyWithoutCurrencyInput
+  paidCheques?: Prisma.PaidChequeCreateNestedManyWithoutCurrencyInput
+  customerOpeningBalances?: Prisma.CustomerOpeningBalanceCreateNestedManyWithoutCurrencyInput
+  vendorOpeningBalances?: Prisma.VendorOpeningBalanceCreateNestedManyWithoutCurrencyInput
+  bankOpeningBalances?: Prisma.BankOpeningBalanceCreateNestedManyWithoutCurrencyInput
+  cashboxOpeningBalances?: Prisma.CashboxOpeningBalanceCreateNestedManyWithoutCurrencyInput
+  organizationDefaults?: Prisma.OrganizationCreateNestedManyWithoutDefaultCurrencyInput
+  exchangeRatesFrom?: Prisma.ExchangeRateCreateNestedManyWithoutFromCurrencyInput
+  journalEntryBases?: Prisma.JournalEntryCreateNestedManyWithoutBaseCurrencyInput
+  journalLines?: Prisma.JournalLineCreateNestedManyWithoutCurrencyInput
+  revaluationBases?: Prisma.CurrencyRevaluationCreateNestedManyWithoutBaseCurrencyInput
+}
+
+export type CurrencyUncheckedCreateWithoutExchangeRatesToInput = {
+  id?: string
+  code: string
+  name: string
+  symbol: string
+  decimalPlaces?: number
+  isActive?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  bankAccounts?: Prisma.BankAccountUncheckedCreateNestedManyWithoutCurrencyInput
+  cashboxes?: Prisma.CashboxUncheckedCreateNestedManyWithoutCurrencyInput
+  invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutCurrencyInput
+  receivedCheques?: Prisma.ReceivedChequeUncheckedCreateNestedManyWithoutCurrencyInput
+  paidCheques?: Prisma.PaidChequeUncheckedCreateNestedManyWithoutCurrencyInput
+  customerOpeningBalances?: Prisma.CustomerOpeningBalanceUncheckedCreateNestedManyWithoutCurrencyInput
+  vendorOpeningBalances?: Prisma.VendorOpeningBalanceUncheckedCreateNestedManyWithoutCurrencyInput
+  bankOpeningBalances?: Prisma.BankOpeningBalanceUncheckedCreateNestedManyWithoutCurrencyInput
+  cashboxOpeningBalances?: Prisma.CashboxOpeningBalanceUncheckedCreateNestedManyWithoutCurrencyInput
+  organizationDefaults?: Prisma.OrganizationUncheckedCreateNestedManyWithoutDefaultCurrencyInput
+  exchangeRatesFrom?: Prisma.ExchangeRateUncheckedCreateNestedManyWithoutFromCurrencyInput
+  journalEntryBases?: Prisma.JournalEntryUncheckedCreateNestedManyWithoutBaseCurrencyInput
+  journalLines?: Prisma.JournalLineUncheckedCreateNestedManyWithoutCurrencyInput
+  revaluationBases?: Prisma.CurrencyRevaluationUncheckedCreateNestedManyWithoutBaseCurrencyInput
+}
+
+export type CurrencyCreateOrConnectWithoutExchangeRatesToInput = {
+  where: Prisma.CurrencyWhereUniqueInput
+  create: Prisma.XOR<Prisma.CurrencyCreateWithoutExchangeRatesToInput, Prisma.CurrencyUncheckedCreateWithoutExchangeRatesToInput>
+}
+
+export type CurrencyUpsertWithoutExchangeRatesFromInput = {
+  update: Prisma.XOR<Prisma.CurrencyUpdateWithoutExchangeRatesFromInput, Prisma.CurrencyUncheckedUpdateWithoutExchangeRatesFromInput>
+  create: Prisma.XOR<Prisma.CurrencyCreateWithoutExchangeRatesFromInput, Prisma.CurrencyUncheckedCreateWithoutExchangeRatesFromInput>
+  where?: Prisma.CurrencyWhereInput
+}
+
+export type CurrencyUpdateToOneWithWhereWithoutExchangeRatesFromInput = {
+  where?: Prisma.CurrencyWhereInput
+  data: Prisma.XOR<Prisma.CurrencyUpdateWithoutExchangeRatesFromInput, Prisma.CurrencyUncheckedUpdateWithoutExchangeRatesFromInput>
+}
+
+export type CurrencyUpdateWithoutExchangeRatesFromInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  code?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  symbol?: Prisma.StringFieldUpdateOperationsInput | string
+  decimalPlaces?: Prisma.IntFieldUpdateOperationsInput | number
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  bankAccounts?: Prisma.BankAccountUpdateManyWithoutCurrencyNestedInput
+  cashboxes?: Prisma.CashboxUpdateManyWithoutCurrencyNestedInput
+  invoices?: Prisma.InvoiceUpdateManyWithoutCurrencyNestedInput
+  receivedCheques?: Prisma.ReceivedChequeUpdateManyWithoutCurrencyNestedInput
+  paidCheques?: Prisma.PaidChequeUpdateManyWithoutCurrencyNestedInput
+  customerOpeningBalances?: Prisma.CustomerOpeningBalanceUpdateManyWithoutCurrencyNestedInput
+  vendorOpeningBalances?: Prisma.VendorOpeningBalanceUpdateManyWithoutCurrencyNestedInput
+  bankOpeningBalances?: Prisma.BankOpeningBalanceUpdateManyWithoutCurrencyNestedInput
+  cashboxOpeningBalances?: Prisma.CashboxOpeningBalanceUpdateManyWithoutCurrencyNestedInput
+  organizationDefaults?: Prisma.OrganizationUpdateManyWithoutDefaultCurrencyNestedInput
+  exchangeRatesTo?: Prisma.ExchangeRateUpdateManyWithoutToCurrencyNestedInput
+  journalEntryBases?: Prisma.JournalEntryUpdateManyWithoutBaseCurrencyNestedInput
+  journalLines?: Prisma.JournalLineUpdateManyWithoutCurrencyNestedInput
+  revaluationBases?: Prisma.CurrencyRevaluationUpdateManyWithoutBaseCurrencyNestedInput
+}
+
+export type CurrencyUncheckedUpdateWithoutExchangeRatesFromInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  code?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  symbol?: Prisma.StringFieldUpdateOperationsInput | string
+  decimalPlaces?: Prisma.IntFieldUpdateOperationsInput | number
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  bankAccounts?: Prisma.BankAccountUncheckedUpdateManyWithoutCurrencyNestedInput
+  cashboxes?: Prisma.CashboxUncheckedUpdateManyWithoutCurrencyNestedInput
+  invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutCurrencyNestedInput
+  receivedCheques?: Prisma.ReceivedChequeUncheckedUpdateManyWithoutCurrencyNestedInput
+  paidCheques?: Prisma.PaidChequeUncheckedUpdateManyWithoutCurrencyNestedInput
+  customerOpeningBalances?: Prisma.CustomerOpeningBalanceUncheckedUpdateManyWithoutCurrencyNestedInput
+  vendorOpeningBalances?: Prisma.VendorOpeningBalanceUncheckedUpdateManyWithoutCurrencyNestedInput
+  bankOpeningBalances?: Prisma.BankOpeningBalanceUncheckedUpdateManyWithoutCurrencyNestedInput
+  cashboxOpeningBalances?: Prisma.CashboxOpeningBalanceUncheckedUpdateManyWithoutCurrencyNestedInput
+  organizationDefaults?: Prisma.OrganizationUncheckedUpdateManyWithoutDefaultCurrencyNestedInput
+  exchangeRatesTo?: Prisma.ExchangeRateUncheckedUpdateManyWithoutToCurrencyNestedInput
+  journalEntryBases?: Prisma.JournalEntryUncheckedUpdateManyWithoutBaseCurrencyNestedInput
+  journalLines?: Prisma.JournalLineUncheckedUpdateManyWithoutCurrencyNestedInput
+  revaluationBases?: Prisma.CurrencyRevaluationUncheckedUpdateManyWithoutBaseCurrencyNestedInput
+}
+
+export type CurrencyUpsertWithoutExchangeRatesToInput = {
+  update: Prisma.XOR<Prisma.CurrencyUpdateWithoutExchangeRatesToInput, Prisma.CurrencyUncheckedUpdateWithoutExchangeRatesToInput>
+  create: Prisma.XOR<Prisma.CurrencyCreateWithoutExchangeRatesToInput, Prisma.CurrencyUncheckedCreateWithoutExchangeRatesToInput>
+  where?: Prisma.CurrencyWhereInput
+}
+
+export type CurrencyUpdateToOneWithWhereWithoutExchangeRatesToInput = {
+  where?: Prisma.CurrencyWhereInput
+  data: Prisma.XOR<Prisma.CurrencyUpdateWithoutExchangeRatesToInput, Prisma.CurrencyUncheckedUpdateWithoutExchangeRatesToInput>
+}
+
+export type CurrencyUpdateWithoutExchangeRatesToInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  code?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  symbol?: Prisma.StringFieldUpdateOperationsInput | string
+  decimalPlaces?: Prisma.IntFieldUpdateOperationsInput | number
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  bankAccounts?: Prisma.BankAccountUpdateManyWithoutCurrencyNestedInput
+  cashboxes?: Prisma.CashboxUpdateManyWithoutCurrencyNestedInput
+  invoices?: Prisma.InvoiceUpdateManyWithoutCurrencyNestedInput
+  receivedCheques?: Prisma.ReceivedChequeUpdateManyWithoutCurrencyNestedInput
+  paidCheques?: Prisma.PaidChequeUpdateManyWithoutCurrencyNestedInput
+  customerOpeningBalances?: Prisma.CustomerOpeningBalanceUpdateManyWithoutCurrencyNestedInput
+  vendorOpeningBalances?: Prisma.VendorOpeningBalanceUpdateManyWithoutCurrencyNestedInput
+  bankOpeningBalances?: Prisma.BankOpeningBalanceUpdateManyWithoutCurrencyNestedInput
+  cashboxOpeningBalances?: Prisma.CashboxOpeningBalanceUpdateManyWithoutCurrencyNestedInput
+  organizationDefaults?: Prisma.OrganizationUpdateManyWithoutDefaultCurrencyNestedInput
+  exchangeRatesFrom?: Prisma.ExchangeRateUpdateManyWithoutFromCurrencyNestedInput
+  journalEntryBases?: Prisma.JournalEntryUpdateManyWithoutBaseCurrencyNestedInput
+  journalLines?: Prisma.JournalLineUpdateManyWithoutCurrencyNestedInput
+  revaluationBases?: Prisma.CurrencyRevaluationUpdateManyWithoutBaseCurrencyNestedInput
+}
+
+export type CurrencyUncheckedUpdateWithoutExchangeRatesToInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  code?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  symbol?: Prisma.StringFieldUpdateOperationsInput | string
+  decimalPlaces?: Prisma.IntFieldUpdateOperationsInput | number
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  bankAccounts?: Prisma.BankAccountUncheckedUpdateManyWithoutCurrencyNestedInput
+  cashboxes?: Prisma.CashboxUncheckedUpdateManyWithoutCurrencyNestedInput
+  invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutCurrencyNestedInput
+  receivedCheques?: Prisma.ReceivedChequeUncheckedUpdateManyWithoutCurrencyNestedInput
+  paidCheques?: Prisma.PaidChequeUncheckedUpdateManyWithoutCurrencyNestedInput
+  customerOpeningBalances?: Prisma.CustomerOpeningBalanceUncheckedUpdateManyWithoutCurrencyNestedInput
+  vendorOpeningBalances?: Prisma.VendorOpeningBalanceUncheckedUpdateManyWithoutCurrencyNestedInput
+  bankOpeningBalances?: Prisma.BankOpeningBalanceUncheckedUpdateManyWithoutCurrencyNestedInput
+  cashboxOpeningBalances?: Prisma.CashboxOpeningBalanceUncheckedUpdateManyWithoutCurrencyNestedInput
+  organizationDefaults?: Prisma.OrganizationUncheckedUpdateManyWithoutDefaultCurrencyNestedInput
+  exchangeRatesFrom?: Prisma.ExchangeRateUncheckedUpdateManyWithoutFromCurrencyNestedInput
+  journalEntryBases?: Prisma.JournalEntryUncheckedUpdateManyWithoutBaseCurrencyNestedInput
+  journalLines?: Prisma.JournalLineUncheckedUpdateManyWithoutCurrencyNestedInput
+  revaluationBases?: Prisma.CurrencyRevaluationUncheckedUpdateManyWithoutBaseCurrencyNestedInput
+}
+
+export type CurrencyCreateWithoutRevaluationBasesInput = {
+  id?: string
+  code: string
+  name: string
+  symbol: string
+  decimalPlaces?: number
+  isActive?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  bankAccounts?: Prisma.BankAccountCreateNestedManyWithoutCurrencyInput
+  cashboxes?: Prisma.CashboxCreateNestedManyWithoutCurrencyInput
+  invoices?: Prisma.InvoiceCreateNestedManyWithoutCurrencyInput
+  receivedCheques?: Prisma.ReceivedChequeCreateNestedManyWithoutCurrencyInput
+  paidCheques?: Prisma.PaidChequeCreateNestedManyWithoutCurrencyInput
+  customerOpeningBalances?: Prisma.CustomerOpeningBalanceCreateNestedManyWithoutCurrencyInput
+  vendorOpeningBalances?: Prisma.VendorOpeningBalanceCreateNestedManyWithoutCurrencyInput
+  bankOpeningBalances?: Prisma.BankOpeningBalanceCreateNestedManyWithoutCurrencyInput
+  cashboxOpeningBalances?: Prisma.CashboxOpeningBalanceCreateNestedManyWithoutCurrencyInput
+  organizationDefaults?: Prisma.OrganizationCreateNestedManyWithoutDefaultCurrencyInput
+  exchangeRatesFrom?: Prisma.ExchangeRateCreateNestedManyWithoutFromCurrencyInput
+  exchangeRatesTo?: Prisma.ExchangeRateCreateNestedManyWithoutToCurrencyInput
+  journalEntryBases?: Prisma.JournalEntryCreateNestedManyWithoutBaseCurrencyInput
+  journalLines?: Prisma.JournalLineCreateNestedManyWithoutCurrencyInput
+}
+
+export type CurrencyUncheckedCreateWithoutRevaluationBasesInput = {
+  id?: string
+  code: string
+  name: string
+  symbol: string
+  decimalPlaces?: number
+  isActive?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  bankAccounts?: Prisma.BankAccountUncheckedCreateNestedManyWithoutCurrencyInput
+  cashboxes?: Prisma.CashboxUncheckedCreateNestedManyWithoutCurrencyInput
+  invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutCurrencyInput
+  receivedCheques?: Prisma.ReceivedChequeUncheckedCreateNestedManyWithoutCurrencyInput
+  paidCheques?: Prisma.PaidChequeUncheckedCreateNestedManyWithoutCurrencyInput
+  customerOpeningBalances?: Prisma.CustomerOpeningBalanceUncheckedCreateNestedManyWithoutCurrencyInput
+  vendorOpeningBalances?: Prisma.VendorOpeningBalanceUncheckedCreateNestedManyWithoutCurrencyInput
+  bankOpeningBalances?: Prisma.BankOpeningBalanceUncheckedCreateNestedManyWithoutCurrencyInput
+  cashboxOpeningBalances?: Prisma.CashboxOpeningBalanceUncheckedCreateNestedManyWithoutCurrencyInput
+  organizationDefaults?: Prisma.OrganizationUncheckedCreateNestedManyWithoutDefaultCurrencyInput
+  exchangeRatesFrom?: Prisma.ExchangeRateUncheckedCreateNestedManyWithoutFromCurrencyInput
+  exchangeRatesTo?: Prisma.ExchangeRateUncheckedCreateNestedManyWithoutToCurrencyInput
+  journalEntryBases?: Prisma.JournalEntryUncheckedCreateNestedManyWithoutBaseCurrencyInput
+  journalLines?: Prisma.JournalLineUncheckedCreateNestedManyWithoutCurrencyInput
+}
+
+export type CurrencyCreateOrConnectWithoutRevaluationBasesInput = {
+  where: Prisma.CurrencyWhereUniqueInput
+  create: Prisma.XOR<Prisma.CurrencyCreateWithoutRevaluationBasesInput, Prisma.CurrencyUncheckedCreateWithoutRevaluationBasesInput>
+}
+
+export type CurrencyUpsertWithoutRevaluationBasesInput = {
+  update: Prisma.XOR<Prisma.CurrencyUpdateWithoutRevaluationBasesInput, Prisma.CurrencyUncheckedUpdateWithoutRevaluationBasesInput>
+  create: Prisma.XOR<Prisma.CurrencyCreateWithoutRevaluationBasesInput, Prisma.CurrencyUncheckedCreateWithoutRevaluationBasesInput>
+  where?: Prisma.CurrencyWhereInput
+}
+
+export type CurrencyUpdateToOneWithWhereWithoutRevaluationBasesInput = {
+  where?: Prisma.CurrencyWhereInput
+  data: Prisma.XOR<Prisma.CurrencyUpdateWithoutRevaluationBasesInput, Prisma.CurrencyUncheckedUpdateWithoutRevaluationBasesInput>
+}
+
+export type CurrencyUpdateWithoutRevaluationBasesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  code?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  symbol?: Prisma.StringFieldUpdateOperationsInput | string
+  decimalPlaces?: Prisma.IntFieldUpdateOperationsInput | number
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  bankAccounts?: Prisma.BankAccountUpdateManyWithoutCurrencyNestedInput
+  cashboxes?: Prisma.CashboxUpdateManyWithoutCurrencyNestedInput
+  invoices?: Prisma.InvoiceUpdateManyWithoutCurrencyNestedInput
+  receivedCheques?: Prisma.ReceivedChequeUpdateManyWithoutCurrencyNestedInput
+  paidCheques?: Prisma.PaidChequeUpdateManyWithoutCurrencyNestedInput
+  customerOpeningBalances?: Prisma.CustomerOpeningBalanceUpdateManyWithoutCurrencyNestedInput
+  vendorOpeningBalances?: Prisma.VendorOpeningBalanceUpdateManyWithoutCurrencyNestedInput
+  bankOpeningBalances?: Prisma.BankOpeningBalanceUpdateManyWithoutCurrencyNestedInput
+  cashboxOpeningBalances?: Prisma.CashboxOpeningBalanceUpdateManyWithoutCurrencyNestedInput
+  organizationDefaults?: Prisma.OrganizationUpdateManyWithoutDefaultCurrencyNestedInput
+  exchangeRatesFrom?: Prisma.ExchangeRateUpdateManyWithoutFromCurrencyNestedInput
+  exchangeRatesTo?: Prisma.ExchangeRateUpdateManyWithoutToCurrencyNestedInput
+  journalEntryBases?: Prisma.JournalEntryUpdateManyWithoutBaseCurrencyNestedInput
+  journalLines?: Prisma.JournalLineUpdateManyWithoutCurrencyNestedInput
+}
+
+export type CurrencyUncheckedUpdateWithoutRevaluationBasesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  code?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  symbol?: Prisma.StringFieldUpdateOperationsInput | string
+  decimalPlaces?: Prisma.IntFieldUpdateOperationsInput | number
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  bankAccounts?: Prisma.BankAccountUncheckedUpdateManyWithoutCurrencyNestedInput
+  cashboxes?: Prisma.CashboxUncheckedUpdateManyWithoutCurrencyNestedInput
+  invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutCurrencyNestedInput
+  receivedCheques?: Prisma.ReceivedChequeUncheckedUpdateManyWithoutCurrencyNestedInput
+  paidCheques?: Prisma.PaidChequeUncheckedUpdateManyWithoutCurrencyNestedInput
+  customerOpeningBalances?: Prisma.CustomerOpeningBalanceUncheckedUpdateManyWithoutCurrencyNestedInput
+  vendorOpeningBalances?: Prisma.VendorOpeningBalanceUncheckedUpdateManyWithoutCurrencyNestedInput
+  bankOpeningBalances?: Prisma.BankOpeningBalanceUncheckedUpdateManyWithoutCurrencyNestedInput
+  cashboxOpeningBalances?: Prisma.CashboxOpeningBalanceUncheckedUpdateManyWithoutCurrencyNestedInput
+  organizationDefaults?: Prisma.OrganizationUncheckedUpdateManyWithoutDefaultCurrencyNestedInput
+  exchangeRatesFrom?: Prisma.ExchangeRateUncheckedUpdateManyWithoutFromCurrencyNestedInput
+  exchangeRatesTo?: Prisma.ExchangeRateUncheckedUpdateManyWithoutToCurrencyNestedInput
+  journalEntryBases?: Prisma.JournalEntryUncheckedUpdateManyWithoutBaseCurrencyNestedInput
+  journalLines?: Prisma.JournalLineUncheckedUpdateManyWithoutCurrencyNestedInput
 }
 
 
@@ -1460,6 +2498,12 @@ export type CurrencyCountOutputType = {
   vendorOpeningBalances: number
   bankOpeningBalances: number
   cashboxOpeningBalances: number
+  organizationDefaults: number
+  exchangeRatesFrom: number
+  exchangeRatesTo: number
+  journalEntryBases: number
+  journalLines: number
+  revaluationBases: number
 }
 
 export type CurrencyCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -1472,6 +2516,12 @@ export type CurrencyCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensio
   vendorOpeningBalances?: boolean | CurrencyCountOutputTypeCountVendorOpeningBalancesArgs
   bankOpeningBalances?: boolean | CurrencyCountOutputTypeCountBankOpeningBalancesArgs
   cashboxOpeningBalances?: boolean | CurrencyCountOutputTypeCountCashboxOpeningBalancesArgs
+  organizationDefaults?: boolean | CurrencyCountOutputTypeCountOrganizationDefaultsArgs
+  exchangeRatesFrom?: boolean | CurrencyCountOutputTypeCountExchangeRatesFromArgs
+  exchangeRatesTo?: boolean | CurrencyCountOutputTypeCountExchangeRatesToArgs
+  journalEntryBases?: boolean | CurrencyCountOutputTypeCountJournalEntryBasesArgs
+  journalLines?: boolean | CurrencyCountOutputTypeCountJournalLinesArgs
+  revaluationBases?: boolean | CurrencyCountOutputTypeCountRevaluationBasesArgs
 }
 
 /**
@@ -1547,6 +2597,48 @@ export type CurrencyCountOutputTypeCountCashboxOpeningBalancesArgs<ExtArgs exten
   where?: Prisma.CashboxOpeningBalanceWhereInput
 }
 
+/**
+ * CurrencyCountOutputType without action
+ */
+export type CurrencyCountOutputTypeCountOrganizationDefaultsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.OrganizationWhereInput
+}
+
+/**
+ * CurrencyCountOutputType without action
+ */
+export type CurrencyCountOutputTypeCountExchangeRatesFromArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.ExchangeRateWhereInput
+}
+
+/**
+ * CurrencyCountOutputType without action
+ */
+export type CurrencyCountOutputTypeCountExchangeRatesToArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.ExchangeRateWhereInput
+}
+
+/**
+ * CurrencyCountOutputType without action
+ */
+export type CurrencyCountOutputTypeCountJournalEntryBasesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.JournalEntryWhereInput
+}
+
+/**
+ * CurrencyCountOutputType without action
+ */
+export type CurrencyCountOutputTypeCountJournalLinesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.JournalLineWhereInput
+}
+
+/**
+ * CurrencyCountOutputType without action
+ */
+export type CurrencyCountOutputTypeCountRevaluationBasesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.CurrencyRevaluationWhereInput
+}
+
 
 export type CurrencySelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -1566,6 +2658,12 @@ export type CurrencySelect<ExtArgs extends runtime.Types.Extensions.InternalArgs
   vendorOpeningBalances?: boolean | Prisma.Currency$vendorOpeningBalancesArgs<ExtArgs>
   bankOpeningBalances?: boolean | Prisma.Currency$bankOpeningBalancesArgs<ExtArgs>
   cashboxOpeningBalances?: boolean | Prisma.Currency$cashboxOpeningBalancesArgs<ExtArgs>
+  organizationDefaults?: boolean | Prisma.Currency$organizationDefaultsArgs<ExtArgs>
+  exchangeRatesFrom?: boolean | Prisma.Currency$exchangeRatesFromArgs<ExtArgs>
+  exchangeRatesTo?: boolean | Prisma.Currency$exchangeRatesToArgs<ExtArgs>
+  journalEntryBases?: boolean | Prisma.Currency$journalEntryBasesArgs<ExtArgs>
+  journalLines?: boolean | Prisma.Currency$journalLinesArgs<ExtArgs>
+  revaluationBases?: boolean | Prisma.Currency$revaluationBasesArgs<ExtArgs>
   _count?: boolean | Prisma.CurrencyCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["currency"]>
 
@@ -1613,6 +2711,12 @@ export type CurrencyInclude<ExtArgs extends runtime.Types.Extensions.InternalArg
   vendorOpeningBalances?: boolean | Prisma.Currency$vendorOpeningBalancesArgs<ExtArgs>
   bankOpeningBalances?: boolean | Prisma.Currency$bankOpeningBalancesArgs<ExtArgs>
   cashboxOpeningBalances?: boolean | Prisma.Currency$cashboxOpeningBalancesArgs<ExtArgs>
+  organizationDefaults?: boolean | Prisma.Currency$organizationDefaultsArgs<ExtArgs>
+  exchangeRatesFrom?: boolean | Prisma.Currency$exchangeRatesFromArgs<ExtArgs>
+  exchangeRatesTo?: boolean | Prisma.Currency$exchangeRatesToArgs<ExtArgs>
+  journalEntryBases?: boolean | Prisma.Currency$journalEntryBasesArgs<ExtArgs>
+  journalLines?: boolean | Prisma.Currency$journalLinesArgs<ExtArgs>
+  revaluationBases?: boolean | Prisma.Currency$revaluationBasesArgs<ExtArgs>
   _count?: boolean | Prisma.CurrencyCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type CurrencyIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
@@ -1630,6 +2734,12 @@ export type $CurrencyPayload<ExtArgs extends runtime.Types.Extensions.InternalAr
     vendorOpeningBalances: Prisma.$VendorOpeningBalancePayload<ExtArgs>[]
     bankOpeningBalances: Prisma.$BankOpeningBalancePayload<ExtArgs>[]
     cashboxOpeningBalances: Prisma.$CashboxOpeningBalancePayload<ExtArgs>[]
+    organizationDefaults: Prisma.$OrganizationPayload<ExtArgs>[]
+    exchangeRatesFrom: Prisma.$ExchangeRatePayload<ExtArgs>[]
+    exchangeRatesTo: Prisma.$ExchangeRatePayload<ExtArgs>[]
+    journalEntryBases: Prisma.$JournalEntryPayload<ExtArgs>[]
+    journalLines: Prisma.$JournalLinePayload<ExtArgs>[]
+    revaluationBases: Prisma.$CurrencyRevaluationPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -2043,6 +3153,12 @@ export interface Prisma__CurrencyClient<T, Null = never, ExtArgs extends runtime
   vendorOpeningBalances<T extends Prisma.Currency$vendorOpeningBalancesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Currency$vendorOpeningBalancesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$VendorOpeningBalancePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   bankOpeningBalances<T extends Prisma.Currency$bankOpeningBalancesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Currency$bankOpeningBalancesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$BankOpeningBalancePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   cashboxOpeningBalances<T extends Prisma.Currency$cashboxOpeningBalancesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Currency$cashboxOpeningBalancesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$CashboxOpeningBalancePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  organizationDefaults<T extends Prisma.Currency$organizationDefaultsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Currency$organizationDefaultsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$OrganizationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  exchangeRatesFrom<T extends Prisma.Currency$exchangeRatesFromArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Currency$exchangeRatesFromArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ExchangeRatePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  exchangeRatesTo<T extends Prisma.Currency$exchangeRatesToArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Currency$exchangeRatesToArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ExchangeRatePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  journalEntryBases<T extends Prisma.Currency$journalEntryBasesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Currency$journalEntryBasesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$JournalEntryPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  journalLines<T extends Prisma.Currency$journalLinesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Currency$journalLinesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$JournalLinePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  revaluationBases<T extends Prisma.Currency$revaluationBasesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Currency$revaluationBasesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$CurrencyRevaluationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -2686,6 +3802,150 @@ export type Currency$cashboxOpeningBalancesArgs<ExtArgs extends runtime.Types.Ex
   take?: number
   skip?: number
   distinct?: Prisma.CashboxOpeningBalanceScalarFieldEnum | Prisma.CashboxOpeningBalanceScalarFieldEnum[]
+}
+
+/**
+ * Currency.organizationDefaults
+ */
+export type Currency$organizationDefaultsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Organization
+   */
+  select?: Prisma.OrganizationSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Organization
+   */
+  omit?: Prisma.OrganizationOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.OrganizationInclude<ExtArgs> | null
+  where?: Prisma.OrganizationWhereInput
+  orderBy?: Prisma.OrganizationOrderByWithRelationInput | Prisma.OrganizationOrderByWithRelationInput[]
+  cursor?: Prisma.OrganizationWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.OrganizationScalarFieldEnum | Prisma.OrganizationScalarFieldEnum[]
+}
+
+/**
+ * Currency.exchangeRatesFrom
+ */
+export type Currency$exchangeRatesFromArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the ExchangeRate
+   */
+  select?: Prisma.ExchangeRateSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the ExchangeRate
+   */
+  omit?: Prisma.ExchangeRateOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ExchangeRateInclude<ExtArgs> | null
+  where?: Prisma.ExchangeRateWhereInput
+  orderBy?: Prisma.ExchangeRateOrderByWithRelationInput | Prisma.ExchangeRateOrderByWithRelationInput[]
+  cursor?: Prisma.ExchangeRateWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.ExchangeRateScalarFieldEnum | Prisma.ExchangeRateScalarFieldEnum[]
+}
+
+/**
+ * Currency.exchangeRatesTo
+ */
+export type Currency$exchangeRatesToArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the ExchangeRate
+   */
+  select?: Prisma.ExchangeRateSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the ExchangeRate
+   */
+  omit?: Prisma.ExchangeRateOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ExchangeRateInclude<ExtArgs> | null
+  where?: Prisma.ExchangeRateWhereInput
+  orderBy?: Prisma.ExchangeRateOrderByWithRelationInput | Prisma.ExchangeRateOrderByWithRelationInput[]
+  cursor?: Prisma.ExchangeRateWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.ExchangeRateScalarFieldEnum | Prisma.ExchangeRateScalarFieldEnum[]
+}
+
+/**
+ * Currency.journalEntryBases
+ */
+export type Currency$journalEntryBasesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the JournalEntry
+   */
+  select?: Prisma.JournalEntrySelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the JournalEntry
+   */
+  omit?: Prisma.JournalEntryOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.JournalEntryInclude<ExtArgs> | null
+  where?: Prisma.JournalEntryWhereInput
+  orderBy?: Prisma.JournalEntryOrderByWithRelationInput | Prisma.JournalEntryOrderByWithRelationInput[]
+  cursor?: Prisma.JournalEntryWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.JournalEntryScalarFieldEnum | Prisma.JournalEntryScalarFieldEnum[]
+}
+
+/**
+ * Currency.journalLines
+ */
+export type Currency$journalLinesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the JournalLine
+   */
+  select?: Prisma.JournalLineSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the JournalLine
+   */
+  omit?: Prisma.JournalLineOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.JournalLineInclude<ExtArgs> | null
+  where?: Prisma.JournalLineWhereInput
+  orderBy?: Prisma.JournalLineOrderByWithRelationInput | Prisma.JournalLineOrderByWithRelationInput[]
+  cursor?: Prisma.JournalLineWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.JournalLineScalarFieldEnum | Prisma.JournalLineScalarFieldEnum[]
+}
+
+/**
+ * Currency.revaluationBases
+ */
+export type Currency$revaluationBasesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the CurrencyRevaluation
+   */
+  select?: Prisma.CurrencyRevaluationSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the CurrencyRevaluation
+   */
+  omit?: Prisma.CurrencyRevaluationOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.CurrencyRevaluationInclude<ExtArgs> | null
+  where?: Prisma.CurrencyRevaluationWhereInput
+  orderBy?: Prisma.CurrencyRevaluationOrderByWithRelationInput | Prisma.CurrencyRevaluationOrderByWithRelationInput[]
+  cursor?: Prisma.CurrencyRevaluationWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.CurrencyRevaluationScalarFieldEnum | Prisma.CurrencyRevaluationScalarFieldEnum[]
 }
 
 /**

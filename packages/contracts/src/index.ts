@@ -16,3 +16,5 @@ export * from './cheque.js';
 export * from './journal-entry.js';
 export * from './organization.js';
 export * from './accounting-period.js';
+export * from './exchange-rate.js';
+export * from './currency-revaluation.js';

@@ -1,9 +1,9 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
-import { type JwtService } from '@nestjs/jwt';
-import { type ConfigService } from '@nestjs/config';
+import { JwtService } from '@nestjs/jwt';
+import { ConfigService } from '@nestjs/config';
 import * as bcrypt from 'bcryptjs';
-import { type UserRepository } from '../../infrastructure/repositories/user.repository';
-import { type SessionRepository } from '../../infrastructure/repositories/session.repository';
+import { UserRepository } from '../../infrastructure/repositories/user.repository';
+import { SessionRepository } from '../../infrastructure/repositories/session.repository';
 import { ApplicationError, ConflictError } from '@/platform/errors';
 import type { LoginDto, RegisterDto } from '@hesabdari/contracts';
 

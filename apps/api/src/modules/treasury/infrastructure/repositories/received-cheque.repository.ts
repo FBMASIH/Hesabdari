@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { type PrismaService } from '@/platform/database/prisma.service';
+import { PrismaService } from '@/platform/database/prisma.service';
 import { NotFoundError } from '@/platform/errors';
 import type { Prisma, ChequeStatus, ReceivedCheque } from '@hesabdari/db';
 

@@ -1,6 +1,6 @@
 import { Controller, Get, Post, Put, Body, Param, Query } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
-import { type JournalEntryService } from '../../../application/services/journal-entry.service';
+import { JournalEntryService } from '../../../application/services/journal-entry.service';
 import {
   createJournalEntrySchema,
   updateJournalEntrySchema,

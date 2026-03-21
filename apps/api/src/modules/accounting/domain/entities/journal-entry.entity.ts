@@ -4,6 +4,7 @@ export interface JournalEntryEntity {
   id: string;
   organizationId: string;
   periodId: string;
+  baseCurrencyId: string;
   entryNumber: string;
   date: Date;
   description: string;
@@ -20,8 +21,12 @@ export interface JournalLineEntity {
   id: string;
   journalEntryId: string;
   accountId: string;
+  currencyId: string;
   description: string | null;
   debitAmount: bigint;
   creditAmount: bigint;
+  exchangeRate: unknown; // Prisma Decimal
+  baseCurrencyDebitAmount: bigint;
+  baseCurrencyCreditAmount: bigint;
   createdAt: Date;
 }

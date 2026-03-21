@@ -7,6 +7,7 @@ export const createOrganizationSchema = z.object({
     .min(1)
     .max(100)
     .regex(/^[a-z0-9-]+$/, 'Slug must be lowercase alphanumeric with hyphens'),
+  defaultCurrencyId: z.string().uuid(),
 });
 
 export const updateOrganizationSchema = createOrganizationSchema.partial().extend({

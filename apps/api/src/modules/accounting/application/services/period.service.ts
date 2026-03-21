@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
-import { type PeriodRepository } from '../../infrastructure/repositories/period.repository';
-import { type AuditService } from '../../../audit/application/services/audit.service';
+import { PeriodRepository } from '../../infrastructure/repositories/period.repository';
+import { AuditService } from '../../../audit/application/services/audit.service';
 import { NotFoundError, ApplicationError } from '@/platform/errors';
 
 @Injectable()

@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
-import { type CashboxOpeningBalanceRepository } from '../../infrastructure/repositories/cashbox-opening-balance.repository';
-import { type CashboxRepository } from '../../infrastructure/repositories/cashbox.repository';
+import { CashboxOpeningBalanceRepository } from '../../infrastructure/repositories/cashbox-opening-balance.repository';
+import { CashboxRepository } from '../../infrastructure/repositories/cashbox.repository';
 import { NotFoundError, ApplicationError } from '@/platform/errors';
 import type { CreateCashboxOpeningBalanceDto } from '@hesabdari/contracts';
 

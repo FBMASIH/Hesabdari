@@ -163,6 +163,16 @@ export type BankOpeningBalance = Prisma.BankOpeningBalanceModel
  */
 export type CashboxOpeningBalance = Prisma.CashboxOpeningBalanceModel
 /**
+ * Model ExchangeRate
+ * 
+ */
+export type ExchangeRate = Prisma.ExchangeRateModel
+/**
+ * Model CurrencyRevaluation
+ * 
+ */
+export type CurrencyRevaluation = Prisma.CurrencyRevaluationModel
+/**
  * Model AuditLog
  * 
  */

@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
-import { type ProductRepository } from '../../infrastructure/repositories/product.repository';
-import { type ProductWarehouseStockRepository } from '../../infrastructure/repositories/product-warehouse-stock.repository';
+import { ProductRepository } from '../../infrastructure/repositories/product.repository';
+import { ProductWarehouseStockRepository } from '../../infrastructure/repositories/product-warehouse-stock.repository';
 import { NotFoundError, ConflictError } from '@/platform/errors';
 import type { Prisma } from '@hesabdari/db';
 import type {

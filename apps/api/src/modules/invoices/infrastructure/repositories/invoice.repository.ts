@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { type PrismaService } from '@/platform/database/prisma.service';
+import { PrismaService } from '@/platform/database/prisma.service';
 import type { Prisma } from '@hesabdari/db';
 import type { DocumentType, InvoiceStatus } from '@hesabdari/db';
 

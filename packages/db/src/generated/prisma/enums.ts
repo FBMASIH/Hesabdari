@@ -94,3 +94,19 @@ export const BalanceType = {
 } as const
 
 export type BalanceType = (typeof BalanceType)[keyof typeof BalanceType]
+
+
+export const ExchangeRateSource = {
+  MANUAL: 'MANUAL',
+  API: 'API'
+} as const
+
+export type ExchangeRateSource = (typeof ExchangeRateSource)[keyof typeof ExchangeRateSource]
+
+
+export const CurrencyRevaluationStatus = {
+  POSTED: 'POSTED',
+  REVERSED: 'REVERSED'
+} as const
+
+export type CurrencyRevaluationStatus = (typeof CurrencyRevaluationStatus)[keyof typeof CurrencyRevaluationStatus]

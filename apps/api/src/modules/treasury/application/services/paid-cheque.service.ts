@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
-import { type PaidChequeRepository } from '../../infrastructure/repositories/paid-cheque.repository';
-import { type BankAccountRepository } from '../../infrastructure/repositories/bank-account.repository';
-import { type AuditService } from '../../../audit/application/services/audit.service';
+import { PaidChequeRepository } from '../../infrastructure/repositories/paid-cheque.repository';
+import { BankAccountRepository } from '../../infrastructure/repositories/bank-account.repository';
+import { AuditService } from '../../../audit/application/services/audit.service';
 import { NotFoundError, ConflictError, ApplicationError } from '@/platform/errors';
 import type { Prisma } from '@hesabdari/db';
 import type {

@@ -42,12 +42,15 @@ model Session {
 // ─── Organizations ──────────────────────────────────────────────────
 
 model Organization {
-  id        String   @id @default(uuid()) @db.Uuid
-  name      String
-  slug      String   @unique
-  isActive  Boolean  @default(true) @map("is_active")
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @updatedAt @map("updated_at")
+  id                String   @id @default(uuid()) @db.Uuid
+  name              String
+  slug              String   @unique
+  defaultCurrencyId String   @map("default_currency_id") @db.Uuid
+  isActive          Boolean  @default(true) @map("is_active")
+  createdAt         DateTime @default(now()) @map("created_at")
+  updatedAt         DateTime @updatedAt @map("updated_at")
+
+  defaultCurrency Currency @relation("OrganizationDefaultCurrency", fields: [defaultCurrencyId], references: [id])
 
   // identity
   members          OrganizationMember[]
@@ -79,6 +82,10 @@ model Organization {
   vendorOpeningBalances    VendorOpeningBalance[]
   bankOpeningBalances      BankOpeningBalance[]
   cashboxOpeningBalances   CashboxOpeningBalance[]
+
+  // multi-currency
+  exchangeRates          ExchangeRate[]
+  currencyRevaluations   CurrencyRevaluation[]
 
   @@map("organizations")
 }
@@ -161,6 +168,14 @@ model Currency {
   bankOpeningBalances      BankOpeningBalance[]
   cashboxOpeningBalances   CashboxOpeningBalance[]
 
+  // multi-currency relations
+  organizationDefaults     Organization[]          @relation("OrganizationDefaultCurrency")
+  exchangeRatesFrom        ExchangeRate[]          @relation("ExchangeRateFrom")
+  exchangeRatesTo          ExchangeRate[]          @relation("ExchangeRateTo")
+  journalEntryBases        JournalEntry[]          @relation("JournalEntryBaseCurrency")
+  journalLines             JournalLine[]
+  revaluationBases         CurrencyRevaluation[]   @relation("RevaluationBaseCurrency")
+
   @@map("currencies")
 }
 
@@ -220,8 +235,9 @@ model AccountingPeriod {
   createdAt      DateTime            @default(now()) @map("created_at")
   updatedAt      DateTime            @updatedAt @map("updated_at")
 
-  organization   Organization  @relation(fields: [organizationId], references: [id], onDelete: Cascade)
-  journalEntries JournalEntry[]
+  organization           Organization          @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  journalEntries         JournalEntry[]
+  currencyRevaluations   CurrencyRevaluation[]
 
   @@unique([organizationId, name])
   @@index([organizationId, status])
@@ -237,6 +253,7 @@ model JournalEntry {
   id             String             @id @default(uuid()) @db.Uuid
   organizationId String             @map("organization_id") @db.Uuid
   periodId       String             @map("period_id") @db.Uuid
+  baseCurrencyId String             @map("base_currency_id") @db.Uuid
   entryNumber    String             @map("entry_number")
   date           DateTime           @db.Date
   description    String
@@ -248,12 +265,14 @@ model JournalEntry {
   createdAt      DateTime           @default(now()) @map("created_at")
   updatedAt      DateTime           @updatedAt @map("updated_at")
 
-  organization Organization    @relation(fields: [organizationId], references: [id], onDelete: Cascade)
-  period       AccountingPeriod @relation(fields: [periodId], references: [id])
-  reversalOf   JournalEntry?   @relation("JournalReversal", fields: [reversalOfId], references: [id])
-  reversedBy   JournalEntry?   @relation("JournalReversal")
-  lines        JournalLine[]
-  invoice      Invoice?
+  organization   Organization    @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  period         AccountingPeriod @relation(fields: [periodId], references: [id])
+  baseCurrency   Currency         @relation("JournalEntryBaseCurrency", fields: [baseCurrencyId], references: [id])
+  reversalOf     JournalEntry?   @relation("JournalReversal", fields: [reversalOfId], references: [id])
+  reversedBy     JournalEntry?   @relation("JournalReversal")
+  lines          JournalLine[]
+  invoice        Invoice?
+  revaluation    CurrencyRevaluation?
 
   @@unique([organizationId, entryNumber])
   @@index([organizationId, status])
@@ -268,19 +287,25 @@ enum JournalEntryStatus {
 }
 
 model JournalLine {
-  id             String   @id @default(uuid()) @db.Uuid
-  journalEntryId String   @map("journal_entry_id") @db.Uuid
-  accountId      String   @map("account_id") @db.Uuid
-  description    String?
-  debitAmount    BigInt   @default(0) @map("debit_amount")
-  creditAmount   BigInt   @default(0) @map("credit_amount")
-  createdAt      DateTime @default(now()) @map("created_at")
+  id                       String   @id @default(uuid()) @db.Uuid
+  journalEntryId           String   @map("journal_entry_id") @db.Uuid
+  accountId                String   @map("account_id") @db.Uuid
+  currencyId               String   @map("currency_id") @db.Uuid
+  description              String?
+  debitAmount              BigInt   @default(0) @map("debit_amount")
+  creditAmount             BigInt   @default(0) @map("credit_amount")
+  exchangeRate             Decimal  @map("exchange_rate") @db.Decimal(18, 8)
+  baseCurrencyDebitAmount  BigInt   @default(0) @map("base_currency_debit_amount")
+  baseCurrencyCreditAmount BigInt   @default(0) @map("base_currency_credit_amount")
+  createdAt                DateTime @default(now()) @map("created_at")
 
   journalEntry JournalEntry @relation(fields: [journalEntryId], references: [id], onDelete: Cascade)
   account      Account      @relation(fields: [accountId], references: [id])
+  currency     Currency     @relation(fields: [currencyId], references: [id])
 
   @@index([journalEntryId])
   @@index([accountId])
+  @@index([currencyId])
   @@map("journal_lines")
 }
 
@@ -720,6 +745,60 @@ model CashboxOpeningBalance {
 
   @@index([organizationId, cashboxId])
   @@map("cashbox_opening_balances")
+}
+
+// ─── Exchange Rates & Revaluation ────────────────────────────────
+
+enum ExchangeRateSource {
+  MANUAL
+  API
+}
+
+enum CurrencyRevaluationStatus {
+  POSTED
+  REVERSED
+}
+
+model ExchangeRate {
+  id              String             @id @default(uuid()) @db.Uuid
+  organizationId  String             @map("organization_id") @db.Uuid
+  fromCurrencyId  String             @map("from_currency_id") @db.Uuid
+  toCurrencyId    String             @map("to_currency_id") @db.Uuid
+  rate            Decimal            @db.Decimal(18, 8)
+  date            DateTime           @db.Date
+  source          ExchangeRateSource @default(MANUAL)
+  createdAt       DateTime           @default(now()) @map("created_at")
+  updatedAt       DateTime           @updatedAt @map("updated_at")
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  fromCurrency Currency     @relation("ExchangeRateFrom", fields: [fromCurrencyId], references: [id])
+  toCurrency   Currency     @relation("ExchangeRateTo", fields: [toCurrencyId], references: [id])
+
+  @@unique([organizationId, fromCurrencyId, toCurrencyId, date])
+  @@index([organizationId, fromCurrencyId, toCurrencyId])
+  @@map("exchange_rates")
+}
+
+model CurrencyRevaluation {
+  id              String                    @id @default(uuid()) @db.Uuid
+  organizationId  String                    @map("organization_id") @db.Uuid
+  periodId        String                    @map("period_id") @db.Uuid
+  baseCurrencyId  String                    @map("base_currency_id") @db.Uuid
+  date            DateTime                  @db.Date
+  description     String?
+  journalEntryId  String                    @unique @map("journal_entry_id") @db.Uuid
+  status          CurrencyRevaluationStatus @default(POSTED)
+  metadata        Json?                     @db.JsonB
+  createdAt       DateTime                  @default(now()) @map("created_at")
+
+  organization Organization     @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  period       AccountingPeriod @relation(fields: [periodId], references: [id])
+  baseCurrency Currency         @relation("RevaluationBaseCurrency", fields: [baseCurrencyId], references: [id])
+  journalEntry JournalEntry     @relation(fields: [journalEntryId], references: [id])
+
+  @@index([organizationId, periodId])
+  @@index([organizationId, date])
+  @@map("currency_revaluations")
 }
 
 // ─── Audit ──────────────────────────────────────────────────────────

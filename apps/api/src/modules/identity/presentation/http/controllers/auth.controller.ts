@@ -1,7 +1,7 @@
 import { Controller, Get, Post, Body, HttpCode, HttpStatus } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
 import { Public, CurrentUser, type RequestUser } from '@/platform/decorators';
-import { type AuthService } from '../../../application/services/auth.service';
+import { AuthService } from '../../../application/services/auth.service';
 import { loginSchema, registerSchema, refreshTokenSchema } from '@hesabdari/contracts';
 
 @ApiTags('Authentication')

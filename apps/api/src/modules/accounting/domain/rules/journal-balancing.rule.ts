@@ -2,8 +2,25 @@ import type { JournalLineEntity } from '../entities/journal-entry.entity';
 import { DomainError } from '../errors/domain.error';
 
 /**
- * Domain rule: debits must equal credits in a journal entry.
- * This is a fundamental accounting invariant.
+ * Domain rule: BASE CURRENCY debits must equal credits.
+ * This is the multi-currency accounting invariant.
+ */
+export function assertBaseCurrencyBalance(
+  lines: Pick<JournalLineEntity, 'baseCurrencyDebitAmount' | 'baseCurrencyCreditAmount'>[],
+): void {
+  const totalDebits = lines.reduce((sum, line) => sum + line.baseCurrencyDebitAmount, 0n);
+  const totalCredits = lines.reduce((sum, line) => sum + line.baseCurrencyCreditAmount, 0n);
+
+  if (totalDebits !== totalCredits) {
+    throw new DomainError(
+      'JOURNAL_NOT_BALANCED',
+      `Base currency not balanced. Debits: ${totalDebits}, Credits: ${totalCredits}`,
+    );
+  }
+}
+
+/**
+ * Legacy single-currency balance check. Kept for backward compatibility.
  */
 export function assertJournalBalances(
   lines: Pick<JournalLineEntity, 'debitAmount' | 'creditAmount'>[],

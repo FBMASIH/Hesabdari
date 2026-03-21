@@ -1,7 +1,7 @@
 import type { CanActivate, ExecutionContext } from '@nestjs/common';
 import { Injectable, ForbiddenException, UnauthorizedException } from '@nestjs/common';
-import { type Reflector } from '@nestjs/core';
-import { type PrismaService } from '@/platform/database/prisma.service';
+import { Reflector } from '@nestjs/core';
+import { PrismaService } from '@/platform/database/prisma.service';
 import { IS_PUBLIC_KEY } from '../decorators/public.decorator';
 import type { RequestUser } from '../decorators/current-user.decorator';
 

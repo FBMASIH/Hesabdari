@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { type PrismaService } from '@/platform/database/prisma.service';
+import { PrismaService } from '@/platform/database/prisma.service';
 import type {
   IUserRepository,
   UserWithOrganizations,
@@ -43,10 +43,15 @@ export class UserRepository implements IUserRepository {
       const user = await tx.user.create({ data });
 
       // Create a personal organization for the new user
+      const defaultCurrency =
+        (await tx.currency.findFirst({ where: { code: 'IRR', isActive: true } })) ??
+        (await tx.currency.findFirst({ where: { isActive: true } }));
+
       const org = await tx.organization.create({
         data: {
           name: `سازمان ${data.firstName} ${data.lastName}`,
           slug: `org-${Date.now()}`,
+          defaultCurrencyId: defaultCurrency!.id,
         },
       });
 

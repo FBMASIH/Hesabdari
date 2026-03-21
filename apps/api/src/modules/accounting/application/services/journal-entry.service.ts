@@ -1,16 +1,21 @@
 import { Injectable } from '@nestjs/common';
+import { Decimal } from 'decimal.js';
 import type {
   CreateJournalEntryDto,
   UpdateJournalEntryDto,
   JournalEntryQueryDto,
 } from '@hesabdari/contracts';
-import { type JournalEntryRepository } from '../../infrastructure/repositories/journal-entry.repository';
-import { type PeriodRepository } from '../../infrastructure/repositories/period.repository';
-import { type AuditService } from '../../../audit/application/services/audit.service';
+import { JournalEntryRepository } from '../../infrastructure/repositories/journal-entry.repository';
+import { PeriodRepository } from '../../infrastructure/repositories/period.repository';
+import { AuditService } from '../../../audit/application/services/audit.service';
+import { ExchangeRateService } from './exchange-rate.service';
+import { OrganizationService } from '../../../organizations/application/services/organization.service';
+import { CurrencyRepository } from '../../infrastructure/repositories/currency.repository';
 import {
-  assertJournalBalances,
+  assertBaseCurrencyBalance,
   assertMinimumLines,
 } from '../../domain/rules/journal-balancing.rule';
+import { convertToBase, applyRoundingAdjustment } from '../../domain/rules/currency-conversion.rule';
 import { assertPeriodOpen } from '../../domain/rules/period.rule';
 import { NotFoundError, ConflictError } from '@/platform/errors';
 
@@ -20,15 +25,18 @@ export class JournalEntryService {
     private readonly journalEntryRepository: JournalEntryRepository,
     private readonly periodRepository: PeriodRepository,
     private readonly auditService: AuditService,
+    private readonly exchangeRateService: ExchangeRateService,
+    private readonly organizationService: OrganizationService,
+    private readonly currencyRepository: CurrencyRepository,
   ) {}
 
-  async findById(id: string, organizationId: string) {
+  async findById(id: string, organizationId: string): Promise<unknown> {
     const entry = await this.journalEntryRepository.findById(id, organizationId);
     if (!entry) throw new NotFoundError('JournalEntry', id);
     return entry;
   }
 
-  async findByOrganization(organizationId: string, query?: JournalEntryQueryDto) {
+  async findByOrganization(organizationId: string, query?: JournalEntryQueryDto): Promise<unknown> {
     return this.journalEntryRepository.findByOrganizationId(organizationId, {
       status: query?.status,
       fromDate: query?.fromDate,
@@ -40,8 +48,7 @@ export class JournalEntryService {
     });
   }
 
-  async create(organizationId: string, data: CreateJournalEntryDto, actorId: string) {
-    // Idempotency check: return existing entry if idempotency key matches
+  async create(organizationId: string, data: CreateJournalEntryDto, actorId: string): Promise<unknown> {
     if (data.idempotencyKey) {
       const existing = await this.journalEntryRepository.findByIdempotencyKey(
         organizationId,
@@ -50,7 +57,6 @@ export class JournalEntryService {
       if (existing) return existing;
     }
 
-    // Check entry number uniqueness per org
     const existingByNumber = await this.journalEntryRepository.findByNumber(
       organizationId,
       data.entryNumber,
@@ -59,26 +65,54 @@ export class JournalEntryService {
       throw new ConflictError(`Journal entry number ${data.entryNumber} already exists`);
     }
 
-    // Validate period is open
     const period = await this.periodRepository.findById(data.periodId, organizationId);
     if (!period) throw new NotFoundError('AccountingPeriod', data.periodId);
     assertPeriodOpen(period.status);
 
-    // Transform lines: strings to BigInt
-    const lines = data.lines.map((line) => ({
-      accountId: line.accountId,
-      description: line.description ?? null,
-      debitAmount: BigInt(line.debitAmount),
-      creditAmount: BigInt(line.creditAmount),
-    }));
+    const org = await this.organizationService.findById(organizationId);
+    const baseCurrencyId = (org as { defaultCurrencyId: string }).defaultCurrencyId;
+    const baseCurrency = await this.currencyRepository.findById(baseCurrencyId);
+    const baseDecimalPlaces = baseCurrency?.decimalPlaces ?? 0;
 
-    // Validate accounting rules
+    const lines = await Promise.all(
+      data.lines.map(async (line) => {
+        const debitAmount = BigInt(line.debitAmount);
+        const creditAmount = BigInt(line.creditAmount);
+        const currencyId = line.currencyId;
+
+        let exchangeRate: Decimal;
+        if (currencyId === baseCurrencyId) {
+          exchangeRate = new Decimal('1');
+        } else if (line.exchangeRate) {
+          exchangeRate = new Decimal(line.exchangeRate);
+        } else {
+          const resolved = await this.exchangeRateService.getRate(
+            organizationId, currencyId, baseCurrencyId, data.date,
+          );
+          exchangeRate = resolved.rate;
+        }
+
+        return {
+          accountId: line.accountId,
+          currencyId,
+          description: line.description ?? null,
+          debitAmount,
+          creditAmount,
+          exchangeRate: exchangeRate.toString(),
+          baseCurrencyDebitAmount: convertToBase(debitAmount, exchangeRate, baseDecimalPlaces),
+          baseCurrencyCreditAmount: convertToBase(creditAmount, exchangeRate, baseDecimalPlaces),
+        };
+      }),
+    );
+
+    applyRoundingAdjustment(lines);
     assertMinimumLines(lines);
-    assertJournalBalances(lines);
+    assertBaseCurrencyBalance(lines);
 
     const entry = await this.journalEntryRepository.createWithLines({
       organizationId,
       periodId: data.periodId,
+      baseCurrencyId,
       entryNumber: data.entryNumber,
       date: data.date,
       description: data.description,
@@ -91,17 +125,16 @@ export class JournalEntryService {
       actorId,
       action: 'JOURNAL_ENTRY_CREATED',
       targetType: 'JournalEntry',
-      targetId: entry.id,
+      targetId: (entry as { id: string }).id,
       metadata: { status: 'DRAFT', entryNumber: data.entryNumber },
     });
 
     return entry;
   }
 
-  async update(id: string, organizationId: string, data: UpdateJournalEntryDto) {
-    const entry = await this.findById(id, organizationId);
+  async update(id: string, organizationId: string, data: UpdateJournalEntryDto): Promise<unknown> {
+    const entry = (await this.findById(id, organizationId)) as { status: string; date: Date };
 
-    // Only DRAFT entries can be edited (immutable ledger rule)
     if (entry.status !== 'DRAFT') {
       throw new ConflictError('Only DRAFT journal entries can be edited');
     }
@@ -109,20 +142,57 @@ export class JournalEntryService {
     let lines:
       | {
           accountId: string;
+          currencyId: string;
           description: string | null;
           debitAmount: bigint;
           creditAmount: bigint;
+          exchangeRate: string;
+          baseCurrencyDebitAmount: bigint;
+          baseCurrencyCreditAmount: bigint;
         }[]
       | undefined;
+
     if (data.lines) {
-      lines = data.lines.map((line) => ({
-        accountId: line.accountId,
-        description: line.description ?? null,
-        debitAmount: BigInt(line.debitAmount),
-        creditAmount: BigInt(line.creditAmount),
-      }));
+      const org = await this.organizationService.findById(organizationId);
+      const baseCurrencyId = (org as { defaultCurrencyId: string }).defaultCurrencyId;
+      const baseCurrency = await this.currencyRepository.findById(baseCurrencyId);
+      const baseDecimalPlaces = baseCurrency?.decimalPlaces ?? 0;
+      const entryDate = data.date ?? entry.date;
+
+      lines = await Promise.all(
+        data.lines.map(async (line) => {
+          const debitAmount = BigInt(line.debitAmount);
+          const creditAmount = BigInt(line.creditAmount);
+          const currencyId = line.currencyId;
+
+          let exchangeRate: Decimal;
+          if (currencyId === baseCurrencyId) {
+            exchangeRate = new Decimal('1');
+          } else if (line.exchangeRate) {
+            exchangeRate = new Decimal(line.exchangeRate);
+          } else {
+            const resolved = await this.exchangeRateService.getRate(
+              organizationId, currencyId, baseCurrencyId, entryDate,
+            );
+            exchangeRate = resolved.rate;
+          }
+
+          return {
+            accountId: line.accountId,
+            currencyId,
+            description: line.description ?? null,
+            debitAmount,
+            creditAmount,
+            exchangeRate: exchangeRate.toString(),
+            baseCurrencyDebitAmount: convertToBase(debitAmount, exchangeRate, baseDecimalPlaces),
+            baseCurrencyCreditAmount: convertToBase(creditAmount, exchangeRate, baseDecimalPlaces),
+          };
+        }),
+      );
+
+      applyRoundingAdjustment(lines);
       assertMinimumLines(lines);
-      assertJournalBalances(lines);
+      assertBaseCurrencyBalance(lines);
     }
 
     return this.journalEntryRepository.updateWithLines(
@@ -133,15 +203,18 @@ export class JournalEntryService {
     );
   }
 
-  async post(id: string, organizationId: string, postedBy: string) {
-    const entry = await this.findById(id, organizationId);
+  async post(id: string, organizationId: string, postedBy: string): Promise<unknown> {
+    const entry = (await this.findById(id, organizationId)) as {
+      periodId: string;
+      lines: { baseCurrencyDebitAmount: bigint; baseCurrencyCreditAmount: bigint }[];
+    };
 
     const period = await this.periodRepository.findById(entry.periodId, organizationId);
     if (!period) throw new NotFoundError('AccountingPeriod', entry.periodId);
 
     assertPeriodOpen(period.status);
     assertMinimumLines(entry.lines);
-    assertJournalBalances(entry.lines);
+    assertBaseCurrencyBalance(entry.lines);
 
     const posted = await this.journalEntryRepository.updateStatus(
       id,

@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { type CashboxRepository } from '../../infrastructure/repositories/cashbox.repository';
+import { CashboxRepository } from '../../infrastructure/repositories/cashbox.repository';
 import { NotFoundError, ConflictError } from '@/platform/errors';
 import type { CreateCashboxDto, UpdateCashboxDto, CashboxQueryDto } from '@hesabdari/contracts';
 

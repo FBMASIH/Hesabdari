@@ -1,19 +1,24 @@
 import { Injectable } from '@nestjs/common';
-import { type PrismaService } from '@/platform/database/prisma.service';
+import { PrismaService } from '@/platform/database/prisma.service';
 import type { JournalEntryStatus } from '@hesabdari/db';
 
 interface CreateJournalEntryData {
   organizationId: string;
   periodId: string;
+  baseCurrencyId: string;
   entryNumber: string;
   date: Date;
   description: string;
   idempotencyKey?: string;
   lines: {
     accountId: string;
+    currencyId: string;
     description: string | null;
     debitAmount: bigint;
     creditAmount: bigint;
+    exchangeRate: string;
+    baseCurrencyDebitAmount: bigint;
+    baseCurrencyCreditAmount: bigint;
   }[];
 }
 
@@ -21,14 +26,14 @@ interface CreateJournalEntryData {
 export class JournalEntryRepository {
   constructor(private readonly prisma: PrismaService) {}
 
-  async findById(id: string, organizationId: string) {
+  async findById(id: string, organizationId: string): Promise<unknown> {
     return this.prisma.journalEntry.findFirst({
       where: { id, organizationId },
-      include: { lines: true },
+      include: { lines: { include: { currency: true } }, baseCurrency: true },
     });
   }
 
-  async findByNumber(organizationId: string, entryNumber: string) {
+  async findByNumber(organizationId: string, entryNumber: string): Promise<unknown> {
     return this.prisma.journalEntry.findFirst({
       where: { organizationId, entryNumber },
     });
@@ -45,7 +50,7 @@ export class JournalEntryRepository {
       sortBy?: string;
       sortOrder?: 'asc' | 'desc';
     },
-  ) {
+  ): Promise<unknown> {
     const where: Record<string, unknown> = { organizationId };
     if (opts?.status) where.status = opts.status;
     if (opts?.fromDate || opts?.toDate) {
@@ -63,7 +68,7 @@ export class JournalEntryRepository {
       this.prisma.journalEntry.findMany({
         where,
         orderBy,
-        include: { lines: true },
+        include: { lines: { include: { currency: true } }, baseCurrency: true },
         skip: (page - 1) * pageSize,
         take: pageSize,
       }),
@@ -72,12 +77,13 @@ export class JournalEntryRepository {
     return { data, total, page, pageSize };
   }
 
-  async createWithLines(data: CreateJournalEntryData) {
+  async createWithLines(data: CreateJournalEntryData): Promise<unknown> {
     return this.prisma.$transaction(async (tx) => {
       const entry = await tx.journalEntry.create({
         data: {
           organizationId: data.organizationId,
           periodId: data.periodId,
+          baseCurrencyId: data.baseCurrencyId,
           entryNumber: data.entryNumber,
           date: data.date,
           description: data.description,
@@ -86,13 +92,17 @@ export class JournalEntryRepository {
           lines: {
             create: data.lines.map((line) => ({
               accountId: line.accountId,
+              currencyId: line.currencyId,
               description: line.description,
               debitAmount: line.debitAmount,
               creditAmount: line.creditAmount,
+              exchangeRate: line.exchangeRate,
+              baseCurrencyDebitAmount: line.baseCurrencyDebitAmount,
+              baseCurrencyCreditAmount: line.baseCurrencyCreditAmount,
             })),
           },
         },
-        include: { lines: true },
+        include: { lines: { include: { currency: true } }, baseCurrency: true },
       });
       return entry;
     });
@@ -104,30 +114,36 @@ export class JournalEntryRepository {
     data: { date?: Date; description?: string },
     lines?: {
       accountId: string;
+      currencyId: string;
       description: string | null;
       debitAmount: bigint;
       creditAmount: bigint;
+      exchangeRate: string;
+      baseCurrencyDebitAmount: bigint;
+      baseCurrencyCreditAmount: bigint;
     }[],
-  ) {
+  ): Promise<unknown> {
     return this.prisma.$transaction(async (tx) => {
-      // Verify ownership before mutation
       const existing = await tx.journalEntry.findFirst({ where: { id, organizationId } });
       if (!existing) return null;
 
       if (lines) {
-        // Delete old lines and create new ones
         await tx.journalLine.deleteMany({ where: { journalEntryId: id } });
         await tx.journalLine.createMany({
           data: lines.map((line) => ({
             journalEntryId: id,
             accountId: line.accountId,
+            currencyId: line.currencyId,
             description: line.description,
             debitAmount: line.debitAmount,
             creditAmount: line.creditAmount,
+            exchangeRate: line.exchangeRate,
+            baseCurrencyDebitAmount: line.baseCurrencyDebitAmount,
+            baseCurrencyCreditAmount: line.baseCurrencyCreditAmount,
           })),
         });
       }
-      // Use updateMany with status guard to prevent race conditions
+
       const result = await tx.journalEntry.updateMany({
         where: { id, organizationId, status: 'DRAFT' },
         data: {
@@ -138,15 +154,15 @@ export class JournalEntryRepository {
       if (result.count === 0) return null;
       return tx.journalEntry.findFirst({
         where: { id, organizationId },
-        include: { lines: true },
+        include: { lines: { include: { currency: true } }, baseCurrency: true },
       });
     });
   }
 
-  async findByIdempotencyKey(organizationId: string, idempotencyKey: string) {
+  async findByIdempotencyKey(organizationId: string, idempotencyKey: string): Promise<unknown> {
     return this.prisma.journalEntry.findFirst({
       where: { organizationId, idempotencyKey },
-      include: { lines: true },
+      include: { lines: { include: { currency: true } }, baseCurrency: true },
     });
   }
 
@@ -156,8 +172,7 @@ export class JournalEntryRepository {
     status: JournalEntryStatus,
     postedAt?: Date,
     postedBy?: string,
-  ) {
-    // Scope update by organizationId — updateMany accepts non-unique where
+  ): Promise<unknown> {
     const result = await this.prisma.journalEntry.updateMany({
       where: { id, organizationId },
       data: { status, postedAt, postedBy },

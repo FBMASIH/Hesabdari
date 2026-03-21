@@ -80,6 +80,8 @@ export const ModelName = {
   VendorOpeningBalance: 'VendorOpeningBalance',
   BankOpeningBalance: 'BankOpeningBalance',
   CashboxOpeningBalance: 'CashboxOpeningBalance',
+  ExchangeRate: 'ExchangeRate',
+  CurrencyRevaluation: 'CurrencyRevaluation',
   AuditLog: 'AuditLog'
 } as const
 
@@ -128,6 +130,7 @@ export const OrganizationScalarFieldEnum = {
   id: 'id',
   name: 'name',
   slug: 'slug',
+  defaultCurrencyId: 'defaultCurrencyId',
   isActive: 'isActive',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
@@ -238,6 +241,7 @@ export const JournalEntryScalarFieldEnum = {
   id: 'id',
   organizationId: 'organizationId',
   periodId: 'periodId',
+  baseCurrencyId: 'baseCurrencyId',
   entryNumber: 'entryNumber',
   date: 'date',
   description: 'description',
@@ -257,9 +261,13 @@ export const JournalLineScalarFieldEnum = {
   id: 'id',
   journalEntryId: 'journalEntryId',
   accountId: 'accountId',
+  currencyId: 'currencyId',
   description: 'description',
   debitAmount: 'debitAmount',
   creditAmount: 'creditAmount',
+  exchangeRate: 'exchangeRate',
+  baseCurrencyDebitAmount: 'baseCurrencyDebitAmount',
+  baseCurrencyCreditAmount: 'baseCurrencyCreditAmount',
   createdAt: 'createdAt'
 } as const
 
@@ -556,6 +564,37 @@ export const CashboxOpeningBalanceScalarFieldEnum = {
 } as const
 
 export type CashboxOpeningBalanceScalarFieldEnum = (typeof CashboxOpeningBalanceScalarFieldEnum)[keyof typeof CashboxOpeningBalanceScalarFieldEnum]
+
+
+export const ExchangeRateScalarFieldEnum = {
+  id: 'id',
+  organizationId: 'organizationId',
+  fromCurrencyId: 'fromCurrencyId',
+  toCurrencyId: 'toCurrencyId',
+  rate: 'rate',
+  date: 'date',
+  source: 'source',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type ExchangeRateScalarFieldEnum = (typeof ExchangeRateScalarFieldEnum)[keyof typeof ExchangeRateScalarFieldEnum]
+
+
+export const CurrencyRevaluationScalarFieldEnum = {
+  id: 'id',
+  organizationId: 'organizationId',
+  periodId: 'periodId',
+  baseCurrencyId: 'baseCurrencyId',
+  date: 'date',
+  description: 'description',
+  journalEntryId: 'journalEntryId',
+  status: 'status',
+  metadata: 'metadata',
+  createdAt: 'createdAt'
+} as const
+
+export type CurrencyRevaluationScalarFieldEnum = (typeof CurrencyRevaluationScalarFieldEnum)[keyof typeof CurrencyRevaluationScalarFieldEnum]
 
 
 export const AuditLogScalarFieldEnum = {

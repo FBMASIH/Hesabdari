@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { type WarehouseRepository } from '../../infrastructure/repositories/warehouse.repository';
+import { WarehouseRepository } from '../../infrastructure/repositories/warehouse.repository';
 import { NotFoundError, ConflictError } from '@/platform/errors';
 import type { CostingMethod } from '@hesabdari/db';
 import type {

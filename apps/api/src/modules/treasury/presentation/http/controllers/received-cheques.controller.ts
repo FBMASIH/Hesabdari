@@ -1,6 +1,6 @@
 import { Controller, Get, Post, Put, Patch, Body, Param, Query } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
-import { type ReceivedChequeService } from '../../../application/services/received-cheque.service';
+import { ReceivedChequeService } from '../../../application/services/received-cheque.service';
 import {
   createReceivedChequeSchema,
   updateReceivedChequeSchema,

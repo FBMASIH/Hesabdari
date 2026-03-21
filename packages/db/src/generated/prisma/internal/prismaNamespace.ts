@@ -413,6 +413,8 @@ export const ModelName = {
   VendorOpeningBalance: 'VendorOpeningBalance',
   BankOpeningBalance: 'BankOpeningBalance',
   CashboxOpeningBalance: 'CashboxOpeningBalance',
+  ExchangeRate: 'ExchangeRate',
+  CurrencyRevaluation: 'CurrencyRevaluation',
   AuditLog: 'AuditLog'
 } as const
 
@@ -429,7 +431,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "session" | "organization" | "organizationMember" | "role" | "permission" | "rolePermission" | "currency" | "bank" | "account" | "accountingPeriod" | "journalEntry" | "journalLine" | "expense" | "bankAccount" | "cashbox" | "customer" | "vendor" | "warehouse" | "product" | "productWarehouseStock" | "invoice" | "invoiceLine" | "receivedCheque" | "paidCheque" | "customerOpeningBalance" | "vendorOpeningBalance" | "bankOpeningBalance" | "cashboxOpeningBalance" | "auditLog"
+    modelProps: "user" | "session" | "organization" | "organizationMember" | "role" | "permission" | "rolePermission" | "currency" | "bank" | "account" | "accountingPeriod" | "journalEntry" | "journalLine" | "expense" | "bankAccount" | "cashbox" | "customer" | "vendor" | "warehouse" | "product" | "productWarehouseStock" | "invoice" | "invoiceLine" | "receivedCheque" | "paidCheque" | "customerOpeningBalance" | "vendorOpeningBalance" | "bankOpeningBalance" | "cashboxOpeningBalance" | "exchangeRate" | "currencyRevaluation" | "auditLog"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -2579,6 +2581,154 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    ExchangeRate: {
+      payload: Prisma.$ExchangeRatePayload<ExtArgs>
+      fields: Prisma.ExchangeRateFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.ExchangeRateFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ExchangeRatePayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.ExchangeRateFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ExchangeRatePayload>
+        }
+        findFirst: {
+          args: Prisma.ExchangeRateFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ExchangeRatePayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.ExchangeRateFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ExchangeRatePayload>
+        }
+        findMany: {
+          args: Prisma.ExchangeRateFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ExchangeRatePayload>[]
+        }
+        create: {
+          args: Prisma.ExchangeRateCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ExchangeRatePayload>
+        }
+        createMany: {
+          args: Prisma.ExchangeRateCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.ExchangeRateCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ExchangeRatePayload>[]
+        }
+        delete: {
+          args: Prisma.ExchangeRateDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ExchangeRatePayload>
+        }
+        update: {
+          args: Prisma.ExchangeRateUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ExchangeRatePayload>
+        }
+        deleteMany: {
+          args: Prisma.ExchangeRateDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.ExchangeRateUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.ExchangeRateUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ExchangeRatePayload>[]
+        }
+        upsert: {
+          args: Prisma.ExchangeRateUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ExchangeRatePayload>
+        }
+        aggregate: {
+          args: Prisma.ExchangeRateAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateExchangeRate>
+        }
+        groupBy: {
+          args: Prisma.ExchangeRateGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ExchangeRateGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.ExchangeRateCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ExchangeRateCountAggregateOutputType> | number
+        }
+      }
+    }
+    CurrencyRevaluation: {
+      payload: Prisma.$CurrencyRevaluationPayload<ExtArgs>
+      fields: Prisma.CurrencyRevaluationFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.CurrencyRevaluationFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CurrencyRevaluationPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.CurrencyRevaluationFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CurrencyRevaluationPayload>
+        }
+        findFirst: {
+          args: Prisma.CurrencyRevaluationFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CurrencyRevaluationPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.CurrencyRevaluationFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CurrencyRevaluationPayload>
+        }
+        findMany: {
+          args: Prisma.CurrencyRevaluationFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CurrencyRevaluationPayload>[]
+        }
+        create: {
+          args: Prisma.CurrencyRevaluationCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CurrencyRevaluationPayload>
+        }
+        createMany: {
+          args: Prisma.CurrencyRevaluationCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.CurrencyRevaluationCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CurrencyRevaluationPayload>[]
+        }
+        delete: {
+          args: Prisma.CurrencyRevaluationDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CurrencyRevaluationPayload>
+        }
+        update: {
+          args: Prisma.CurrencyRevaluationUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CurrencyRevaluationPayload>
+        }
+        deleteMany: {
+          args: Prisma.CurrencyRevaluationDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.CurrencyRevaluationUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.CurrencyRevaluationUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CurrencyRevaluationPayload>[]
+        }
+        upsert: {
+          args: Prisma.CurrencyRevaluationUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CurrencyRevaluationPayload>
+        }
+        aggregate: {
+          args: Prisma.CurrencyRevaluationAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateCurrencyRevaluation>
+        }
+        groupBy: {
+          args: Prisma.CurrencyRevaluationGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.CurrencyRevaluationGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.CurrencyRevaluationCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.CurrencyRevaluationCountAggregateOutputType> | number
+        }
+      }
+    }
     AuditLog: {
       payload: Prisma.$AuditLogPayload<ExtArgs>
       fields: Prisma.AuditLogFieldRefs
@@ -2721,6 +2871,7 @@ export const OrganizationScalarFieldEnum = {
   id: 'id',
   name: 'name',
   slug: 'slug',
+  defaultCurrencyId: 'defaultCurrencyId',
   isActive: 'isActive',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
@@ -2831,6 +2982,7 @@ export const JournalEntryScalarFieldEnum = {
   id: 'id',
   organizationId: 'organizationId',
   periodId: 'periodId',
+  baseCurrencyId: 'baseCurrencyId',
   entryNumber: 'entryNumber',
   date: 'date',
   description: 'description',
@@ -2850,9 +3002,13 @@ export const JournalLineScalarFieldEnum = {
   id: 'id',
   journalEntryId: 'journalEntryId',
   accountId: 'accountId',
+  currencyId: 'currencyId',
   description: 'description',
   debitAmount: 'debitAmount',
   creditAmount: 'creditAmount',
+  exchangeRate: 'exchangeRate',
+  baseCurrencyDebitAmount: 'baseCurrencyDebitAmount',
+  baseCurrencyCreditAmount: 'baseCurrencyCreditAmount',
   createdAt: 'createdAt'
 } as const
 
@@ -3151,6 +3307,37 @@ export const CashboxOpeningBalanceScalarFieldEnum = {
 export type CashboxOpeningBalanceScalarFieldEnum = (typeof CashboxOpeningBalanceScalarFieldEnum)[keyof typeof CashboxOpeningBalanceScalarFieldEnum]
 
 
+export const ExchangeRateScalarFieldEnum = {
+  id: 'id',
+  organizationId: 'organizationId',
+  fromCurrencyId: 'fromCurrencyId',
+  toCurrencyId: 'toCurrencyId',
+  rate: 'rate',
+  date: 'date',
+  source: 'source',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type ExchangeRateScalarFieldEnum = (typeof ExchangeRateScalarFieldEnum)[keyof typeof ExchangeRateScalarFieldEnum]
+
+
+export const CurrencyRevaluationScalarFieldEnum = {
+  id: 'id',
+  organizationId: 'organizationId',
+  periodId: 'periodId',
+  baseCurrencyId: 'baseCurrencyId',
+  date: 'date',
+  description: 'description',
+  journalEntryId: 'journalEntryId',
+  status: 'status',
+  metadata: 'metadata',
+  createdAt: 'createdAt'
+} as const
+
+export type CurrencyRevaluationScalarFieldEnum = (typeof CurrencyRevaluationScalarFieldEnum)[keyof typeof CurrencyRevaluationScalarFieldEnum]
+
+
 export const AuditLogScalarFieldEnum = {
   id: 'id',
   organizationId: 'organizationId',
@@ -3318,6 +3505,20 @@ export type ListBigIntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaMod
 
 
 /**
+ * Reference to a field of type 'Decimal'
+ */
+export type DecimalFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Decimal'>
+    
+
+
+/**
+ * Reference to a field of type 'Decimal[]'
+ */
+export type ListDecimalFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Decimal[]'>
+    
+
+
+/**
  * Reference to a field of type 'CostingMethod'
  */
 export type EnumCostingMethodFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'CostingMethod'>
@@ -3398,6 +3599,34 @@ export type EnumBalanceTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$Pris
  * Reference to a field of type 'BalanceType[]'
  */
 export type ListEnumBalanceTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'BalanceType[]'>
+    
+
+
+/**
+ * Reference to a field of type 'ExchangeRateSource'
+ */
+export type EnumExchangeRateSourceFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ExchangeRateSource'>
+    
+
+
+/**
+ * Reference to a field of type 'ExchangeRateSource[]'
+ */
+export type ListEnumExchangeRateSourceFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ExchangeRateSource[]'>
+    
+
+
+/**
+ * Reference to a field of type 'CurrencyRevaluationStatus'
+ */
+export type EnumCurrencyRevaluationStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'CurrencyRevaluationStatus'>
+    
+
+
+/**
+ * Reference to a field of type 'CurrencyRevaluationStatus[]'
+ */
+export type ListEnumCurrencyRevaluationStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'CurrencyRevaluationStatus[]'>
     
 
 
@@ -3552,6 +3781,8 @@ export type GlobalOmitConfig = {
   vendorOpeningBalance?: Prisma.VendorOpeningBalanceOmit
   bankOpeningBalance?: Prisma.BankOpeningBalanceOmit
   cashboxOpeningBalance?: Prisma.CashboxOpeningBalanceOmit
+  exchangeRate?: Prisma.ExchangeRateOmit
+  currencyRevaluation?: Prisma.CurrencyRevaluationOmit
   auditLog?: Prisma.AuditLogOmit
 }
 

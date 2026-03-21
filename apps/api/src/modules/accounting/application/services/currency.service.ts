@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { type CurrencyRepository } from '../../infrastructure/repositories/currency.repository';
+import { CurrencyRepository } from '../../infrastructure/repositories/currency.repository';
 import { NotFoundError, ConflictError } from '@/platform/errors';
 import type { CreateCurrencyDto, UpdateCurrencyDto } from '@hesabdari/contracts';
 

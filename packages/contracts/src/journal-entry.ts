@@ -5,6 +5,8 @@ const journalEntryStatusEnum = z.enum(['DRAFT', 'POSTED', 'REVERSED']);
 
 const createJournalLineSchema = z.object({
   accountId: z.string().uuid(),
+  currencyId: z.string().uuid(),
+  exchangeRate: z.string().regex(/^\d+(\.\d{1,8})?$/).optional(),
   description: z.string().max(500).optional(),
   debitAmount: z.string().regex(/^\d+$/, 'must be a non-negative integer string').default('0'),
   creditAmount: z.string().regex(/^\d+$/, 'must be a non-negative integer string').default('0'),
